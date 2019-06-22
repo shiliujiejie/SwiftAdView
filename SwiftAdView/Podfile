@@ -1,0 +1,13 @@
+
+platform :ios, '9.0' #手机的系统
+use_frameworks!
+
+target 'SwiftAdView' do
+
+pod 'SnapKit'
+pod 'Kingfisher'
+pod 'Alamofire'
+
+
+end
+
