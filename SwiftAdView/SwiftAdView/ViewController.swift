@@ -32,17 +32,9 @@ class ViewController: UIViewController {
         }
     }
     
-    /*--->  广告逻辑: 一般来说，考虑网络问题，广告最好是走本地文件，但是需求一般都要可 后台 配置.
-     
-     基本逻辑:
-     一. 第一次下载App,进入，（1）：没有广告（新手奖励之类的弹框，或者引导页替代广告） （2）：加载代码中默认的广告图，广告视频。
-     二. 进入App后，后台下载后台配置的广告，保存到沙盒中。
-     三. 用户下次进入App,直接读取 上次下载到 沙盒中 的广告文件，展示。
-     
-     <---*/
     func loadADView() {
         if let currentAd = SwiftAdFileConfig.readCurrentAdModel() { // 1. 检测 本地 有没有 广告
-            showAdVC(currentAd)
+            showAdView(currentAd)
         } else {
             showDefaultAd()  // 2. 本地没找到对应的广告文件，展示默认广告
         }
@@ -61,26 +53,33 @@ class ViewController: UIViewController {
         
         let admodel = AdFileModel(adUrl: fileGif, adType: .gif, adHerfUrl: "http://www.baidu.com", adId: 1)
         
-        showAdVC(admodel)
-       
+        showAdView(admodel)
     }
     
-    func showAdVC(_ ad: AdFileModel) {
-        
-        let config = SwiftAdFileConfig()
-        config.duration = 10
-        config.autoDissMiss = false
-        config.videoGravity = .resizeAspectFill
-    
-        let advc = SwiftAdView(config: config, adModel: ad)
+    func showAdView(_ adModel: AdFileModel) {
+     
+        let advc = SwiftAdView(config: configModel(), adModel: adModel)
         self.present(advc, animated: false, completion: nil)
         self.isShow = true
         advc.skipBtnClickHandler = {
             
         }
     }
+    
+    /// 广告页面属性 - 配置
+    func configModel() -> SwiftAdFileConfig {
+        let config = SwiftAdFileConfig()
+        config.duration = 10
+        config.autoDissMiss = false
+        config.videoGravity = .resizeAspectFill
+        return config
+    }
    
 }
+
+
+
+
 
 
 // MARK: - 模拟 请求广告数据， 下载
