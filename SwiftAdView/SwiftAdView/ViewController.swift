@@ -91,7 +91,6 @@ extension ViewController {
         // 模拟网络请求1.5秒
         self.sleep(1.5) {
             /// 请求结果 构造 model (根据了 链接对应的数据 的文件格式。确定 adType : "image"   "gif"  "video")
-            // http://tb-video.bdstatic.com/tieba-smallvideo-transcode/3612804_e50cb68f52adb3c4c3f6135c0edcc7b0_3.mp4
             // https://github.com/shiliujiejie/adResource/raw/master/1.mp4
             // https://github.com/shiliujiejie/adResource/raw/master/2.mp4
             // https://github.com/shiliujiejie/adResource/raw/master/3.mp4
