@@ -20,6 +20,8 @@
 		0422896A22BCE15A00EE9B93 /* guide02.png in Resources */ = {isa = PBXBuildFile; fileRef = 0422896922BCE15A00EE9B93 /* guide02.png */; };
 		0422896F22BD160D00EE9B93 /* timg.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 0422896E22BD160D00EE9B93 /* timg.jpeg */; };
 		0422897122BE276900EE9B93 /* foldingcell.gif in Resources */ = {isa = PBXBuildFile; fileRef = 0422897022BE276800EE9B93 /* foldingcell.gif */; };
+		0493192122C204EC000B805F /* WebKitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0493192022C204EC000B805F /* WebKitController.swift */; };
+		0493192322C20C1F000B805F /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0493192222C20C1F000B805F /* RootViewController.swift */; };
 		19E6992F279053C4A5F2A89E /* Pods_SwiftAdView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 325DA2BE3B0AC373EF94A5B8 /* Pods_SwiftAdView.framework */; };
 /* End PBXBuildFile section */
 
@@ -39,6 +41,8 @@
 		0422896922BCE15A00EE9B93 /* guide02.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = guide02.png; sourceTree = "<group>"; };
 		0422896E22BD160D00EE9B93 /* timg.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = timg.jpeg; sourceTree = "<group>"; };
 		0422897022BE276800EE9B93 /* foldingcell.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = foldingcell.gif; sourceTree = "<group>"; };
+		0493192022C204EC000B805F /* WebKitController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebKitController.swift; sourceTree = "<group>"; };
+		0493192222C20C1F000B805F /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		325DA2BE3B0AC373EF94A5B8 /* Pods_SwiftAdView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SwiftAdView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		413D21ABC1A5F4E5780750E8 /* Pods-SwiftAdView.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwiftAdView.release.xcconfig"; path = "Target Support Files/Pods-SwiftAdView/Pods-SwiftAdView.release.xcconfig"; sourceTree = "<group>"; };
 		CD7B4C664A7DD87E72904414 /* Pods-SwiftAdView.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwiftAdView.debug.xcconfig"; path = "Target Support Files/Pods-SwiftAdView/Pods-SwiftAdView.debug.xcconfig"; sourceTree = "<group>"; };
@@ -81,6 +85,8 @@
 				0422897222BE295300EE9B93 /* LocalRersource */,
 				0422894A22BC9BAE00EE9B93 /* AppDelegate.swift */,
 				0422894C22BC9BAE00EE9B93 /* ViewController.swift */,
+				0493192222C20C1F000B805F /* RootViewController.swift */,
+				0493192022C204EC000B805F /* WebKitController.swift */,
 				0422894E22BC9BAE00EE9B93 /* Main.storyboard */,
 				0422895122BC9BAF00EE9B93 /* Assets.xcassets */,
 				0422895322BC9BAF00EE9B93 /* LaunchScreen.storyboard */,
@@ -262,6 +268,8 @@
 				0422894B22BC9BAE00EE9B93 /* AppDelegate.swift in Sources */,
 				0422896022BC9C1800EE9B93 /* SwiftyTimer.swift in Sources */,
 				0422896222BC9C6D00EE9B93 /* SwiftAdView.swift in Sources */,
+				0493192322C20C1F000B805F /* RootViewController.swift in Sources */,
+				0493192122C204EC000B805F /* WebKitController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

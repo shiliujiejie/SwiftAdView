@@ -21,12 +21,13 @@ class SwiftAdView: UIViewController {
     private lazy var adTimerBtn: UIButton = {
         let btn = UIButton(type: .custom)
         btn.setTitle("点击跳过 (\(Int(adTime))S)", for: .normal)
+        btn.titleLabel?.font = UIFont.systemFont(ofSize: 15)
         btn.setTitleColor(config.skipBtnTitleColor, for: .normal)
         btn.titleLabel?.font = config.skipBtnFont
         btn.backgroundColor = config.skipBtnBackgroundColor
         btn.layer.cornerRadius = 15
         btn.layer.masksToBounds = true
-        btn.contentEdgeInsets = UIEdgeInsets.init(top: 0, left: 15, bottom: 0, right: 15)
+        btn.contentEdgeInsets = UIEdgeInsets.init(top: 0, left: 10, bottom: 0, right: 10)
         return btn
     }()
     private let adImage: UIImageView = {
@@ -71,6 +72,7 @@ class SwiftAdView: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = UIColor.white
         if adModel == nil || adModel.adUrl.isEmpty { /// 广告不存在， 直接return
             dismiss(animated: false, completion: nil)
             return
@@ -104,7 +106,7 @@ private extension SwiftAdView {
         timer1 = Timer.every(1.0.seconds) { [weak self] in
             guard let strongSelf = self else { return }
             strongSelf.adTime = strongSelf.adTime - 1.0
-            strongSelf.adTimerBtn.setTitle("点击跳过 (\(Int(strongSelf.adTime))S)", for: .normal)
+            strongSelf.adTimerBtn.setTitle("点击跳过 (\(Int(strongSelf.adTime))s)", for: .normal)
         }
         RunLoop.current.add(timer, forMode: .default)
         setUpSkipBtn()
@@ -142,6 +144,7 @@ private extension SwiftAdView {
         } else {
             adClickHandler?(adModel)  /// 自定义 点击广告操作
         }
+        self.dismiss(animated: false, completion: nil)
     }
     
     func goAdWebPage(_ adUrl: String?) {
@@ -196,8 +199,9 @@ private extension SwiftAdView {
                 self.adImage.image = UIImage(data: gifData)
             }
         } else {
-            /// 本地真的实在是没有， 加载网络图（一般这种情况不存在）
-            self.adImage.image = UIImage.gif(url: adModel.adUrl)
+            if let data = try? Data(contentsOf: URL(fileURLWithPath: adModel?.adUrl ?? "") ) {
+                  self.adImage.image = UIImage.gif(data: data)
+            }
         }
     }
 }
