@@ -12,28 +12,32 @@ class RootViewController: UIViewController {
     
     private lazy var showAdBtn: UIButton = {
         let btn = UIButton(type: .custom)
-        btn.setTitle("showAd", for: .normal)
+        btn.setTitle("showAgain", for: .normal)
         btn.backgroundColor = UIColor.gray
         btn.setTitleColor(UIColor.red, for: .normal)
         btn.addTarget(self, action: #selector(showAd), for: .touchUpInside)
-        btn.frame = CGRect(x: 120, y: 250, width: 70, height: 40)
+        btn.frame = CGRect(x: 120, y: 250, width: 100, height: 40)
         return btn
     }()
 
     var isAdShow: Bool = false
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.white
         self.title = "首页"
         view.addSubview(showAdBtn)
+        
+        loadADView()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if !isAdShow {
-            loadADView()
-        }
+//        if !isAdShow {
+//            loadADView()
+//        }
     }
     
     @objc func showAd() {
@@ -108,7 +112,7 @@ extension RootViewController {
             // https://github.com/shiliujiejie/adResource/raw/master/timg.jpeg
             // http://cdn-hw.570920.com/video_ad/ao/7c/12ao7c3ee37f66d36b7f413a58d6483054aae59128.m3u8
             
-            let admodel = AdFileModel.init(adUrl: "https://github.com/shiliujiejie/adResource/raw/master/1.mp4", adType: .video, adHerfUrl: "https://github.com/shiliujiejie/RootTabBarController", adId: 0)
+            let admodel = AdFileModel.init(adUrl: "https://github.com/shiliujiejie/adResource/raw/master/folding-cell.gif", adType: .gif, adHerfUrl: "https://github.com/shiliujiejie/RootTabBarController", adId: 0)
             
             /// 下载广告, 下次启动展示
             SwiftAdFileConfig.downLoadAdData(admodel)

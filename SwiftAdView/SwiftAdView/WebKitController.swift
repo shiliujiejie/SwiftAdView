@@ -44,7 +44,7 @@ class WebKitController: UIViewController {
         let progressBar = UIProgressView(progressViewStyle: .bar)
         progressBar.backgroundColor = .clear
         progressBar.trackTintColor = .clear
-        progressBar.progressTintColor = .green
+       // progressBar.progressTintColor = .green
         return progressBar
     }()
     
@@ -53,7 +53,7 @@ class WebKitController: UIViewController {
     public var displaysWebViewTitle: Bool? = true
     
     deinit {
-        print("vc is deinit")
+        print("webVc is deinit")
         webView.removeObserver(self, forKeyPath: titleKeyPath, context: nil)
         webView.removeObserver(self, forKeyPath: estimatedProgressKeyPath, context: nil)
     }
@@ -156,7 +156,6 @@ extension WebKitController {
     }
     
     // MARK: Private
-    
     private final func updateProgress() {
         let completed = webView.estimatedProgress == 1.0
         progressBar.setProgress(completed ? 0.0 : Float(webView.estimatedProgress), animated: !completed)

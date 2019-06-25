@@ -145,6 +145,7 @@ extension SwiftAdFileConfig {
     private class func downLoadImageDataWith(_ adModel: AdFileModel) {
         guard let url = URL(string: adModel.adUrl) else { return }
         ImageDownloader.default.downloadImage(with: url, retrieveImageTask: nil, options: nil, progressBlock: { (reciveData, allData) in
+            print("Download Progress Image = \(Float64(reciveData)/Float64(allData))")
         }) { (image, error, imageUrl, adData) in
             if adData != nil {
                 print("开屏图片广告下载成功。\(String(describing: adData))")
@@ -208,7 +209,7 @@ extension SwiftAdFileConfig {
         }
         Alamofire.download(adModel.adUrl, to: destination)
             .downloadProgress { progress in
-                print("Download Progress: \(progress.fractionCompleted)")
+                print("Download Progress Video: \(progress.fractionCompleted)")
             }
             .responseData { response in
                 if let _ = response.result.value {
