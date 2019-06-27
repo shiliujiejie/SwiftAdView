@@ -3,6 +3,14 @@
 
   支持     图片   gif   视频   的启动广告     支持时间、样式、事件 自定义。
 
+## | ScreenRecording  |
+
+     图一 .  图片 广告
+     图二 .  gif 广告
+     图三 .  mp4 广告
+
+|![Recording](https://github.com/shiliujiejie/adResource/raw/master/advertiseImage.gif) |![Recording](https://github.com/shiliujiejie/adResource/raw/master/advertiseGif.gif) | ![Recordings](https://github.com/shiliujiejie/adResource/raw/master/advertiseMP4.gif) | 
+
      
 
 # 1.  加载 Bundle   资源：
