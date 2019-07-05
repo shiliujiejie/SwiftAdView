@@ -19,6 +19,7 @@ struct AdFileModel: Codable {
     var adType: AdFileType   //
     var adHerfUrl: String?
     var adId: Int = 0
+    var customSaveKey: String? = nil  /// 自定义 模型 存储key
 }
 
 /// 广告文件类型
@@ -89,12 +90,12 @@ extension SwiftAdFileConfig {
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = .convertToSnakeCase
         let resultData = try? encoder.encode(adModel)
-        UserDefaults.standard.set(resultData, forKey: UserDefaults.kAdDataFileModel)
+        UserDefaults.standard.set(resultData, forKey: adModel.customSaveKey ?? UserDefaults.kAdDataFileModel)
     }
     
     /// 获取当前需要展示的广告模型
-    class func readCurrentAdModel() -> AdFileModel? {
-        if let adData = UserDefaults.standard.value(forKey: UserDefaults.kAdDataFileModel) as? Data {
+    class func readCurrentAdModel(_ key: String? = nil) -> AdFileModel? {
+        if let adData = UserDefaults.standard.value(forKey: key ?? UserDefaults.kAdDataFileModel) as? Data {
             // 解码
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -160,6 +161,13 @@ extension SwiftAdFileConfig {
                     /// 存储广告文件到本地
                     let _ = SwiftAdFileConfig.saveDataToLocal(url.absoluteString, data: adData)
                     /// 存入当前需要展示的广告model
+                    let dataType = UIImage.checkImageDataType(data: adData)
+                    var newAdModel = adModel
+                    if dataType == .gif {
+                        newAdModel.adType = .gif
+                    } else {
+                        newAdModel.adType = .image
+                    }
                     saveAdModelWith(adModel)
                 }
             }

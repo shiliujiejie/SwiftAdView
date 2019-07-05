@@ -63,7 +63,7 @@ class RootViewController: UIViewController {
         /// 视频
         // let fileVideo = Bundle.main.path(forResource: "1", ofType: "mp4") ?? ""
         
-        let admodel = AdFileModel(adUrl: fileGif, adType: .gif, adHerfUrl: "https://github.com/shiliujiejie/RootTabBarController", adId: 1)
+        let admodel = AdFileModel(adUrl: fileGif, adType: .gif, adHerfUrl: "https://github.com/shiliujiejie/RootTabBarController", adId: 1, customSaveKey: nil)
         
         showAdView(admodel)
     }
@@ -112,7 +112,7 @@ extension RootViewController {
             // https://github.com/shiliujiejie/adResource/raw/master/timg.jpeg
             // http://cdn-hw.570920.com/video_ad/ao/7c/12ao7c3ee37f66d36b7f413a58d6483054aae59128.m3u8
             
-            let admodel = AdFileModel.init(adUrl: "https://github.com/shiliujiejie/adResource/raw/master/bannerdemo.gif", adType: .gif, adHerfUrl: "https://github.com/shiliujiejie/RootTabBarController", adId: 0)
+            let admodel = AdFileModel.init(adUrl: "https://github.com/shiliujiejie/adResource/raw/master/bannerdemo.gif", adType: .gif, adHerfUrl: "https://github.com/shiliujiejie/RootTabBarController", adId: 0 , customSaveKey: nil)
             
             /// 下载广告, 下次启动展示
             SwiftAdFileConfig.downLoadAdData(admodel)
