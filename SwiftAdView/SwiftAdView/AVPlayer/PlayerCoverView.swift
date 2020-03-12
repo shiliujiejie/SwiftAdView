@@ -23,17 +23,12 @@ class PlayerCoverView: UIView {
         view.backgroundColor = configModel.controlViewColor
         return view
     }()
-    let shadowLayer: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor(white: 0, alpha: 0.8)
-        return view
-    }()
     lazy var progressView: UIProgressView = {
         let progress = UIProgressView()
         progress.progress = 0
         progress.progressTintColor = configModel.progressTintColor
         progress.trackTintColor = configModel.progressBackgroundColor
-        progress.backgroundColor = UIColor.clear
+        progress.backgroundColor = UIColor(white: 0.5, alpha: 0.2)
         progress.contentMode = ContentMode.scaleAspectFit
         return progress
     }()
@@ -102,7 +97,6 @@ class PlayerCoverView: UIView {
         configModel = config
         addSubview(controlView)
         addSubview(draggedTimeLable)
-        controlView.addSubview(shadowLayer)
         controlView.addSubview(progressView)
         controlView.addSubview(loadingBar)
         layoutPageSubviews()
@@ -173,7 +167,7 @@ extension PlayerCoverView {
         loadingBar.isHidden = false
         progressView.isHidden = true
         loadingBar.layer.removeAllAnimations()
-        loadingBar.backgroundColor = UIColor.white
+        loadingBar.backgroundColor = configModel.loadingBarColor
         let animationGroup = CAAnimationGroup()
         animationGroup.duration = 0.6
         animationGroup.beginTime = CACurrentMediaTime()
@@ -214,7 +208,6 @@ extension PlayerCoverView {
 private extension PlayerCoverView {
     func layoutPageSubviews() {
         layoutControlView()
-        layoutShadowLayer()
         layoutProgressView()
         layoutDraggedView()
     }
@@ -223,12 +216,6 @@ private extension PlayerCoverView {
             make.leading.trailing.equalTo(0)
             make.bottom.equalTo(-configModel.controlBarBottomInset)
             make.height.equalTo(configModel.controlViewHeight)
-        }
-    }
-    func layoutShadowLayer() {
-        shadowLayer.snp.makeConstraints { (make) in
-            make.bottom.leading.trailing.equalTo(controlView)
-            make.height.equalTo(configModel.progressHeight + 0.5)
         }
     }
     func layoutProgressView() {
