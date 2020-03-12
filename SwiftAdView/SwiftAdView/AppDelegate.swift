@@ -22,3 +22,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
+let screenWidth = UIScreen.main.bounds.size.width
+let screenHeight = UIScreen.main.bounds.size.height
+let statusBarHeight = UIApplication.shared.statusBarFrame.height
+let screenFrame:CGRect = UIScreen.main.bounds
+let safeAreaTopHeight:CGFloat = (screenHeight >= 812.0 && UIDevice.current.model == "iPhone" ? 88 : 64)
+let safeAreaBottomHeight:CGFloat = (screenHeight >= 812.0 && UIDevice.current.model == "iPhone"  ? 34 : 0)

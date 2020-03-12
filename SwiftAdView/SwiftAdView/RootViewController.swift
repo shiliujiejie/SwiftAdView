@@ -19,6 +19,15 @@ class RootViewController: UIViewController {
         btn.frame = CGRect(x: 120, y: 250, width: 100, height: 40)
         return btn
     }()
+    private lazy var showVideoBtn: UIButton = {
+        let btn = UIButton(type: .custom)
+        btn.setTitle("showVideo", for: .normal)
+        btn.backgroundColor = UIColor.gray
+        btn.setTitleColor(UIColor.red, for: .normal)
+        btn.addTarget(self, action: #selector(showVideoVC), for: .touchUpInside)
+        btn.frame = CGRect(x: 120, y: 320, width: 100, height: 40)
+        return btn
+    }()
 
     var isAdShow: Bool = false
     
@@ -28,6 +37,7 @@ class RootViewController: UIViewController {
         view.backgroundColor = UIColor.white
         self.title = "首页"
         view.addSubview(showAdBtn)
+        view.addSubview(showVideoBtn)
         
         loadADView()
         
@@ -44,6 +54,11 @@ class RootViewController: UIViewController {
         loadADView()
     }
     
+    @objc func showVideoVC() {
+         let c = AcountVideoPlayController()
+        navigationController?.pushViewController(c, animated: true)
+      }
+    
     func loadADView() {
         if let currentAd = SwiftAdFileConfig.readCurrentAdModel() { // 1. 检测 本地 有没有 广告
             showAdView(currentAd)
@@ -59,7 +74,7 @@ class RootViewController: UIViewController {
         /// image
         //let fileImage = Bundle.main.path(forResource: "guide02", ofType: "png") ?? ""
         /// gif
-        let fileGif = Bundle.main.path(forResource: "foldingcell", ofType: "gif") ?? ""
+        let fileGif = Bundle.main.path(forResource: "foldingcell", ofType: "mp4") ?? ""
         /// 视频
         // let fileVideo = Bundle.main.path(forResource: "1", ofType: "mp4") ?? ""
         
@@ -70,6 +85,7 @@ class RootViewController: UIViewController {
     
     func showAdView(_ adModel: AdFileModel) {
         let advc = SwiftAdView(config: configModel(), adModel: adModel)
+        advc.modalPresentationStyle = .fullScreen
         self.present(advc, animated: false, completion: nil)
         isAdShow = true
         advc.skipBtnClickHandler = {
