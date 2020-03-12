@@ -29,27 +29,7 @@ public class PlayerView: UIView {
         }
     }
     /// 当前播放进度
-    private var playedValue: Float = 0 {  // 播放进度
-        didSet {
-            if oldValue < playedValue {  // 表示在播放中
-                
-                //                if self.subviews.contains(loadedFailedView) {
-                //                    self.loadedFailedView.removeFromSuperview()
-                //                }
-                //                if playedValue >= coinsPerWatchTime {  // 大于金币 可预览时间
-                //                    if let iscoin = coinsVideo?.isCoinsVideo, let coins = coinsVideo?.videoCoins {
-                //                        if iscoin && coins > 0 {  // 未购买的金币视频
-                //                            playerStatu = PlayerStatus.Pause
-                //                            pauseButton.isHidden = true
-                //                            showLoadedFailedView("NotBuy", nil)
-                //                        }
-                //                    }
-                //                }
-            }
-        }
-    }
-    
-    
+    private var playedValue: Float = 0
     /// 加载进度
     private var loadedValue: Float = 0
     /// 视频总时长
