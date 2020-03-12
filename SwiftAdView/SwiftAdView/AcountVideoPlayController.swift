@@ -58,7 +58,7 @@ class AcountVideoPlayController: UIViewController {
         return collectionView
     }()
     
-    var videos = ["https://github.com/shiliujiejie/adResource/raw/master/2.mp4", "http://video_admin/44/fi/1244fi8aa1a2b7b3d3a0854b5cbd70fa4686346761.m3u8","https://github.com/shiliujiejie/adResource/raw/master/1.mp4", "http://cdn.wayada.com/video_admin/44/fi/1244fi8aa1a2b7b3d3a0854b5cbd70fa4686346761.m3u8","https://github.com/shiliujiejie/adResource/raw/master/3.mp4", "http://cdn.wayada.com/video_admin/44/fi/1244fi8aa1a2b7b3d3a0854b5cbd70fa4686346761.m3u8","http://cdn.wayada.com/video_admin/y3/l3/12y3l3e6a6d1bd0adf4fbb9b8482348cac5ca98736short.m3u8", "http://cdn.wayada.com/video_admin/44/fi/1244fi8aa1a2b7b3d3a0854b5cbd70fa4686346761.m3u8"]
+    var videos = ["https://github.com/shiliujiejie/adResource/raw/master/2.mp4", "https://github.com/shiliujiejie/adResource/raw/master/1.mp4", "https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
