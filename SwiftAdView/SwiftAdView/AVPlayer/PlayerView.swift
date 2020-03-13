@@ -37,7 +37,7 @@ public class PlayerView: UIView {
     
     
     private var playerLayer: AVPlayerLayer?
-    private var player: AVPlayer?
+    var player: AVPlayer?
     private var avItem: AVPlayerItem?
     private var avAsset: AVURLAsset?
     private var playerTimerObserver: NSObject?
@@ -104,6 +104,7 @@ public class PlayerView: UIView {
             } else if avItem.status == .unknown || avItem.status == .failed {
                 //视频加载失败，或者未知原因
                 playerStatu = .Failed
+                coverView.stopLoading()
                 delegate?.playVideoFailed(url: playUrl, player: self)
             }
         } else if keyPath == "loadedTimeRanges" {
@@ -154,8 +155,9 @@ public class PlayerView: UIView {
         coverView?.delegate = self
         
         view.addSubview(self)
-        self.addSubview(coverView)
         self.addSubview(pauseImg)
+        self.addSubview(coverView)
+        
         layoutPageSubviews()
         
         addPlayerObserver()

@@ -8,6 +8,7 @@
 
 import UIKit
 import AssetsLibrary
+import AVKit
 import Photos
 
 /// 个人中心弹出播放页
@@ -30,13 +31,25 @@ class AcountVideoPlayController: UIViewController {
         button.addTarget(self, action: #selector(backButtonClick), for: .touchUpInside)
         return button
     }()
+    lazy var rightBackButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setImage(UIImage(named: "fullscreen"), for: .normal)
+        button.backgroundColor = UIColor(white: 0.9, alpha: 0.2)
+        button.layer.cornerRadius = 17.5
+        button.layer.masksToBounds = true
+        button.addTarget(self, action: #selector(rightButtonClick), for: .touchUpInside)
+        return button
+    }()
     lazy var playerView: PlayerView = {
         let player = PlayerView(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight))
         player.controlViewBottomInset = safeAreaBottomHeight + 49
         player.delegate = self
         return player
     }()
-    
+    lazy var fullPlayer: AVPlayerViewController = {
+        let playerVc = AVPlayerViewController()
+        return playerVc
+    }()
     let flowLayout: UICollectionViewFlowLayout = {
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: screenWidth, height: screenHeight)
@@ -57,8 +70,8 @@ class AcountVideoPlayController: UIViewController {
         collectionView.register(PresentPlayCell.classForCoder(), forCellWithReuseIdentifier: PresentPlayCell.cellId)
         return collectionView
     }()
-    
-    var videos = ["https://github.com/shiliujiejie/adResource/raw/master/2.mp4", "https://github.com/shiliujiejie/adResource/raw/master/1.mp4", "https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
+   
+    var videos = ["http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8","https://github.com/shiliujiejie/adResource/raw/master/2.mp4", "https://github.com/shiliujiejie/adResource/raw/master/1.mp4", "https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -87,18 +100,36 @@ class AcountVideoPlayController: UIViewController {
         
         self.view.addSubview(self.collection)
         self.view.addSubview(self.leftBackButton)
+        view.addSubview(rightBackButton)
         self.layoutPageSubviews()
     }
     @objc func backButtonClick() {
         self.navigationController?.popViewController(animated: true)
     }
+    @objc func rightButtonClick() {
+        //playerView.pause()
+//        let scale = playerView.playedValue/playerView.videoDuration
+//        let po = CMTimeMakeWithSeconds(Float64(playerView.playedValue), preferredTimescale: Int32(playerView.videoDuration))
+         // playerVc.player?.seek(to: po, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero)
+       
+        if playerView.player != nil {
+            fullPlayer.player = playerView.player!
+        } else {
+            fullPlayer.player = AVPlayer(url: URL(string: videos[currentIndex])!)
+        }
+        playerView.pause()
+        fullPlayer.player?.play()
+        fullPlayer.modalPresentationStyle = .fullScreen
+        present(fullPlayer, animated: false, completion: nil)
+    }
     
 }
+
 // MARK: - PlayerViewDelegate
 extension AcountVideoPlayController: PlayerViewDelegate {
 
     func playerProgress(progress: Float, currentPlayTime: Float) {
-        print("progress  --- \(progress) currentPlayTime = \(currentPlayTime) ")
+        //print("progress  --- \(progress) currentPlayTime = \(currentPlayTime) ")
     }
     func currentUrlPlayToEnd(url: URL?, player: PlayerView) {
         print("currentUrlPlayToEnd = url: \(url!.absoluteString)")
@@ -200,6 +231,7 @@ private extension AcountVideoPlayController {
     
     func layoutPageSubviews() {
         layoutLeftBackButton()
+        layoutRightBackButton()
         layoutCollection()
     }
     
@@ -209,11 +241,17 @@ private extension AcountVideoPlayController {
             make.bottom.equalToSuperview()
         }
     }
-   
-    
     func layoutLeftBackButton() {
         leftBackButton.snp.makeConstraints { (make) in
             make.leading.equalTo(16)
+            make.top.equalTo(44 + 10)
+            make.width.height.equalTo(35)
+        }
+    }
+    
+    func layoutRightBackButton() {
+        rightBackButton.snp.makeConstraints { (make) in
+            make.trailing.equalTo(-16)
             make.top.equalTo(44 + 10)
             make.width.height.equalTo(35)
         }
