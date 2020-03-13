@@ -46,8 +46,8 @@ class AcountVideoPlayController: UIViewController {
         player.delegate = self
         return player
     }()
-    lazy var fullPlayer: AVPlayerViewController = {
-        let playerVc = AVPlayerViewController()
+    lazy var fullPlayer: FullScreenPlayController = {
+        let playerVc = FullScreenPlayController()
         return playerVc
     }()
     let flowLayout: UICollectionViewFlowLayout = {
@@ -83,13 +83,13 @@ class AcountVideoPlayController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-      
+        //playerView.play()
     }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        playerView.pause()
     }
-    
+   
     private func setUpUI() {
         //commentbgView.addSubview(videoCommentView)
         if #available(iOS 11.0, *) {
@@ -107,18 +107,12 @@ class AcountVideoPlayController: UIViewController {
         self.navigationController?.popViewController(animated: true)
     }
     @objc func rightButtonClick() {
-        //playerView.pause()
-//        let scale = playerView.playedValue/playerView.videoDuration
-//        let po = CMTimeMakeWithSeconds(Float64(playerView.playedValue), preferredTimescale: Int32(playerView.videoDuration))
-         // playerVc.player?.seek(to: po, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero)
-       
         if playerView.player != nil {
             fullPlayer.player = playerView.player!
         } else {
             fullPlayer.player = AVPlayer(url: URL(string: videos[currentIndex])!)
         }
-        playerView.pause()
-        fullPlayer.player?.play()
+       
         fullPlayer.modalPresentationStyle = .fullScreen
         present(fullPlayer, animated: false, completion: nil)
     }
