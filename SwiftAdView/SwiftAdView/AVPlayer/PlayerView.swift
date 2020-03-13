@@ -338,7 +338,7 @@ private extension PlayerView {
     func layoutPauseImg () {
         pauseImg.snp.makeConstraints { (make) in
             make.center.equalToSuperview()
-            make.width.height.equalTo(60)
+            make.width.height.equalTo(55)
         }
     }
 }

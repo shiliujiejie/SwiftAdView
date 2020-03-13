@@ -60,11 +60,14 @@ class VideoPlayController: UIViewController {
         return layout
     }()
     
+    /// 这里用UICollectionView来做， 也可以使用UITableView 一样的效果（纯属 个人习惯）
     lazy var collection: UICollectionView = {
         let collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: flowLayout)
         collectionView.backgroundColor = UIColor.clear
         collectionView.delegate = self
         collectionView.dataSource = self
+        collectionView.bounces = false
+        collectionView.showsVerticalScrollIndicator = false
         collectionView.scrollsToTop = false
         collectionView.isPagingEnabled = true
         collectionView.register(PresentPlayCell.classForCoder(), forCellWithReuseIdentifier: PresentPlayCell.cellId)
