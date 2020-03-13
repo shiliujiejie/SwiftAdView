@@ -14,6 +14,7 @@ class PlayerViewConfig: NSObject {
     var controlBarBottomInset: CGFloat = 40.0
     /// 加载动画颜色
     var loadingBarColor: UIColor? = UIColor.white
+    var loadingBarHeight: CGFloat = 2.0
     /// 进度条 颜色
     var progressTintColor: UIColor? = UIColor(white: 0.85, alpha: 0.9)
     var progressBackgroundColor: UIColor? = UIColor(white: 0.5, alpha: 0.1)
@@ -23,7 +24,7 @@ class PlayerViewConfig: NSObject {
     /// 拖动时的进度条高度
     var selectedProgrossHight: CGFloat = 8.0
     /// 底部操作栏高度（操作栏高度会影响 进度条拖动手势的响应面积 从而影响 灵敏度 ，越高越敏度）
-    var controlViewHeight:CGFloat = 45.0
+    var controlViewHeight: CGFloat = 45.0
 }
 
 public protocol PlayerViewDelegate: class {
@@ -41,7 +42,6 @@ public protocol PlayerViewDelegate: class {
 public extension PlayerViewDelegate {
     /// 调用播放之前，要做的事 写在这个代理里面
     func customActionsBeforePlay() {}
-    
     /// 加载播放资源
     func loadingPlayResource() {}
     /// 准备播放

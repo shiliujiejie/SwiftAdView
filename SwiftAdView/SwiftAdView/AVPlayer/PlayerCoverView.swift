@@ -122,7 +122,7 @@ extension  PlayerCoverView {
     @objc func panGestureRecognizers(_ sender: UIPanGestureRecognizer) {
         draging = true
         let touchPoint = sender.location(in: self)
-        let progress = Double(touchPoint.x/screenWidth)
+        let progress = Double(touchPoint.x/UIScreen.main.bounds.width)
         //print("panpanopan --- touchpoint.x = \(touchPoint.x) touchPoint.y = \(touchPoint.y) progress = \(progress)")
         switch sender.state {
         case .began:
@@ -147,7 +147,7 @@ extension  PlayerCoverView {
         } else if sender == progressTapGesture { /// 进度条点击
             draging = true
             let touchPoint = sender.location(in: controlView)
-            let progress = Double(touchPoint.x/screenWidth)
+            let progress = Double(touchPoint.x/UIScreen.main.bounds.width)
             //print(" tappppp touchpoint.x = \(touchPoint.x) touchPoint.y = \(touchPoint.y) progress = \(progress)")
             progressView.setProgress(Float(progress), animated: false)
             delegate?.moveProgressIn(point: progress)
@@ -200,7 +200,8 @@ extension PlayerCoverView {
     }
     override public func layoutSubviews() {
         super.layoutSubviews()
-        loadingBar.frame = CGRect(x: self.bounds.midX - 0.5, y: configModel.controlViewHeight-2.0, width: 0.1, height: 2.0)
+        let y = configModel.controlViewHeight - configModel.loadingBarHeight
+        loadingBar.frame = CGRect(x: self.bounds.midX - 0.5, y: y, width: 0.1, height: configModel.loadingBarHeight)
     }
 }
 
@@ -213,7 +214,7 @@ private extension PlayerCoverView {
     }
     func layoutControlView() {
         controlView.snp.makeConstraints { (make) in
-            make.leading.trailing.equalTo(0)
+            make.leading.trailing.equalToSuperview()
             make.bottom.equalTo(-configModel.controlBarBottomInset)
             make.height.equalTo(configModel.controlViewHeight)
         }

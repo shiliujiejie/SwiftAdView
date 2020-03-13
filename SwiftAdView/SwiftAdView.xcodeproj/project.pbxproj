@@ -23,7 +23,7 @@
 		042DA812241BFFDF0067FA38 /* FullScreenPlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042DA811241BFFDF0067FA38 /* FullScreenPlayController.swift */; };
 		0493192122C204EC000B805F /* WebKitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0493192022C204EC000B805F /* WebKitController.swift */; };
 		0493192322C20C1F000B805F /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0493192222C20C1F000B805F /* RootViewController.swift */; };
-		049BF6472417D19400F3611A /* AcountVideoPlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049BF6462417D19400F3611A /* AcountVideoPlayController.swift */; };
+		049BF6472417D19400F3611A /* VideoPlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049BF6462417D19400F3611A /* VideoPlayController.swift */; };
 		049BF64B2417E0E800F3611A /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049BF64A2417E0E800F3611A /* PlayerView.swift */; };
 		049BF6872418D0ED00F3611A /* PlayerCoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049BF6862418D0ED00F3611A /* PlayerCoverView.swift */; };
 		049BF6892418DF0100F3611A /* PresentPlayCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049BF6882418DF0100F3611A /* PresentPlayCell.swift */; };
@@ -50,7 +50,7 @@
 		042DA811241BFFDF0067FA38 /* FullScreenPlayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenPlayController.swift; sourceTree = "<group>"; };
 		0493192022C204EC000B805F /* WebKitController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebKitController.swift; sourceTree = "<group>"; };
 		0493192222C20C1F000B805F /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
-		049BF6462417D19400F3611A /* AcountVideoPlayController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AcountVideoPlayController.swift; sourceTree = "<group>"; };
+		049BF6462417D19400F3611A /* VideoPlayController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoPlayController.swift; sourceTree = "<group>"; };
 		049BF64A2417E0E800F3611A /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
 		049BF6862418D0ED00F3611A /* PlayerCoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerCoverView.swift; sourceTree = "<group>"; };
 		049BF6882418DF0100F3611A /* PresentPlayCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PresentPlayCell.swift; sourceTree = "<group>"; };
@@ -100,7 +100,7 @@
 				0422894C22BC9BAE00EE9B93 /* ViewController.swift */,
 				0493192222C20C1F000B805F /* RootViewController.swift */,
 				049BF6882418DF0100F3611A /* PresentPlayCell.swift */,
-				049BF6462417D19400F3611A /* AcountVideoPlayController.swift */,
+				049BF6462417D19400F3611A /* VideoPlayController.swift */,
 				0493192022C204EC000B805F /* WebKitController.swift */,
 				0422894E22BC9BAE00EE9B93 /* Main.storyboard */,
 				0422895122BC9BAF00EE9B93 /* Assets.xcassets */,
@@ -289,7 +289,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0422895E22BC9BDC00EE9B93 /* UIImage+Gif.swift in Sources */,
-				049BF6472417D19400F3611A /* AcountVideoPlayController.swift in Sources */,
+				049BF6472417D19400F3611A /* VideoPlayController.swift in Sources */,
 				049BF6872418D0ED00F3611A /* PlayerCoverView.swift in Sources */,
 				0422894D22BC9BAE00EE9B93 /* ViewController.swift in Sources */,
 				0422896822BCD22600EE9B93 /* SwiftAdFileConfig.swift in Sources */,

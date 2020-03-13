@@ -58,6 +58,7 @@ public class PlayerView: UIView {
     public var controlViewBottomInset: CGFloat = 0
     /// 加载动画颜色
     public var loadingBarColor: UIColor? = UIColor.white
+    public var loadingBarHeight: CGFloat = 2.0
     /// 进度条 颜色
     public var progressTintColor: UIColor? = UIColor(white: 0.85, alpha: 0.9)
     public var progressBackgroundColor: UIColor? = UIColor(white: 0.5, alpha: 0.1)
@@ -179,8 +180,12 @@ public class PlayerView: UIView {
         config.progressHeight = progressHeight
         config.selectedProgrossHight = selectedProgrossHight
         config.controlViewHeight = controlViewHeight
+        config.loadingBarHeight = loadingBarHeight
         if progressHeight > controlViewHeight {
             config.controlViewHeight = progressHeight
+        }
+        if loadingBarHeight > 10.0 {
+            config.loadingBarHeight = 10.0
         }
         return config
     }
@@ -283,7 +288,7 @@ extension PlayerView: PlayerCoverDelegate {
     
     func progressDraging(progress: Double) {
         let currenTime = Int(Double(videoDuration) * progress)
-        let allTimeString =  formatTimDuration(position: Int(videoDuration), duration: Int(videoDuration))
+        let allTimeString = formatTimDuration(duration: Int(videoDuration))
         let draggedTimeString = formatTimPosition(position: currenTime, duration: Int(videoDuration))
         coverView.draggedTimeLable.text = String(format: " %@ | %@ ", draggedTimeString, allTimeString)
         delegate?.dragingProgress(isDraging: true, to: Float(progress))
@@ -340,7 +345,8 @@ private extension PlayerView {
 
 extension PlayerView {
     
-    fileprivate func formatTimPosition(position: Int, duration:Int) -> String {
+    /// 当前时间转换为时间字符串
+    public func formatTimPosition(position: Int, duration:Int) -> String {
         guard position != 0 && duration != 0 else{
             return "00:00"
         }
@@ -353,8 +359,8 @@ extension PlayerView {
         }
         return String(format: "%02d:%02d:%02d",positionHours,positionMinutes,positionSeconds)
     }
-    
-    fileprivate func formatTimDuration(position: Int, duration:Int) -> String {
+    /// 总时长转换为时间字符串
+    public func formatTimDuration(duration:Int) -> String {
         guard  duration != 0 else{
             return "00:00"
         }

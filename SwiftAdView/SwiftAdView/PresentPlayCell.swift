@@ -15,8 +15,9 @@ class PresentPlayCell: UICollectionViewCell {
     let bgImage: UIImageView = {
         let imageView = UIImageView()
         imageView.isUserInteractionEnabled = true
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
         imageView.backgroundColor = UIColor.clear
+        imageView.image = UIImage(named: "playCellBg")
         return imageView
     }()
     

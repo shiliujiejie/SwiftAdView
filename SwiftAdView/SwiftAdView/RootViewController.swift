@@ -55,7 +55,7 @@ class RootViewController: UIViewController {
     }
     
     @objc func showVideoVC() {
-         let c = AcountVideoPlayController()
+         let c = VideoPlayController()
         navigationController?.pushViewController(c, animated: true)
       }
     

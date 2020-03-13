@@ -1,5 +1,5 @@
 //
-//  AcountVideoPlayController.swift
+//  VideoPlayController.swift
 //  CaoLiuApp
 //
 //  Created by mac on 2019/3/11.
@@ -12,7 +12,7 @@ import AVKit
 import Photos
 
 /// 个人中心弹出播放页
-class AcountVideoPlayController: UIViewController {
+class VideoPlayController: UIViewController {
 
     var currentIndex:Int = 0
     var currentPlayIndex: Int = 0
@@ -120,14 +120,13 @@ class AcountVideoPlayController: UIViewController {
 }
 
 // MARK: - PlayerViewDelegate
-extension AcountVideoPlayController: PlayerViewDelegate {
+extension VideoPlayController: PlayerViewDelegate {
 
     func playerProgress(progress: Float, currentPlayTime: Float) {
-        print("progress  --- \(progress) currentPlayTime = \(currentPlayTime) ")
+        print("progress  --- \(progress) currentPlayTime = \(currentPlayTime) currentTimeString = \(playerView.formatTimPosition(position: Int(currentPlayTime), duration: Int(playerView.videoDuration))) videoTime_length = \(playerView.formatTimDuration(duration: Int(playerView.videoDuration)))")
     }
-    func currentUrlPlayToEnd(url: URL?, player: PlayerView) {
-        print("currentUrlPlayToEnd = url: \(url!.absoluteString)")
-        player.replay()
+    func customActionsBeforePlay() {
+        print("customActionsBeforePlay ---- Exp: remove Failed Shower View")
     }
     func loadingPlayResource() {
         print("loadingPlayResource")
@@ -138,6 +137,10 @@ extension AcountVideoPlayController: PlayerViewDelegate {
     func startPlay() {
         print("startPlay")
     }
+    func currentUrlPlayToEnd(url: URL?, player: PlayerView) {
+           print("currentUrlPlayToEnd = url: \(url!.absoluteString)")
+           player.replay()
+       }
     func playVideoFailed(url: URL?, player: PlayerView) {
         print("playVideoFailed")
     }
@@ -150,7 +153,7 @@ extension AcountVideoPlayController: PlayerViewDelegate {
 }
 
 // MARK: - UICollectionViewDelegate, UICollectionViewDataSource
-extension AcountVideoPlayController: UICollectionViewDelegate, UICollectionViewDataSource {
+extension VideoPlayController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return videos.count
@@ -175,14 +178,14 @@ extension AcountVideoPlayController: UICollectionViewDelegate, UICollectionViewD
 
 
 // MARK: - UICollectionViewDelegateFlowLayout
-extension AcountVideoPlayController: UICollectionViewDelegateFlowLayout {
+extension VideoPlayController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return UIScreen.main.bounds.size;
     }
 }
 
-extension AcountVideoPlayController:UIScrollViewDelegate {
+extension VideoPlayController:UIScrollViewDelegate {
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         DispatchQueue.main.async {
             /// 禁用手势
@@ -221,7 +224,7 @@ extension AcountVideoPlayController:UIScrollViewDelegate {
 
 
 // MARK: - Layout
-private extension AcountVideoPlayController {
+private extension VideoPlayController {
     
     func layoutPageSubviews() {
         layoutLeftBackButton()
