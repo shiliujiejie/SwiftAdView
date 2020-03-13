@@ -123,7 +123,7 @@ class AcountVideoPlayController: UIViewController {
 extension AcountVideoPlayController: PlayerViewDelegate {
 
     func playerProgress(progress: Float, currentPlayTime: Float) {
-        //print("progress  --- \(progress) currentPlayTime = \(currentPlayTime) ")
+        print("progress  --- \(progress) currentPlayTime = \(currentPlayTime) ")
     }
     func currentUrlPlayToEnd(url: URL?, player: PlayerView) {
         print("currentUrlPlayToEnd = url: \(url!.absoluteString)")

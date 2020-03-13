@@ -28,19 +28,6 @@ public class PlayerView: UIView {
             }
         }
     }
-    /// 当前播放进度
-    private var playedValue: Float = 0
-    /// 加载进度
-    private var loadedValue: Float = 0
-    /// 视频总时长
-    private var videoDuration: Float = 0
-    
-    
-    private var playerLayer: AVPlayerLayer?
-    var player: AVPlayer?
-    private var avItem: AVPlayerItem?
-    private var avAsset: AVURLAsset?
-    private var playerTimerObserver: NSObject?
     /// 暂停按钮
     private let pauseImg: UIImageView = {
         let image = UIImageView(image: UIImage(named: "pause"))
@@ -50,25 +37,39 @@ public class PlayerView: UIView {
         return image
     }()
     /// 播放控制View
-    private  var coverView: PlayerCoverView!
+    private var coverView: PlayerCoverView!
+    /// 当前播放进度
+    private var playedValue: Float = 0
+    /// 加载进度
+    private var loadedValue: Float = 0
+    
+    private var avItem: AVPlayerItem?
+    private var avAsset: AVURLAsset?
+    private var playerTimerObserver: NSObject?
+    private var playerLayer: AVPlayerLayer?
+    
+    /// 视频总时长
+    public var videoDuration: Float = 0
+    public var player: AVPlayer?
+    
     public weak var delegate: PlayerViewDelegate?
     public var playUrl: URL?
     /// 操作栏底部 相对父视图的 距离
-    var controlViewBottomInset: CGFloat = 0
+    public var controlViewBottomInset: CGFloat = 0
     /// 加载动画颜色
-    var loadingBarColor: UIColor? = UIColor.white
+    public var loadingBarColor: UIColor? = UIColor.white
     /// 进度条 颜色
-    var progressTintColor: UIColor? = UIColor(white: 0.85, alpha: 0.9)
-    var progressBackgroundColor: UIColor? = UIColor(white: 0.5, alpha: 0.1)
-    var controlViewColor: UIColor? = UIColor.clear
+    public var progressTintColor: UIColor? = UIColor(white: 0.85, alpha: 0.9)
+    public var progressBackgroundColor: UIColor? = UIColor(white: 0.5, alpha: 0.1)
+    public var controlViewColor: UIColor? = UIColor.clear
     /// 进度条高度 (不能高于 controlViewHeight )
-    var progressHeight: CGFloat = 0.5
+    public var progressHeight: CGFloat = 0.5
     /// 拖动时的进度条高度
-    var selectedProgrossHight: CGFloat = 6.0
+    public var selectedProgrossHight: CGFloat = 6.0
     /// 底部操作栏高度（操作栏高度会影响 进度条拖动手势的响应面积 从而影响 灵敏度 ，越高越敏度）
-    var controlViewHeight: CGFloat = 50.0
+    public var controlViewHeight: CGFloat = 50.0
     /// The minimum time required to drag a progress bar (Unit: second)
-    var minTimeForDragProgress: Float = 30.0
+    public var minTimeForDragProgress: Float = 30.0
     
     deinit {
         print("播放器释放")
