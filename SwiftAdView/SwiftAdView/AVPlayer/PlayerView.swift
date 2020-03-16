@@ -30,7 +30,7 @@ public class PlayerView: UIView {
     }
     /// 暂停按钮
     private let pauseImg: UIImageView = {
-        let image = UIImageView(image: UIImage(named: "pause"))
+        let image = UIImageView(image: UIImage(named: "pausesss"))
         image.isUserInteractionEnabled = true
         image.contentMode = .scaleAspectFit
         image.isHidden = true
@@ -61,7 +61,9 @@ public class PlayerView: UIView {
     public var loadingBarHeight: CGFloat = 2.0
     /// 进度条 颜色
     public var progressTintColor: UIColor? = UIColor(white: 0.85, alpha: 0.9)
-    public var progressBackgroundColor: UIColor? = UIColor(white: 0.5, alpha: 0.1)
+    public var progressBackgroundColor: UIColor? = UIColor.clear
+    public var progreesStrackTintColor: UIColor? = UIColor(white: 0.5, alpha: 0.5)
+    /// 操作栏背景色
     public var controlViewColor: UIColor? = UIColor.clear
     /// 进度条高度 (不能高于 controlViewHeight )
     public var progressHeight: CGFloat = 0.5
@@ -131,16 +133,18 @@ public class PlayerView: UIView {
         playerStatu = .Playing
     }
     public func stopPlaying() {
+        player?.rate = 0
         realeasePlayer()
     }
     public func startPlay(url: URL?, in view: UIView) {
-        
+        delegate?.customActionsBeforePlay()
+        realeasePlayer()
         guard let trueUrl = url else {
             delegate?.playVideoFailed(url: url, player: self)
             return
         }
         if view.subviews.contains(self) { return }
-        realeasePlayer()
+       
         playUrl = url
         if coverView != nil {
             coverView.removeFromSuperview()
@@ -177,6 +181,7 @@ public class PlayerView: UIView {
         config.loadingBarColor = loadingBarColor
         config.progressBackgroundColor = progressBackgroundColor
         config.progressTintColor = progressTintColor
+        config.progreesStrackTintColor = progreesStrackTintColor
         config.progressHeight = progressHeight
         config.selectedProgrossHight = selectedProgrossHight
         config.controlViewHeight = controlViewHeight
@@ -191,11 +196,12 @@ public class PlayerView: UIView {
     }
     /// 销毁播放器源
     private func realeasePlayer() {
+        coverView?.progressView.setProgress(0, animated: false)
+        pauseImg.isHidden = true
         avItem?.removeObserver(self, forKeyPath: "status")
         avItem?.removeObserver(self, forKeyPath: "loadedTimeRanges")
         avItem?.removeObserver(self, forKeyPath: "playbackBufferEmpty")
         avItem?.removeObserver(self, forKeyPath: "playbackLikelyToKeepUp")
-        player?.rate = 0
         player?.cancelPendingPrerolls()
         avAsset = nil
         avItem = nil

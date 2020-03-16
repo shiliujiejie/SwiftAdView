@@ -69,15 +69,21 @@ class TablePlayCell: UITableViewCell {
         imageView.isUserInteractionEnabled = true
         imageView.contentMode = .scaleAspectFill
         imageView.backgroundColor = UIColor.clear
-        imageView.image = UIImage(named: "playCellBg")
+        imageView.image = UIImage(named: "placeholderH")
+        imageView.clipsToBounds = true
         return imageView
     }()
-//    lazy var playButton: UIButton = {
-//        let button = UIButton(type: .custom)
-//        button.setImage(UIImage(named: "navbackWhite"), for: .normal)
-//        button.addTarget(self, action: #selector(backAction), for: .touchUpInside)
-//        return button
-//    }()
+    lazy var playButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setImage(UIImage(named: "pause"), for: .normal)
+        button.addTarget(self, action: #selector(playAction(_:)), for: .touchUpInside)
+        button.layer.cornerRadius = 5
+        button.layer.masksToBounds = true
+        button.layer.borderColor = UIColor.white.cgColor
+        button.layer.borderWidth = 1.0
+        return button
+    }()
+    var playActionHandle:(()->())?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -91,7 +97,11 @@ class TablePlayCell: UITableViewCell {
     //MARK: Private
     func setUpUI() {
         contentView.addSubview(bgImage)
+        bgImage.addSubview(playButton)
         layoutPageSubviews()
+    }
+    @objc func playAction(_ sender: UIButton) {
+        playActionHandle?()
     }
 }
 
@@ -100,14 +110,24 @@ private extension TablePlayCell {
     
     func layoutPageSubviews() {
         layoutImageBackground()
+        layoutPlayButton()
         
     }
     
     func layoutImageBackground() {
         bgImage.snp.makeConstraints { (make) in
-            make.edges.equalToSuperview()
+            make.top.leading.equalTo(10)
+            make.bottom.trailing.equalTo(-10)
         }
     }
+    func layoutPlayButton() {
+        playButton.snp.makeConstraints { (make) in
+            make.center.equalToSuperview()
+            make.height.equalTo(38)
+            make.width.equalTo(55)
+        }
+    }
+    
     
   
 }

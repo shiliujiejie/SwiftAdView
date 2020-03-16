@@ -24,10 +24,20 @@ class RootViewController: UIViewController {
         btn.setTitle("showVideo", for: .normal)
         btn.backgroundColor = UIColor.gray
         btn.setTitleColor(UIColor.red, for: .normal)
-        btn.addTarget(self, action: #selector(showVideoVC), for: .touchUpInside)
+        btn.addTarget(self, action: #selector(showVideoVC(_:)), for: .touchUpInside)
         btn.frame = CGRect(x: 120, y: 320, width: 100, height: 40)
         return btn
     }()
+    
+    private lazy var listVideoBtn: UIButton = {
+          let btn = UIButton(type: .custom)
+          btn.setTitle("listVideo", for: .normal)
+          btn.backgroundColor = UIColor.gray
+          btn.setTitleColor(UIColor.red, for: .normal)
+          btn.addTarget(self, action: #selector(showVideoVC(_:)), for: .touchUpInside)
+          btn.frame = CGRect(x: 120, y: 390, width: 100, height: 40)
+          return btn
+      }()
 
     var isAdShow: Bool = false
     
@@ -38,7 +48,7 @@ class RootViewController: UIViewController {
         self.title = "首页"
         view.addSubview(showAdBtn)
         view.addSubview(showVideoBtn)
-        
+          view.addSubview(listVideoBtn)
         loadADView()
         
     }
@@ -54,9 +64,14 @@ class RootViewController: UIViewController {
         loadADView()
     }
     
-    @objc func showVideoVC() {
-         let c = VideoPlayController()
-        navigationController?.pushViewController(c, animated: true)
+    @objc func showVideoVC(_ sender: UIButton) {
+        if sender == showVideoBtn {
+            let c = VideoPlayController()
+            navigationController?.pushViewController(c, animated: true)
+        } else if sender == listVideoBtn {
+            let cc = VideoTableController()
+            navigationController?.pushViewController(cc, animated: true)
+        }
       }
     
     func loadADView() {

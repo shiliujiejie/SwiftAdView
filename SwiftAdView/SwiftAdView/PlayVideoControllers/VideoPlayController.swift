@@ -16,16 +16,15 @@ class VideoPlayController: UIViewController {
 
     var currentIndex:Int = 0
     var currentPlayIndex: Int = 0
-    var isCurPlayerPause:Bool = false
-    var urls = [String]()
-    /// 是否可以点击跳转用户主页
-    var canGoNext: Bool = true
     var isFirstIn = true
     
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
     lazy var leftBackButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(named: "navBackWhite"), for: .normal)
-        button.backgroundColor = UIColor(white: 0.9, alpha: 0.2)
+        button.backgroundColor = UIColor(white: 0.9, alpha: 0.1)
         button.layer.cornerRadius = 17.5
         button.layer.masksToBounds = true
         button.addTarget(self, action: #selector(backButtonClick), for: .touchUpInside)
@@ -34,7 +33,7 @@ class VideoPlayController: UIViewController {
     lazy var rightBackButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(named: "fullscreen"), for: .normal)
-        button.backgroundColor = UIColor(white: 0.9, alpha: 0.2)
+        button.backgroundColor = UIColor(white: 0.9, alpha: 0.1)
         button.layer.cornerRadius = 17.5
         button.layer.masksToBounds = true
         button.addTarget(self, action: #selector(rightButtonClick), for: .touchUpInside)
@@ -69,7 +68,6 @@ class VideoPlayController: UIViewController {
         collectionView.bounces = false
         collectionView.showsVerticalScrollIndicator = false
         collectionView.scrollsToTop = false
-        collectionView.isPagingEnabled = true
         collectionView.register(PresentPlayCell.classForCoder(), forCellWithReuseIdentifier: PresentPlayCell.cellId)
         return collectionView
     }()
@@ -80,7 +78,7 @@ class VideoPlayController: UIViewController {
         super.viewDidLoad()
         
         self.navigationController?.setNavigationBarHidden(true, animated: true)
-        view.backgroundColor = UIColor(white: 0.0, alpha: 0.9)
+        view.backgroundColor = UIColor.clear
         setUpUI()
     }
     
@@ -244,7 +242,7 @@ private extension VideoPlayController {
     func layoutLeftBackButton() {
         leftBackButton.snp.makeConstraints { (make) in
             make.leading.equalTo(16)
-            make.top.equalTo(44 + 10)
+            make.top.equalTo(screenHeight >= 812 ? 40 : 20)
             make.width.height.equalTo(35)
         }
     }
@@ -252,7 +250,7 @@ private extension VideoPlayController {
     func layoutRightBackButton() {
         rightBackButton.snp.makeConstraints { (make) in
             make.trailing.equalTo(-16)
-            make.top.equalTo(44 + 10)
+            make.top.equalTo(screenHeight >= 812 ? 40 : 20)
             make.width.height.equalTo(35)
         }
     }

@@ -27,8 +27,8 @@ class PlayerCoverView: UIView {
         let progress = UIProgressView()
         progress.progress = 0
         progress.progressTintColor = configModel.progressTintColor
-        progress.trackTintColor = configModel.progressBackgroundColor
-        progress.backgroundColor = UIColor(white: 0.5, alpha: 0.2)
+        progress.trackTintColor = configModel.progreesStrackTintColor
+        progress.backgroundColor = configModel.progressBackgroundColor
         progress.contentMode = ContentMode.scaleAspectFit
         return progress
     }()
@@ -114,6 +114,9 @@ class PlayerCoverView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func restoreUIValues() {
+        progressView.setProgress(0, animated: false)
+    }
     
 }
  // MARK: - GestureRecognizers - Action
@@ -228,7 +231,7 @@ private extension PlayerCoverView {
     func layoutDraggedView() {
         draggedTimeLable.snp.makeConstraints { (make) in
             make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview().offset(120)
+            make.centerY.equalToSuperview()
             make.height.equalTo(70)
             make.width.equalTo(150)
         }
