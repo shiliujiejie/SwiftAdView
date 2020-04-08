@@ -45,10 +45,6 @@ class VideoPlayController: UIViewController {
         player.delegate = self
         return player
     }()
-    lazy var fullPlayer: FullScreenPlayController = {
-        let playerVc = FullScreenPlayController()
-        return playerVc
-    }()
     let flowLayout: UICollectionViewFlowLayout = {
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: screenWidth, height: screenHeight)
@@ -72,7 +68,7 @@ class VideoPlayController: UIViewController {
         return collectionView
     }()
    
-    var videos = ["http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8","https://github.com/shiliujiejie/adResource/raw/master/2.mp4", "https://github.com/shiliujiejie/adResource/raw/master/1.mp4", "https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
+    var videos = ["http://192.168.1.124:50009/121.m3u8","http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8","https://github.com/shiliujiejie/adResource/raw/master/2.mp4", "https://github.com/shiliujiejie/adResource/raw/master/1.mp4", "https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -107,15 +103,14 @@ class VideoPlayController: UIViewController {
     @objc func backButtonClick() {
         self.navigationController?.popViewController(animated: true)
     }
+    
     @objc func rightButtonClick() {
         if playerView.player != nil {
+             let fullPlayer = FullScreenPlayController()
             fullPlayer.player = playerView.player!
-        } else {
-            fullPlayer.player = AVPlayer(url: URL(string: videos[currentIndex])!)
+            fullPlayer.modalPresentationStyle = .fullScreen
+            present(fullPlayer, animated: false, completion: nil)
         }
-       
-        fullPlayer.modalPresentationStyle = .fullScreen
-        present(fullPlayer, animated: false, completion: nil)
     }
     
 }
@@ -124,7 +119,7 @@ class VideoPlayController: UIViewController {
 extension VideoPlayController: PlayerViewDelegate {
 
     func playerProgress(progress: Float, currentPlayTime: Float) {
-        print("progress  --- \(progress) currentPlayTime = \(currentPlayTime) currentTimeString = \(playerView.formatTimPosition(position: Int(currentPlayTime), duration: Int(playerView.videoDuration))) videoTime_length = \(playerView.formatTimDuration(duration: Int(playerView.videoDuration)))")
+        print("progress  --- \(progress) currentPlayTime = \(currentPlayTime) currentTimeString = \(PlayerView.formatTimPosition(position: Int(currentPlayTime), duration: Int(playerView.videoDuration))) videoTime_length = \(PlayerView.formatTimDuration(duration: Int(playerView.videoDuration)))")
     }
     func customActionsBeforePlay() {
         print("customActionsBeforePlay ---- Exp: remove Failed Shower View")

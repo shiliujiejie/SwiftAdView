@@ -18,6 +18,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         return true
     }
+    
+    //  整个项目支持竖屏，播放页面需要横屏
+    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?)
+        -> UIInterfaceOrientationMask {
+            guard let sbs =  window?.subviews else { return .portrait}
+            guard let classTransitionView = NSClassFromString("UITransitionView") else {
+                print("UITransitionView is not exit")
+                return .portrait
+            }
+            for v in sbs {
+                if v.isKind(of: classTransitionView) {
+                    for sub in v.subviews {
+                        let nextResponder = sub.next
+                        if nextResponder?.isKind(of: FullScreenPlayController.self) ?? false {
+                            return .allButUpsideDown
+                        }
+                    }
+                }
+            }
+            return .portrait
+    }
 
 
 }

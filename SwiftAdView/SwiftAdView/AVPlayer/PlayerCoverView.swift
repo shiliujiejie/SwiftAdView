@@ -105,6 +105,7 @@ class PlayerCoverView: UIView {
         self.addGestureRecognizer(coverTapGesture)
         self.addGestureRecognizer(doubleTapGesture)
         coverTapGesture.require(toFail: doubleTapGesture)
+        createCoverLayer()
     }
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -113,9 +114,15 @@ class PlayerCoverView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    func restoreUIValues() {
-        progressView.setProgress(0, animated: false)
+
+    func createCoverLayer() {
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.frame = controlView.bounds
+        //设置渐变的主颜色
+        gradientLayer.colors = [UIColor.clear.cgColor, UIColor(white: 0.0, alpha: 0.05).cgColor,  UIColor(white: 0.0, alpha: 0.1).cgColor]
+        gradientLayer.locations = [0.9, 0.95, 1.0]
+        //将gradientLayer作为子layer添加到主layer上
+        controlView.layer.insertSublayer(gradientLayer, at: 0)
     }
     
 }
@@ -169,6 +176,7 @@ extension PlayerCoverView {
     func startLoading(_ isStart: Bool = true) {
         loadingBar.isHidden = false
         progressView.isHidden = true
+        controlView.isUserInteractionEnabled = false
         loadingBar.layer.removeAllAnimations()
         loadingBar.backgroundColor = configModel.loadingBarColor
         let animationGroup = CAAnimationGroup()
@@ -197,6 +205,7 @@ extension PlayerCoverView {
     }
     
     func stopLoading() {
+        controlView.isUserInteractionEnabled = true
         loadingBar.layer.removeAllAnimations()
         loadingBar.isHidden = true
         progressView.isHidden = false

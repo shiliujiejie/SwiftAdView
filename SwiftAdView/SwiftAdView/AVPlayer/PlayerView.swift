@@ -30,7 +30,7 @@ public class PlayerView: UIView {
     }
     /// 暂停按钮
     private let pauseImg: UIImageView = {
-        let image = UIImageView(image: UIImage(named: "pausesss"))
+        let image = UIImageView(image: UIImage(named: "pause"))
         image.isUserInteractionEnabled = true
         image.contentMode = .scaleAspectFit
         image.isHidden = true
@@ -102,7 +102,6 @@ public class PlayerView: UIView {
             if avItem.status == .readyToPlay {
                 playerStatu = .ReadyToPlay
                 coverView.draging = false
-                updateTimeLableLayout(avItem: avItem)
                 coverView.stopLoading()
                 delegate?.readyToPlay()
             } else if avItem.status == .unknown || avItem.status == .failed {
@@ -118,6 +117,7 @@ public class PlayerView: UIView {
             delegate?.loadingPlayResource()
         } else if keyPath == "playbackLikelyToKeepUp" {  //监听视频缓冲达到可以播放的狀態
             delegate?.startPlay()
+            updateTimeLableLayout(avItem: avItem)
         }
     }
     
@@ -136,6 +136,14 @@ public class PlayerView: UIView {
         player?.rate = 0
         realeasePlayer()
     }
+    public func playerIsUserInteractionEnabled(_ enable: Bool) {
+        coverView.isUserInteractionEnabled = enable
+        coverView.controlView.isUserInteractionEnabled = enable
+        coverView.progressView.progressTintColor = enable ? progressTintColor : .clear
+        coverView.progressView.trackTintColor = enable ? progreesStrackTintColor : .clear
+        coverView.progressView.backgroundColor = enable ? progressBackgroundColor : .clear
+        pauseImg.alpha = enable ? 1 : 0
+    }
     public func startPlay(url: URL?, in view: UIView) {
         delegate?.customActionsBeforePlay()
         realeasePlayer()
@@ -143,7 +151,9 @@ public class PlayerView: UIView {
             delegate?.playVideoFailed(url: url, player: self)
             return
         }
-        if view.subviews.contains(self) { return }
+        if view.subviews.contains(self) {
+            return
+        }
        
         playUrl = url
         if coverView != nil {
@@ -170,13 +180,13 @@ public class PlayerView: UIView {
         
         player?.play()
         coverView.startLoading()
+        coverView.controlView.isUserInteractionEnabled = false
         listenTothePlayer()
-        
     }
     
     private func loadConfig() -> PlayerViewConfig {
         let config = PlayerViewConfig()
-        config.controlBarBottomInset = self.controlViewBottomInset
+        config.controlBarBottomInset = controlViewBottomInset
         config.controlViewColor = controlViewColor
         config.loadingBarColor = loadingBarColor
         config.progressBackgroundColor = progressBackgroundColor
@@ -235,13 +245,13 @@ public class PlayerView: UIView {
     }
     private func updateTimeLableLayout(avItem: AVPlayerItem) {
         let duration = Float(avItem.asset.duration.value)/Float(avItem.asset.duration.timescale)
-        let currentTime =  avItem.currentTime().value/Int64(avItem.currentTime().timescale)
-        self.videoDuration = Float(duration)
-       
+       // let currentTime =  avItem.currentTime().value/Int64(avItem.currentTime().timescale)
+        videoDuration = Float(duration)
+       // coverView.controlView.isUserInteractionEnabled = true
         /// 总时长小于最低时长，不能拖动进度
         coverView.panGesture.isEnabled = duration >= minTimeForDragProgress
         coverView.progressTapGesture.isEnabled = duration >= minTimeForDragProgress
-        print("video time length = \(duration) s, current time = \(currentTime) s")
+        //print("video time length = \(duration) s, current time = \(currentTime) s")
     }
     private func updateTimeSliderValue(avItem: AVPlayerItem) {
         let timeScaleValue = Int64(avItem.currentTime().timescale) /// 当前时间
@@ -274,7 +284,10 @@ extension PlayerView {
     }
     
     @objc func applicationBecomeActivity(_ sender: NSNotification) {
-        playerStatu = .Playing
+        guard let nextVc = self.getNextVC() else { return }
+        if nextVc.isViewLoaded && nextVc.view.window != nil {
+            playerStatu = .Playing
+        }
     }
     
     // 监听PlayerItem对象
@@ -286,6 +299,17 @@ extension PlayerView {
             
         }) as? NSObject
     }
+    func getNextVC() -> UIViewController? {
+           var next = self.superview
+           while (next != nil) {
+               let nextResponder = next?.next
+            if nextResponder?.isKind(of: UIViewController.self) ?? false {
+                   return nextResponder as? UIViewController
+               }
+               next = next?.superview
+           }
+           return nil
+       }
     
 }
 
@@ -294,8 +318,8 @@ extension PlayerView: PlayerCoverDelegate {
     
     func progressDraging(progress: Double) {
         let currenTime = Int(Double(videoDuration) * progress)
-        let allTimeString = formatTimDuration(duration: Int(videoDuration))
-        let draggedTimeString = formatTimPosition(position: currenTime, duration: Int(videoDuration))
+        let allTimeString = PlayerView.formatTimDuration(duration: Int(videoDuration))
+        let draggedTimeString = PlayerView.formatTimPosition(position: currenTime, duration: Int(videoDuration))
         coverView.draggedTimeLable.text = String(format: " %@ | %@ ", draggedTimeString, allTimeString)
         delegate?.dragingProgress(isDraging: true, to: Float(progress))
     }
@@ -352,7 +376,7 @@ private extension PlayerView {
 extension PlayerView {
     
     /// 当前时间转换为时间字符串
-    public func formatTimPosition(position: Int, duration:Int) -> String {
+    public class func formatTimPosition(position: Int, duration:Int) -> String {
         guard position != 0 && duration != 0 else{
             return "00:00"
         }
@@ -366,7 +390,7 @@ extension PlayerView {
         return String(format: "%02d:%02d:%02d",positionHours,positionMinutes,positionSeconds)
     }
     /// 总时长转换为时间字符串
-    public func formatTimDuration(duration:Int) -> String {
+    public class func formatTimDuration(duration:Int) -> String {
         guard  duration != 0 else{
             return "00:00"
         }
