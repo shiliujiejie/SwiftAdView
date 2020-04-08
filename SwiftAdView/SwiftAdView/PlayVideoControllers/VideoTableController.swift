@@ -74,7 +74,7 @@ class VideoTableController: UIViewController {
         player.delegate = self
         return player
     }()
-     var videos = ["http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8","http://vcdn11.fzyccw.com/media/video-preview/d6a/d6a4fa9f270adcb523fc3923ec5d62ca/perview.m3u8","http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4c0c9e59031868222924048327/f0.mp4","https://github.com/shiliujiejie/adResource/raw/master/2.mp4", "https://github.com/shiliujiejie/adResource/raw/master/1.mp4", "https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
+     var videos = ["http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8","http://vcdn11.fzyccw.com/media/video-preview/d6a/d6a4fa9f270adcb523fc3923ec5d62ca/perview.m3u8","http://192.168.1.197:50009/m3u8/aa8a2f6d83e79773.m3u8","http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4c0c9e59031868222924048327/f0.mp4","https://github.com/shiliujiejie/adResource/raw/master/2.mp4", "https://github.com/shiliujiejie/adResource/raw/master/1.mp4", "https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
     var currentIndex: Int = 0
     
     /// 在头部播放 或在cell中播放
@@ -147,9 +147,8 @@ extension VideoTableController: UITableViewDelegate, UITableViewDataSource {
             if strongSelf.playInHeader {
                  strongSelf.playNextVideo(indexPath.row)
             } else {
-            
-                strongSelf.playerView.startPlay(url: URL(string: strongSelf.videos[indexPath.row]), in: cell.bgImage)
                 strongSelf.currentIndex = indexPath.row
+                strongSelf.playerView.startPlay(url: URL(string: strongSelf.videos[indexPath.row]), in: cell.bgImage)
                 /// 如果要做预览
                 //strongSelf.playerView.player?.volume = 0
             }
@@ -180,6 +179,14 @@ extension VideoTableController: PlayerViewDelegate {
     func customActionsBeforePlay() {
         print("customActionsBeforePlay ---- Exp: remove Failed Shower View")
         timelabel.text = "00:00 | 00:00"
+        if currentIndex == 2 {
+            playerView.encryptParams = [PlayerView.kIV: "0x65b9bb26c958f9dafb436f8908354bbb",
+                                        PlayerView.kTSURl : "http://192.168.1.197:50009/m3u8",
+                                        PlayerView.kKeyURL : "http://192.168.1.197:50009",
+                                        PlayerView.kFakeIV: "mayun"]
+        } else {
+            playerView.encryptParams = nil
+        }
     }
     func loadingPlayResource() {
         print("loadingPlayResource")

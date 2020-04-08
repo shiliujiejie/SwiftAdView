@@ -25,6 +25,7 @@
 		045E77DA243D906A00EE2A69 /* PlayerViewConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045E77D5243D906A00EE2A69 /* PlayerViewConfig.swift */; };
 		045E77DB243D906A00EE2A69 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045E77D6243D906A00EE2A69 /* PlayerView.swift */; };
 		045E77DC243D906A00EE2A69 /* FullScreenPlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045E77D7243D906A00EE2A69 /* FullScreenPlayController.swift */; };
+		045E77DE243DB19600EE2A69 /* M3u8ResourceLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045E77DD243DB19600EE2A69 /* M3u8ResourceLoader.swift */; };
 		0493192122C204EC000B805F /* WebKitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0493192022C204EC000B805F /* WebKitController.swift */; };
 		0493192322C20C1F000B805F /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0493192222C20C1F000B805F /* RootViewController.swift */; };
 		049BF6472417D19400F3611A /* VideoPlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049BF6462417D19400F3611A /* VideoPlayController.swift */; };
@@ -53,6 +54,7 @@
 		045E77D5243D906A00EE2A69 /* PlayerViewConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerViewConfig.swift; sourceTree = "<group>"; };
 		045E77D6243D906A00EE2A69 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
 		045E77D7243D906A00EE2A69 /* FullScreenPlayController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FullScreenPlayController.swift; sourceTree = "<group>"; };
+		045E77DD243DB19600EE2A69 /* M3u8ResourceLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = M3u8ResourceLoader.swift; sourceTree = "<group>"; };
 		0493192022C204EC000B805F /* WebKitController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebKitController.swift; sourceTree = "<group>"; };
 		0493192222C20C1F000B805F /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		049BF6462417D19400F3611A /* VideoPlayController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoPlayController.swift; sourceTree = "<group>"; };
@@ -146,6 +148,7 @@
 		045E77D2243D906A00EE2A69 /* AVPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				045E77DD243DB19600EE2A69 /* M3u8ResourceLoader.swift */,
 				045E77D3243D906A00EE2A69 /* PlayerCoverView.swift */,
 				045E77D5243D906A00EE2A69 /* PlayerViewConfig.swift */,
 				045E77D6243D906A00EE2A69 /* PlayerView.swift */,
@@ -314,6 +317,7 @@
 				042DA815241C0F3D0067FA38 /* VideoTableController.swift in Sources */,
 				0493192122C204EC000B805F /* WebKitController.swift in Sources */,
 				045E77D8243D906A00EE2A69 /* PlayerCoverView.swift in Sources */,
+				045E77DE243DB19600EE2A69 /* M3u8ResourceLoader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

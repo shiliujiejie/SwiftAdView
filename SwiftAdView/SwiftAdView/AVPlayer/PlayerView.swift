@@ -4,8 +4,12 @@ import UIKit
 import Foundation
 import AVFoundation
 
-
 public class PlayerView: UIView {
+    
+    static public var kFakeIV = "FakeIV"  // 需要被替换的IV
+    static public var kIV = "IV"          // 真实偏移量 key
+    static public var kTSURl = "TSURl"    // ts 文件所在的目录 key
+    static public var kKeyURL = "KEYURL"  // 加密密钥地址。或者内容所在目录
     
     enum PlayerStatus {
         case Failed
@@ -73,6 +77,8 @@ public class PlayerView: UIView {
     public var controlViewHeight: CGFloat = 50.0
     /// The minimum time required to drag a progress bar (Unit: second)
     public var minTimeForDragProgress: Float = 30.0
+    /// 自定义播放器的加密参数，只有此播放器能播特定处理的视频
+    public var encryptParams: [String: String]?
     
     deinit {
         print("播放器释放")
@@ -144,6 +150,7 @@ public class PlayerView: UIView {
         coverView.progressView.backgroundColor = enable ? progressBackgroundColor : .clear
         pauseImg.alpha = enable ? 1 : 0
     }
+    /// 常规播放调用
     public func startPlay(url: URL?, in view: UIView) {
         delegate?.customActionsBeforePlay()
         realeasePlayer()
@@ -154,13 +161,17 @@ public class PlayerView: UIView {
         if view.subviews.contains(self) {
             return
         }
-       
         playUrl = url
         if coverView != nil {
             coverView.removeFromSuperview()
         }
-        avAsset = AVURLAsset(url: trueUrl, options: nil)
-        avItem = AVPlayerItem(asset: avAsset!)
+        
+        if let params = encryptParams, let urlStr = url?.absoluteString {
+            avItem = M3u8ResourceLoader.shared.playerItem(with: urlStr, params: params)
+        } else {
+            avAsset = AVURLAsset(url: trueUrl, options: nil)
+            avItem = AVPlayerItem(asset: avAsset!)
+        }
         player = AVPlayer(playerItem: avItem!)
         playerLayer = AVPlayerLayer(player: player!)
         playerLayer?.frame = self.bounds
