@@ -44,6 +44,7 @@ class RootViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+     
         view.backgroundColor = UIColor.white
         self.title = "首页"
         view.addSubview(showAdBtn)
@@ -89,7 +90,7 @@ class RootViewController: UIViewController {
         /// image
         //let fileImage = Bundle.main.path(forResource: "guide02", ofType: "png") ?? ""
         /// gif
-        let fileGif = Bundle.main.path(forResource: "foldingcell", ofType: "mp4") ?? ""
+        let fileGif = Bundle.main.path(forResource: "foldingcell", ofType: "gif") ?? ""
         /// 视频
         // let fileVideo = Bundle.main.path(forResource: "1", ofType: "mp4") ?? ""
         
