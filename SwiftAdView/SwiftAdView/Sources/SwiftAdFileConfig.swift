@@ -217,7 +217,7 @@ extension SwiftAdFileConfig {
         }
         Alamofire.download(adModel.adUrl, to: destination)
             .downloadProgress { progress in
-                print("Download Progress Video: \(progress.fractionCompleted)")
+                print("Download AD Video: \(progress.fractionCompleted)")
             }
             .responseData { response in
                 if let _ = response.result.value {

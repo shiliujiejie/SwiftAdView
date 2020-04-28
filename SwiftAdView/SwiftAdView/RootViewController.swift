@@ -38,20 +38,44 @@ class RootViewController: UIViewController {
           btn.frame = CGRect(x: 120, y: 390, width: 100, height: 40)
           return btn
       }()
+    private lazy var parserBtn: UIButton = {
+        let btn = UIButton(type: .custom)
+        btn.setTitle("parseM3u8", for: .normal)
+        btn.backgroundColor = UIColor.gray
+        btn.setTitleColor(UIColor.red, for: .normal)
+        btn.addTarget(self, action: #selector(parseM3u8(_:)), for: .touchUpInside)
+        btn.frame = CGRect(x: 120, y: 450, width: 100, height: 40)
+        return btn
+    }()
+    
+    private lazy var localVideoBtn: UIButton = {
+        let btn = UIButton(type: .custom)
+        btn.setTitle("localVideo", for: .normal)
+        btn.backgroundColor = UIColor.gray
+        btn.setTitleColor(UIColor.red, for: .normal)
+        btn.addTarget(self, action: #selector(showVideoVC(_:)), for: .touchUpInside)
+        btn.frame = CGRect(x: 120, y: 510, width: 100, height: 40)
+        return btn
+    }()
+    
+    lazy var tsMger: TSManager = {
+        let tsm = TSManager()
+        tsm.delegate = self
+        return tsm
+    }()
 
     var isAdShow: Bool = false
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-     
         view.backgroundColor = UIColor.white
         self.title = "首页"
         view.addSubview(showAdBtn)
         view.addSubview(showVideoBtn)
-          view.addSubview(listVideoBtn)
+        view.addSubview(listVideoBtn)
+        view.addSubview(parserBtn)
+        view.addSubview(localVideoBtn)
         loadADView()
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -73,7 +97,27 @@ class RootViewController: UIViewController {
             let cc = VideoTableController()
             navigationController?.pushViewController(cc, animated: true)
         }
-      }
+        if sender == localVideoBtn {
+            let identifer = "http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8".md5()
+            if DownLoadHelper.filesIsExist(identifer) {
+                let localPlayVC = DownLoadedVideoPlayerVC()
+                localPlayVC.identifer = "http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8".md5()
+                navigationController?.pushViewController(localPlayVC, animated: true)
+            }
+        }
+    }
+    @objc func parseM3u8(_ sender: UIButton) {
+        let url = "http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8" //"http://cdn.wayada.com/video_admin/uo/89/12uo8917c0a6ac0ec9d9f9253fcb56ac9e500d8458short.m3u8" // AES128 加密 1层 m3u8
+         //"http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8"  // 非加密 2层 m3u8
+        let filesExist = DownLoadHelper.filesIsExist(url.md5())
+        if !filesExist {
+            tsMger.directoryName = url.md5()
+            tsMger.m3u8URL = url
+            tsMger.download()
+        } else {
+            print("当前视频已经下载了")
+        }
+    }
     
     func loadADView() {
         if let currentAd = SwiftAdFileConfig.readCurrentAdModel() { // 1. 检测 本地 有没有 广告
@@ -158,4 +202,27 @@ extension RootViewController {
             mainCall()
         }
     }
+}
+
+
+// MARK: - YagorDelegate
+extension RootViewController: TSDownloadDelegate {
+    func tsDownloadSucceeded() {
+       print("tsDownloadSucceeded()() ")
+    }
+    func tsDownloadFailed() {
+        
+    }
+    func m3u8ParserSuccess() {
+        print("m3u8ParserSuccess() ")
+    }
+    func m3u8ParserFailed() {
+            print("m3u8ParserFailed() ")
+    }
+    func update(progress: Float) {
+         print("update(progress:() == \(progress) ")
+        let str = String(format: "%.2f%%", progress*100)
+        parserBtn.setTitle(str, for: .normal)
+    }
+  
 }
