@@ -11,6 +11,8 @@ open class DownLoadHelper: NSObject {
     var tsListModel: TSListModel!
     /// 正在下载的 ts 脚标
     var downloadIndex: Int = 0
+    /// 某个ts下载失败后重试1次， 为1时，不再下载，0时重试一次
+    var retryTimes: Int = 0
     /// 已下载时长
     var downLoadedDuration: Float = 0.0
     
@@ -159,11 +161,16 @@ extension DownLoadHelper {
                     failStr = "cancel - download"
                 } else if (error as NSError).code == NSURLErrorNetworkConnectionLost || (error as NSError).code == NSURLErrorTimedOut
                 {
-                     failStr = "failed - Network"
+                    failStr = "failed - Network"
                 } else {
-                      failStr = "failed - download"
+                    failStr = "failed - download"
                 }
-                strongSelf.downloaadFailHandler?(failStr)
+                if strongSelf.retryTimes < 1 {  //重试下载
+                    strongSelf.retryTimes += 1
+                    strongSelf.downLoadIndex(index)
+                } else {
+                    strongSelf.downloaadFailHandler?(failStr)
+                }
             }
         }
     }

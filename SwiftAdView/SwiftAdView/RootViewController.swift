@@ -101,8 +101,7 @@ class RootViewController: UIViewController {
     }
     @objc func parseM3u8(_ sender: UIButton) {
         let url = "http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8"
-         //"http://xxxxxxxxx.m3u8" // AES128 加密 1层 m3u8
-         // "http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8"
+        
          //"http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8"  // 非加密 2层 m3u8
         let filesExist = DownLoadHelper.filesIsExist(url.md5())
         if !filesExist {
