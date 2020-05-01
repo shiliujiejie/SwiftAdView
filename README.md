@@ -72,6 +72,3 @@
        SwiftAdFileConfig.downLoadAdData(admodel)
     
 
-  
-
-/Users/mac/Desktop/未命名文件夹/RootTabBarController/RootTabBarController/Base.lproj/LaunchScreen.storyboard
