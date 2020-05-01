@@ -21,9 +21,10 @@ class TSManager: NSObject {
         }
     }
     public var m3u8URL = ""
+    public weak var delegate: TSDownloadDelegate?
+    
     private let m3u8Parser = M3u8Parser()
     private let downLoader = DownLoadHelper()
-    public weak var delegate: TSDownloadDelegate?
     
     open func parse() {
         m3u8Parser.parseM3u8(url: m3u8URL, succeedHandler: { [weak self] (tsList) in
