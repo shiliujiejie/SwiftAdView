@@ -64,6 +64,7 @@ class RootViewController: UIViewController {
         btn.setTitleColor(UIColor.red, for: .normal)
         btn.addTarget(self, action: #selector(showVideoVC(_:)), for: .touchUpInside)
         btn.frame = CGRect(x: 120, y: 510, width: 100, height: 40)
+        btn.isHidden = true
         return btn
     }()
     
@@ -136,6 +137,12 @@ class RootViewController: UIViewController {
         }
     }
     @objc func parseM3u8(_ sender: UIButton) {
+        if DownLoadHelper.filesIsExist(videoUrl.md5()) {
+            parserBtn.setTitle("已下载", for: .normal)
+            speedlab.text = "已完成下载"
+            localVideoBtn.isHidden = false
+            return
+        }
         sender.setTitle("解析中...", for: .normal)
         if sender.tag == 99 {
             tsMger.directoryName = videoUrl.md5()
@@ -155,6 +162,12 @@ class RootViewController: UIViewController {
         }
     }
     
+}
+
+
+
+// MARK: - 模拟 请求广告数据， 下载
+extension RootViewController {
     func loadADView() {
         if let currentAd = SwiftAdFileConfig.readCurrentAdModel() { // 1. 检测 本地 有没有 广告
             showAdView(currentAd)
@@ -202,14 +215,6 @@ class RootViewController: UIViewController {
         config.videoGravity = .resizeAspectFill
         return config
     }
-    
-}
-
-
-
-// MARK: - 模拟 请求广告数据， 下载
-extension RootViewController {
-    
     /// 这里模拟网络请求到 广告数据 后的操作
     func loadAdAPI() {
         
@@ -241,7 +246,7 @@ extension RootViewController {
 }
 
 
-// MARK: - YagorDelegate
+// MARK: - TSDownloadDelegate
 extension RootViewController: TSDownloadDelegate {
     func downloadSpeedUpdate(speed: String) {
         speedlab.text = speed
@@ -251,6 +256,7 @@ extension RootViewController: TSDownloadDelegate {
         print("tsDownloadSucceeded()() ")
         pauseBtn.isHidden = true
         speedlab.text = "已完成下载"
+        localVideoBtn.isHidden = false
     }
     func tsDownloadFailed() {
         
