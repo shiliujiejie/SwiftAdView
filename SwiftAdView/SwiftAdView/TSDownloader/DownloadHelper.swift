@@ -2,12 +2,16 @@
 import Foundation
 import Alamofire
 
-open class DownLoadHelper: NSObject {
+public class DownLoadHelper: NSObject {
     
     public static let downloadFile = "TSDownloads"
     
     var m3u8Data: String = ""
+    
     var downLoadRequest: DownloadRequest!
+    //用于停止下载时，保存已下载的部分
+    var resumeData: Data?
+    
     var tsListModel: TSListModel!
     /// 正在下载的 ts 脚标
     var downloadIndex: Int = 0
@@ -15,22 +19,36 @@ open class DownLoadHelper: NSObject {
     var retryTimes: Int = 0
     /// 已下载时长
     var downLoadedDuration: Float = 0.0
+    /// 当前正在下载的ts文件的总大小（byte）
+    var tsDataByte: Int64 = 0
     
-    var downloaadSuccessHandler:(() -> Void)?
-    var downloaadFailHandler:((_ failMsg: String) -> Void)?
+    var downloadSuccessHandler:(() -> Void)?
+    var downloadFailHandler:((_ failMsg: String) -> Void)?
     var progressUpdateHandler:((_ progress: Float) ->Void)?
+    var networkSpeedUpdateHandler:((_ speed: String) ->Void)?
     
     open class func getDocumentsDirectory() -> URL {
         let paths = FileManager.default.urls(for: .documentDirectory, in:.userDomainMask)
         let documentsDirectory = paths[0]
         return documentsDirectory
     }
-    
     open class func checkOrCreatedM3u8Directory(_ identifer: String) {
         let filePath = getDocumentsDirectory().appendingPathComponent(downloadFile).appendingPathComponent(identifer)
         if !FileManager.default.fileExists(atPath: filePath.path) {
             try? FileManager.default.createDirectory(at: filePath, withIntermediateDirectories: true, attributes: nil)
         }
+    }
+    /// 返回 是否是中断下载
+    open class func checkIsInterruptDownload(_ identifer: String) -> Bool {
+        let filePath = getDocumentsDirectory().appendingPathComponent(downloadFile).appendingPathComponent(identifer)
+        if FileManager.default.fileExists(atPath: filePath.path) {
+            let fileM3u8 = findFiles(path: filePath.path, filterTypes: ["m3u8"])
+            let fileTS = findFiles(path: filePath.path, filterTypes: ["ts"])
+            if fileM3u8.count == 0 && fileTS.count > 0 {
+                return true
+            }
+        }
+        return false
     }
     open class func filesIsExist(_ identifer: String) -> Bool {
         let filePath = getDocumentsDirectory().appendingPathComponent(downloadFile).appendingPathComponent(identifer)
@@ -43,7 +61,6 @@ open class DownLoadHelper: NSObject {
         }
         return false
     }
-    
     /// 删除所有下载
     open class func deleteAllDownloadedContents() {
         let filePath = getDocumentsDirectory().appendingPathComponent(downloadFile).path
@@ -54,9 +71,9 @@ open class DownLoadHelper: NSObject {
         }
     }
     
-    /// 根据名称删除已下载视频片段文件夹
+    /// 指定删除某个m3u8本地缓存的文件件
     ///
-    /// - Parameter name: 文件名
+    /// - Parameter identifer: 文件夹名
     open class func deleteDownloadedContents(_ identifer: String) {
         let filePath = getDocumentsDirectory().appendingPathComponent(downloadFile).appendingPathComponent(identifer).path
         if FileManager.default.fileExists(atPath: filePath) {
@@ -91,7 +108,7 @@ open class DownLoadHelper: NSObject {
     }
     
     /// 根据正则表达式  截取字符串 ：pattern： 正则字符串  str: 被截取字符串
-    open class func regexGetSub(pattern: String, str: String) -> String {
+    class func regexGetSub(pattern: String, str: String) -> String {
         let regex = try! NSRegularExpression(pattern: pattern, options:[])
         let matches = regex.matches(in: str, options: [], range: NSRange(str.startIndex...,in: str))
         if matches.count > 0 {
@@ -105,24 +122,93 @@ open class DownLoadHelper: NSObject {
 
 extension DownLoadHelper {
     
-    func downLoadTsFiles(tsLsModel: TSListModel,
+    func pauseDownload() {
+        downLoadRequest.cancel()
+    }
+    func resume() {
+        guard let resuData = resumeData else {
+            downLoadIndex(downloadIndex)
+            return
+        }
+        let index = downloadIndex
+        let directoryPath = DownLoadHelper.getDocumentsDirectory()
+            .appendingPathComponent(DownLoadHelper.downloadFile)
+            .appendingPathComponent(tsListModel.identifier)
+        print("directoryPath == \(directoryPath)")
+        let tsModel = tsListModel.tsModelArray[index]
+        let destination: DownloadRequest.DownloadFileDestination = { _, _ in
+            let fileUrl = directoryPath.appendingPathComponent("\(tsModel.index).ts")
+            print("tsFilePath ========== \(fileUrl)")
+            return (fileUrl, [.removePreviousFile, .createIntermediateDirectories])
+        }
+        downLoadRequest = Alamofire.download(resumingWith: resuData, to: destination)
+                .downloadProgress(closure: { [weak self] (progress) in
+                    guard let strongSelf = self else { return }
+                    strongSelf.tsDataByte = progress.totalUnitCount
+                    let currentDownload = strongSelf.downLoadedDuration + tsModel.duration * Float(progress.fractionCompleted)
+                    let prog = currentDownload/strongSelf.tsListModel.duration
+                    strongSelf.progressUpdateHandler?(prog)
+                })
+            .responseData { [weak self] response in
+                guard let strongSelf = self else { return }
+                if let _ = response.result.value {
+                    if index == strongSelf.tsListModel.tsModelArray.count - 1 { // 最后一个
+                        print("The last ts downloaded - create local .m3u8 文件")
+                        strongSelf.createLocalM3U8file()
+                        strongSelf.downloadSuccessHandler?()
+                        return
+                    }
+                    print("第\(index)个下载完成, 继续下载第 \(index + 1)个")
+                    strongSelf.downLoadedDuration += tsModel.duration
+                    self?.downLoadIndex(index+1)
+                }
+                if let error = response.error {
+                    if (error as NSError).code  == NSURLErrorCancelled {
+                        print("continue - cancel - download")
+                        strongSelf.resumeData = response.resumeData
+                    } else
+                    {
+                         print("continue - failed - download")
+                        if strongSelf.retryTimes < 1 {  //重试下载
+                            strongSelf.retryTimes += 1
+                            strongSelf.downLoadIndex(index)
+                        } else {
+                            strongSelf.downloadFailHandler?("continue - failed - download")
+                        }
+                    }
+                }
+            }
+    }
+    
+}
+
+extension DownLoadHelper {
+    
+    func downLoadTsFiles(index: Int,
+                         tsLsModel: TSListModel,
                          succeedHandler: @escaping () -> (),
                          failHandler: @escaping (_ failMessage: String) -> (),
-                         progressHandler: @escaping (Float) -> ())
+                         progressHandler: @escaping (Float) -> (),
+                         speedUpdateHandler: @escaping (String) -> ())
     {
         if tsLsModel.tsModelArray.count == 0 {
             print("没有可供下载的 ts")
             return
         }
+        if index >= tsLsModel.tsModelArray.count { return }
         tsListModel = tsLsModel
-        downloaadSuccessHandler = succeedHandler
-        downloaadFailHandler = failHandler
+        downloadSuccessHandler = succeedHandler
+        downloadFailHandler = failHandler
         progressUpdateHandler = progressHandler
-        downLoadIndex(0)
+        networkSpeedUpdateHandler = speedUpdateHandler
+        downLoadIndex(index)
     }
+    
     func downLoadIndex(_ index: Int) {
         if index >= tsListModel.tsModelArray.count { return }
-        let directoryPath = DownLoadHelper.getDocumentsDirectory().appendingPathComponent(DownLoadHelper.downloadFile).appendingPathComponent(tsListModel.identifier)
+        let directoryPath = DownLoadHelper.getDocumentsDirectory()
+            .appendingPathComponent(DownLoadHelper.downloadFile)
+            .appendingPathComponent(tsListModel.identifier)
         print("directoryPath == \(directoryPath)")
         let tsModel = tsListModel.tsModelArray[index]
         downloadIndex = index
@@ -132,22 +218,26 @@ extension DownLoadHelper {
             print("tsFilePath ========== \(fileUrl)")
             return (fileUrl, [.removePreviousFile, .createIntermediateDirectories])
         }
+        let date = Date()
         downLoadRequest = Alamofire.download(tsModel.tsUrl, to: destination)
             .downloadProgress { [weak self] progress in
                 guard let strongSelf = self else { return }
+                print("currentDownLoadData = \(progress.totalUnitCount)")
+                strongSelf.tsDataByte = progress.totalUnitCount
                 let currentDownload = strongSelf.downLoadedDuration + tsModel.duration * Float(progress.fractionCompleted)
                 let prog = currentDownload/strongSelf.tsListModel.duration
-                DispatchQueue.main.async {
-                    strongSelf.progressUpdateHandler?(prog)
-                }
+                strongSelf.progressUpdateHandler?(prog)
         }
         .responseData { [weak self] response in
             guard let strongSelf = self else { return }
             if let _ = response.result.value {
+                let dataEnd = Date().timeIntervalSince(date)
+                strongSelf.getCurrentTSDownloadTime(dataEnd)
+                print("dataEnd == \(dataEnd)")
                 if index == strongSelf.tsListModel.tsModelArray.count - 1 { // 最后一个
-                    print("最后一个下载完成 - 创建本地 .m3u8 文件")
+                    print("The last ts downloaded - create local .m3u8 文件")
                     strongSelf.createLocalM3U8file()
-                    strongSelf.downloaadSuccessHandler?()
+                    strongSelf.downloadSuccessHandler?()
                     return
                 }
                 print("第\(index)个下载完成, 继续下载第 \(index + 1)个")
@@ -157,19 +247,16 @@ extension DownLoadHelper {
             if let error = response.error {
                 var failStr = ""
                 if (error as NSError).code  == NSURLErrorCancelled {
-                    
+                     strongSelf.resumeData = response.resumeData
                     failStr = "cancel - download"
-                } else if (error as NSError).code == NSURLErrorNetworkConnectionLost || (error as NSError).code == NSURLErrorTimedOut
-                {
+                } else {
                     failStr = "failed - Network"
-                } else {
-                    failStr = "failed - download"
-                }
-                if strongSelf.retryTimes < 1 {  //重试下载
-                    strongSelf.retryTimes += 1
-                    strongSelf.downLoadIndex(index)
-                } else {
-                    strongSelf.downloaadFailHandler?(failStr)
+                    if strongSelf.retryTimes < 1 {  //重试下载
+                        strongSelf.retryTimes += 1
+                        strongSelf.downLoadIndex(index)
+                    } else {
+                        strongSelf.downloadFailHandler?(failStr)
+                    }
                 }
             }
         }
@@ -211,7 +298,6 @@ extension DownLoadHelper {
                 keyStringPath = String(format: "#EXT-X-KEY:METHOD=AES-128,URI=\"%@\",IV=%@", keyPath,getIV()!)
             }
             header = String(format: "#EXTM3U\n#EXT-X-VERSION:3\n#EXT-X-TARGETDURATION:60\n%@\n", keyStringPath)
-            
         }
         var content = ""
         
@@ -226,8 +312,23 @@ extension DownLoadHelper {
         header.append("#EXT-X-ENDLIST\n")
         print("local m3u8 file str = \(header) ")
         let writeData: Data = header.data(using: .utf8)!
-        //try! writeData.write(to: filePath)
         try? writeData.write(to: filePath) 
+    }
+    
+    func getCurrentTSDownloadTime(_ dateStart: TimeInterval) {
+        if tsDataByte == 0 { return }
+        var speedStr = "0KB/s"
+        let speed = Double(tsDataByte)/dateStart
+       
+        if speed > 1024*1024 { // 超过 1.0M/s
+            speedStr = String(format: "%.1fM/s", speed/1024/1024)
+        } else if speed > 1024 {
+            speedStr = String(format: "%dKB/s", Int(speed/1024))
+        } else {
+            speedStr = String(format: "%dB/s", Int(speed))
+        }
+        print("network speed = \(speed) speed str = \(speedStr)")
+        networkSpeedUpdateHandler?(speedStr)
     }
 }
 

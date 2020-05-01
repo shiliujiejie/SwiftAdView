@@ -33,17 +33,33 @@ class RootViewController: UIViewController {
       }()
     private lazy var parserBtn: UIButton = {
         let btn = UIButton(type: .custom)
-        btn.setTitle("parseM3u8", for: .normal)
+        btn.setTitle("下载", for: .normal)
         btn.backgroundColor = UIColor.gray
         btn.setTitleColor(UIColor.red, for: .normal)
         btn.addTarget(self, action: #selector(parseM3u8(_:)), for: .touchUpInside)
-        btn.frame = CGRect(x: 120, y: 450, width: 100, height: 40)
+        btn.frame = CGRect(x: 30, y: 450, width: 100, height: 40)
         return btn
+    }()
+    private lazy var pauseBtn: UIButton = {
+        let btn = UIButton(type: .custom)
+        btn.setTitle("pause", for: .normal)
+        btn.setTitle("resume", for: .selected)
+        btn.backgroundColor = UIColor.gray
+        btn.setTitleColor(UIColor.white, for: .normal)
+        btn.addTarget(self, action: #selector(showVideoVC(_:)), for: .touchUpInside)
+        btn.frame = CGRect(x: 150, y: 450, width: 70, height: 40)
+        btn.isHidden = true
+        return btn
+    }()
+    private let speedlab: UILabel = {
+        let lab = UILabel()
+        lab.frame = CGRect(x: 250, y: 450, width: 100, height: 40)
+        return lab
     }()
     
     private lazy var localVideoBtn: UIButton = {
         let btn = UIButton(type: .custom)
-        btn.setTitle("localVideo", for: .normal)
+        btn.setTitle("playLocal", for: .normal)
         btn.backgroundColor = UIColor.gray
         btn.setTitleColor(UIColor.red, for: .normal)
         btn.addTarget(self, action: #selector(showVideoVC(_:)), for: .touchUpInside)
@@ -56,6 +72,9 @@ class RootViewController: UIViewController {
         tsm.delegate = self
         return tsm
     }()
+    //"http://cdn.wayada.com/video_admin/uo/89/12uo8917c0a6ac0ec9d9f9253fcb56ac9e500d8458short.m3u8" // AES128 加密 1层 m3u8
+    //"http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8"  // 非加密 2层 m3u8
+    let videoUrl = "http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8"
 
     var isAdShow: Bool = false
     
@@ -67,8 +86,17 @@ class RootViewController: UIViewController {
         view.addSubview(showVideoBtn)
         view.addSubview(listVideoBtn)
         view.addSubview(parserBtn)
+        view.addSubview(pauseBtn)
+        view.addSubview(speedlab)
         view.addSubview(localVideoBtn)
         loadADView()
+        if DownLoadHelper.checkIsInterruptDownload(videoUrl.md5()) {
+            parserBtn.setTitle("继续下载", for: .normal)
+            parserBtn.tag = 99
+        } else {
+            parserBtn.setTitle("下载", for: .normal)
+            parserBtn.tag = 0
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -91,25 +119,39 @@ class RootViewController: UIViewController {
             navigationController?.pushViewController(cc, animated: true)
         }
         if sender == localVideoBtn {
-            let identifer = "http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8".md5()
+            let identifer = videoUrl.md5()
             if DownLoadHelper.filesIsExist(identifer) {
                 let localPlayVC = DownLoadedVideoPlayerVC()
-                localPlayVC.identifer = "http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8".md5()
+                localPlayVC.identifer = identifer
                 navigationController?.pushViewController(localPlayVC, animated: true)
+            }
+        } else if sender == pauseBtn {
+            if sender.isSelected {
+                tsMger.resume()
+                sender.isSelected = false
+            } else {
+                tsMger.pause()
+                sender.isSelected = true
             }
         }
     }
     @objc func parseM3u8(_ sender: UIButton) {
-        let url = "http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8"
-        
-         //"http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8"  // 非加密 2层 m3u8
-        let filesExist = DownLoadHelper.filesIsExist(url.md5())
-        if !filesExist {
-            tsMger.directoryName = url.md5()
-            tsMger.m3u8URL = url
-            tsMger.download()
+        sender.setTitle("解析中...", for: .normal)
+        if sender.tag == 99 {
+            tsMger.directoryName = videoUrl.md5()
+            tsMger.m3u8URL = videoUrl
+            tsMger.downloadFromLastInterruptedIndex()
+            pauseBtn.isHidden = false
         } else {
-            print("当前视频已经下载了")
+            let filesExist = DownLoadHelper.filesIsExist(videoUrl.md5())
+            if !filesExist {
+                tsMger.directoryName = videoUrl.md5()
+                tsMger.m3u8URL = videoUrl
+                tsMger.download()
+                pauseBtn.isHidden = false
+            } else {
+                print("当前视频已经下载了")
+            }
         }
     }
     
@@ -201,20 +243,28 @@ extension RootViewController {
 
 // MARK: - YagorDelegate
 extension RootViewController: TSDownloadDelegate {
+    func downloadSpeedUpdate(speed: String) {
+        speedlab.text = speed
+    }
+    
     func tsDownloadSucceeded() {
-       print("tsDownloadSucceeded()() ")
+        print("tsDownloadSucceeded()() ")
+        pauseBtn.isHidden = true
+        speedlab.text = "已完成下载"
     }
     func tsDownloadFailed() {
         
     }
     func m3u8ParserSuccess() {
         print("m3u8ParserSuccess() ")
+        
+        parserBtn.setTitle("准备下载", for: .normal)
     }
     func m3u8ParserFailed() {
-            print("m3u8ParserFailed() ")
+        print("m3u8ParserFailed() ")
     }
     func update(progress: Float) {
-         print("update(progress:() == \(progress) ")
+        print("update(progress:() == \(progress) ")
         let str = String(format: "%.2f%%", progress*100)
         parserBtn.setTitle(str, for: .normal)
     }

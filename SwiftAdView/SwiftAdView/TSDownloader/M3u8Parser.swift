@@ -56,7 +56,9 @@ class M3u8Parser: NSObject {
                 let layerM3u8Content = try String(contentsOf: URL(string: url)!, encoding: .utf8)
                 print("layerM3u8Content = \(layerM3u8Content)")
                 if layerM3u8Content.isEmpty {
-                    self.parseFailHandler?("m3u8链接无法转换为 字符串")
+                    DispatchQueue.main.async {
+                        self.parseFailHandler?("m3u8链接无法转换为 字符串")
+                    }
                     return
                 } else {
                     /// 第一层就解析到了ts流
@@ -96,7 +98,9 @@ class M3u8Parser: NSObject {
                 }
             } catch let error {
                 print(error.localizedDescription)
-                self.parseFailHandler?("<Layer> m3u8 file content first read error.")
+                DispatchQueue.main.async {
+                     self.parseFailHandler?("<Layer> m3u8 file content first read error.")
+                }
             }
         }
     }
@@ -117,7 +121,9 @@ class M3u8Parser: NSObject {
                                 self.getTsDownloadUrlHeader(depthParseUrl)
                                 self.sepalateRealM3u8List(depthM3u8Content, depthParseUrl)
                             } else {
-                                self.parseFailHandler?("<Depth> m3u8 parse failed!")
+                                DispatchQueue.main.async {
+                                     self.parseFailHandler?("<Depth> m3u8 parse failed!")
+                                }
                             }
                         }
                     } else {
@@ -125,7 +131,9 @@ class M3u8Parser: NSObject {
                     }
                 }
                 if depthContent.isEmpty {
-                    self.parseFailHandler?("解析失败: <Depth> m3u8 parse failed!")
+                    DispatchQueue.main.async {
+                        self.parseFailHandler?("解析失败: <Depth> m3u8 parse failed!")
+                    }
                 }
             }
         }
@@ -319,7 +327,9 @@ private extension M3u8Parser {
         }
         print("allTSDurations = \(allTSDurations)")
         tsListModel.duration = allTSDurations
-        parseSuccessHandler?(tsListModel)
+        DispatchQueue.main.async {
+            self.parseSuccessHandler?(self.tsListModel)
+        }
     }
 }
 
