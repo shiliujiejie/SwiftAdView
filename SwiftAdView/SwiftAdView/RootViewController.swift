@@ -73,7 +73,7 @@ class RootViewController: UIViewController {
         tsm.delegate = self
         return tsm
     }()
-    //"http://cdn.wayada.com/video_admin/uo/89/12uo8917c0a6ac0ec9d9f9253fcb56ac9e500d8458short.m3u8" // AES128 加密 1层 m3u8
+    
     //"http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8"  // 非加密 2层 m3u8
     let videoUrl = "http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8"
 
