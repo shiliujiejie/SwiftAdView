@@ -48,7 +48,6 @@ public class PlayerView: UIView {
     private var loadedValue: Float = 0
     
     private var avItem: AVPlayerItem?
-    private var avAsset: AVURLAsset?
     private var playerTimerObserver: NSObject?
     private var playerLayer: AVPlayerLayer?
     
@@ -169,8 +168,7 @@ public class PlayerView: UIView {
         if let params = encryptParams, let urlStr = url?.absoluteString {
             avItem = M3u8ResourceLoader.shared.playerItem(with: urlStr, params: params)
         } else {
-            avAsset = AVURLAsset(url: trueUrl, options: nil)
-            avItem = AVPlayerItem(asset: avAsset!)
+            avItem = AVPlayerItem(asset: AVURLAsset(url: trueUrl, options: nil))
         }
         player = AVPlayer(playerItem: avItem!)
         playerLayer = AVPlayerLayer(player: player!)
@@ -224,7 +222,6 @@ public class PlayerView: UIView {
         avItem?.removeObserver(self, forKeyPath: "playbackBufferEmpty")
         avItem?.removeObserver(self, forKeyPath: "playbackLikelyToKeepUp")
         player?.cancelPendingPrerolls()
-        avAsset = nil
         avItem = nil
         player?.replaceCurrentItem(with: nil)
         player = nil

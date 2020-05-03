@@ -68,7 +68,7 @@ class VideoPlayController: UIViewController {
         return collectionView
     }()
    
-    var videos = ["http://192.168.1.124:50009/121.m3u8","http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8","https://github.com/shiliujiejie/adResource/raw/master/2.mp4", "https://github.com/shiliujiejie/adResource/raw/master/1.mp4", "https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
+    var videos = ["http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8","https://github.com/shiliujiejie/adResource/raw/master/2.mp4", "https://github.com/shiliujiejie/adResource/raw/master/1.mp4", "https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
