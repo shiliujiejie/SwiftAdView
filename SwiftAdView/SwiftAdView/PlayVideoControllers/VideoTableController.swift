@@ -179,14 +179,14 @@ extension VideoTableController: PlayerViewDelegate {
     func customActionsBeforePlay() {
         print("customActionsBeforePlay ---- Exp: remove Failed Shower View")
         timelabel.text = "00:00 | 00:00"
-        if currentIndex == 2 {
-            playerView.encryptParams = [PlayerView.kIV: "0x65b9bb26c958f9dafb436f8908354bbb",
-                                        PlayerView.kTSURl : "http://192.168.1.197:50009/m3u8",
-                                        PlayerView.kKeyURL : "http://192.168.1.197:50009",
-                                        PlayerView.kFakeIV: "mayun"]
-        } else {
-            playerView.encryptParams = nil
-        }
+//        if currentIndex == 2 {
+//            playerView.encryptParams = [PlayerView.kIV: "0x65b9bb26c958f9dafb436f8908354bbb",
+//                                        PlayerView.kTSURl : "http://192.168.1.197:50009/m3u8",
+//                                        PlayerView.kKeyURL : "http://192.168.1.197:50009",
+//                                        PlayerView.kFakeIV: "mayun"]
+//        } else {
+//            playerView.encryptParams = nil
+//        }
     }
     func loadingPlayResource() {
         print("loadingPlayResource")
