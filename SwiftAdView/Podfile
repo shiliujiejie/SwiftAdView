@@ -7,7 +7,7 @@ target 'SwiftAdView' do
 pod 'SnapKit'
 pod 'Kingfisher'
 pod 'Alamofire'
-pod 'CocoaHTTPServer'
+pod 'GCDWebServer'
 pod 'NicooPlayer'
 
 end

@@ -1,12 +1,8 @@
 PODS:
-  - Alamofire (4.8.2)
-  - CocoaAsyncSocket (7.6.4)
-  - CocoaHTTPServer (2.3):
-    - CocoaAsyncSocket
-    - CocoaLumberjack
-  - CocoaLumberjack (3.6.1):
-    - CocoaLumberjack/Core (= 3.6.1)
-  - CocoaLumberjack/Core (3.6.1)
+  - Alamofire (4.9.1)
+  - GCDWebServer (3.5.4):
+    - GCDWebServer/Core (= 3.5.4)
+  - GCDWebServer/Core (3.5.4)
   - Kingfisher (4.10.1)
   - NicooPlayer (1.3.6):
     - SnapKit
@@ -14,31 +10,26 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire
-  - CocoaHTTPServer
+  - GCDWebServer
   - Kingfisher
   - NicooPlayer
   - SnapKit
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
-    - Alamofire
-    - Kingfisher
-    - SnapKit
   trunk:
-    - CocoaAsyncSocket
-    - CocoaHTTPServer
-    - CocoaLumberjack
+    - Alamofire
+    - GCDWebServer
+    - Kingfisher
     - NicooPlayer
+    - SnapKit
 
 SPEC CHECKSUMS:
-  Alamofire: ae5c501addb7afdbb13687d7f2f722c78734c2d3
-  CocoaAsyncSocket: 694058e7c0ed05a9e217d1b3c7ded962f4180845
-  CocoaHTTPServer: 5624681fc3473d43b18202f635f9b3abb013b530
-  CocoaLumberjack: b17ae15142558d08bbacf69775fa10c4abbebcc9
+  Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
+  GCDWebServer: 2c156a56c8226e2d5c0c3f208a3621ccffbe3ce4
   Kingfisher: c148cd7b47ebde9989f6bc7c27dcaa79d81279a0
   NicooPlayer: bc73270444b8370ead3fedcfdd965b833821160d
   SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
 
-PODFILE CHECKSUM: 949522dd1795a859b1d2a15b5b56ff9bae97e847
+PODFILE CHECKSUM: da137d6e40bbda7397bbd9e47bc092378a7be456
 
 COCOAPODS: 1.8.4

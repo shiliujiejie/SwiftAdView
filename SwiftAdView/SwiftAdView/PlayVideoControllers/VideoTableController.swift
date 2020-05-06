@@ -93,7 +93,12 @@ class VideoTableController: UIViewController {
         view.addSubview(tableView)
         tableHeader.addSubview(timelabel)
         
-        playerView.startPlay(url: URL(string: videos[0]), in: tableHeader)
+        let first = videos[0]
+        var url = URL(string: first)
+        if !first.hasPrefix("http") {
+            url = URL(fileURLWithPath: first)
+        }
+        playerView.startPlay(url: url, in: tableHeader)
         view.addSubview(leftBackButton)
         view.addSubview(rightBackButton)
         layoutPageSubviews()

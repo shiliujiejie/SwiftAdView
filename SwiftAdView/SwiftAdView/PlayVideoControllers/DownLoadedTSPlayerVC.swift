@@ -1,15 +1,14 @@
-
 import UIKit
 import NicooPlayer
-import CocoaHTTPServer
+import GCDWebServer
 
 /// 播放本地视频
 /// 模拟播放已下载好的本地视频
 class DownLoadedVideoPlayerVC: UIViewController {
     
-    private var server: HTTPServer! = nil
     private var port: UInt = 8080
     var identifer: String = ""
+    let server = GCDWebServer()
     
     /// 播放本地文件的时候，状态栏颜色样式与是否全屏无关 （默认全屏）
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -19,7 +18,7 @@ class DownLoadedVideoPlayerVC: UIViewController {
         }
         return .default
     }
-   
+    
     fileprivate lazy var videoPlayer: NicooPlayerView = {
         let player = NicooPlayerView(frame: self.view.frame, bothSidesTimelable: true)
         player.delegate = self
@@ -32,28 +31,34 @@ class DownLoadedVideoPlayerVC: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        playLocalVideo()
+        playLocal_2_func()
     }
-
-    private func playLocalVideo() {
-        server = HTTPServer()
-        server.setType("_http.tcp")
-
-    server.setDocumentRoot(DownLoadHelper.getDocumentsDirectory().appendingPathComponent(DownLoadHelper.downloadFile).appendingPathComponent(identifer).path)
-        print("localFilePath = \(DownLoadHelper.getDocumentsDirectory().appendingPathComponent(DownLoadHelper.downloadFile).path)")
-        server.setPort(UInt16(port))
-        do {
-            try server.start()
-        }catch{
-            print("本地服务器启动失败")
-        }
+    
+    //MARK: - 本地服务器搭建 方法一： pod "GCDWebServer"  +  本方法
+    private func playLocal_1_func() {
+        let pathq = DownLoadHelper.getDocumentsDirectory().appendingPathComponent(DownLoadHelper.downloadFile).appendingPathComponent(identifer).path
+        server.addGETHandler(forBasePath: "/", directoryPath: pathq, indexFilename: "\(identifer).m3u8", cacheAge: 3600, allowRangeRequests: true)
         let videoLocalUrl = "\(getLocalServerBaseUrl()):\(port)/\(identifer).m3u8"
+        print("videoLocalUrl == \(videoLocalUrl)")
+        let vc = VideoTableController()
+        vc.videos = [videoLocalUrl]
+        navigationController?.pushViewController(vc, animated: true)
+        server.start()
+    }
+    
+    //MARK: - 本地服务器搭建
+    private func playLocal_2_func() {
+        let pathq = DownLoadHelper.getDocumentsDirectory().appendingPathComponent(DownLoadHelper.downloadFile).appendingPathComponent(identifer).path
+        server.addGETHandler(forBasePath: "/", directoryPath: pathq, indexFilename: "\(identifer).m3u8", cacheAge: 3600, allowRangeRequests: true)
+        let videoLocalUrl = "\(getLocalServerBaseUrl()):\(port)/\(identifer).m3u8"
+        print("videoLocalUrl == \(videoLocalUrl)")
         videoPlayer.playLocalVideoInFullscreen(videoLocalUrl, "localFile", view)
         videoPlayer.playLocalFileVideoCloseCallBack = { [weak self] (playValue) in
             // 退出时，关闭本地服务器
             self?.server.stop()
             self?.navigationController?.popViewController(animated: false)
         }
+        server.start()
     }
     
     private func getLocalServerBaseUrl() -> String {
@@ -62,20 +67,16 @@ class DownLoadedVideoPlayerVC: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
+        if server.isRunning {
+            server.stop()
+        }
     }
-
 }
 
 // MARK: - NicooPlayerDelegate
-
 extension DownLoadedVideoPlayerVC: NicooPlayerDelegate {
     
     func retryToPlayVideo(_ player: NicooPlayerView, _ videoModel: NicooVideoModel?, _ fatherView: UIView?) {
         
     }
-    
-    
-    
-    
 }
