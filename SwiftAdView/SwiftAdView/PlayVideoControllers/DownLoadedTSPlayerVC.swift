@@ -31,7 +31,7 @@ class DownLoadedVideoPlayerVC: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        playLocal_2_func()
+        playLocal_1_func()
     }
     
     //MARK: - 本地服务器搭建 方法一： pod "GCDWebServer"  +  本方法
@@ -42,7 +42,7 @@ class DownLoadedVideoPlayerVC: UIViewController {
         print("videoLocalUrl == \(videoLocalUrl)")
         let vc = VideoTableController()
         vc.videos = [videoLocalUrl]
-        navigationController?.pushViewController(vc, animated: true)
+        self.present(vc, animated: true, completion: nil)
         server.start()
     }
     

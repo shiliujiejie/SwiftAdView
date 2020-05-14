@@ -20,6 +20,21 @@ class M3u8ResourceLoader: NSObject, AVAssetResourceLoaderDelegate {
         }
     }
     
+    /// 生成AVPlayerItem
+    public func playerItem(with url: String, params: [String: String]) -> AVPlayerItem {
+        
+        /// 直接用虚假的m3u8(m3u8_url_vir)进行初始化，原因是：
+        /// 外界传进来的url有可能不是以.m3u8结尾的，即不是m3u8格式的链接，如果直接用url进行初始化，那么代理方法拦截时，系统不会以m3u8文件格式去处理拦截的url，就是系统只会发起一次网络请求，之后的操作完全无效，而用虚假的m3u8链接，是为了混淆系统，让系统直接认为我们请求的链接就是m3u8格式的链接，那么代理里面的拦截就会执行下去，真正的请求链接通过赋值给变量m3u8_url进行保存，只需要在代理方法里面发起真正的链接请求就行了
+        enyParams = params
+        m3u8_url = url
+        let urlAsset = AVURLAsset(url: URL(string: m3u8_url_vir)!, options: nil)
+        urlAsset.resourceLoader.setDelegate(self, queue: .main)
+        let item = AVPlayerItem(asset: urlAsset)
+        if #available(iOS 9.0, *) {
+            item.canUseNetworkResourcesForLiveStreamingWhilePaused = true
+        }
+        return item
+    }
     /// 拦截代理方法
     /// true代表意思：系统，你要等等，不能播放，需要等我通知，你才能继续（相当于系统进程被阻断，直到收到了某些消息，才能继续运行）
     /// false代表意思：系统，你不要等，直接播放
@@ -35,10 +50,12 @@ class M3u8ResourceLoader: NSObject, AVAssetResourceLoaderDelegate {
         if url.hasSuffix(".ts") {
             /// 处理的操作异步进行
             print("Fake_Ts -- url = \(url)")
+            guard let realUrl = URL(string: m3u8_url) else { return false }
             DispatchQueue.main.async {
                 
                 /// 在这里可以对ts链接进行各种处理，反正都是字符串，处理完毕后更换掉系统原先的请求，用新的url去重新请求
-                let newUrl = url.replacingOccurrences(of: self.m3u8_url_vir, with: self.enyParams[PlayerView.kTSURl] ?? "")
+                let newUrl = url.replacingOccurrences(of: self.m3u8_url_vir, with: realUrl.deletingLastPathComponent().absoluteString)
+            
                 
                 if let url = URL(string: newUrl) {
                     print("really--Ts--Url === \(newUrl)")
@@ -84,9 +101,10 @@ class M3u8ResourceLoader: NSObject, AVAssetResourceLoaderDelegate {
                             /// 3、后端对ts链接进行过加密，同1，
                             
                             /// 当然不止这3种操作，还有很多，只要你能想到，但是这些修改操作后，都必须要保证修改后的字符串，进行格式化后，还是m3u8格式的字符串
-                            
+                            // 用正则表达式取出秘钥
+                            let keySttr = self.regexGetSub(pattern: "URI=\"(.+?)\"", str: m3u8String)
                             /// 还原m3u8字符串
-                            let newM3u8String = m3u8String.replacingOccurrences(of: self.enyParams[PlayerView.kFakeIV] ?? "", with: self.enyParams[PlayerView.kIV] ?? "")
+                            let newM3u8String = m3u8String.replacingOccurrences(of: keySttr, with: self.enyParams[PlayerView.kKeyURL] ?? "")
                             
                             print("Replace_M3u8String ==\n\n \(newM3u8String)")
                             /// 将字符串转化为数据
@@ -122,9 +140,10 @@ class M3u8ResourceLoader: NSObject, AVAssetResourceLoaderDelegate {
                 /// 获取key的数据，其实也是一串字符串，如果需要验证证书之类的，用Alamofire请求吧，同上面的m3u8一样，也要同步
                 
                 /// 在这里对字符串进行任意修改，解密之类的，同上
-                let newUrl = url.replacingOccurrences(of: self.m3u8_url_vir, with: self.enyParams[PlayerView.kKeyURL] ?? "")
-                 print("Really_Key -- url == \(newUrl)")
-                if let keyurl = URL(string: newUrl), let data = try? Data(contentsOf: keyurl) {
+              //  let newUrl = url.replacingOccurrences(of: self.m3u8_url_vir, with: self.enyParams[PlayerView.kKeyURL] ?? "")
+               //  print("Really_Key -- url == \(newUrl)")
+                
+                if let keystr = self.enyParams[PlayerView.kKeyURL] ,let data = keystr.data(using: .utf8) {
                     print("Key_Data == \(data) ---")
                     /// 将数据塞给系统
                     loadingRequest.dataRequest?.respond(with: data)
@@ -160,21 +179,18 @@ class M3u8ResourceLoader: NSObject, AVAssetResourceLoaderDelegate {
         loadingRequest.finishLoading(with: NSError(domain: NSURLErrorDomain, code: 400, userInfo: nil) as Error)
     }
     
-    /// 生成AVPlayerItem
-    public func playerItem(with url: String, params: [String: String]) -> AVPlayerItem {
-        
-        /// 直接用虚假的m3u8(m3u8_url_vir)进行初始化，原因是：
-        /// 外界传进来的url有可能不是以.m3u8结尾的，即不是m3u8格式的链接，如果直接用url进行初始化，那么代理方法拦截时，系统不会以m3u8文件格式去处理拦截的url，就是系统只会发起一次网络请求，之后的操作完全无效，而用虚假的m3u8链接，是为了混淆系统，让系统直接认为我们请求的链接就是m3u8格式的链接，那么代理里面的拦截就会执行下去，真正的请求链接通过赋值给变量m3u8_url进行保存，只需要在代理方法里面发起真正的链接请求就行了
-        enyParams = params
-        m3u8_url = url
-        let urlAsset = AVURLAsset(url: URL(string: m3u8_url_vir)!, options: nil)
-        urlAsset.resourceLoader.setDelegate(self, queue: .main)
-        let item = AVPlayerItem(asset: urlAsset)
-        if #available(iOS 9.0, *) {
-            item.canUseNetworkResourcesForLiveStreamingWhilePaused = true
+    func regexGetSub(pattern: String, str: String) -> String {
+        let regex = try! NSRegularExpression(pattern: pattern, options:[])
+        let matches = regex.matches(in: str, options: [], range: NSRange(str.startIndex...,in: str))
+        if matches.count > 0 {
+            print("matches == \(matches)")
+            let ss = str[Range(matches[0].range(at: 1), in: str)!]
+            return String(ss)
         }
-        return item
+        return ""
     }
+    
+    
 }
 
 

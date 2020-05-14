@@ -3,41 +3,23 @@ import UIKit
 
 class RootViewController: UIViewController {
     
-    private lazy var showAdBtn: UIButton = {
-        let btn = UIButton(type: .custom)
-        btn.setTitle("showAgain", for: .normal)
-        btn.backgroundColor = UIColor.gray
-        btn.setTitleColor(UIColor.red, for: .normal)
-        btn.addTarget(self, action: #selector(showAd), for: .touchUpInside)
-        btn.frame = CGRect(x: 120, y: 250, width: 100, height: 40)
-        return btn
-    }()
-    private lazy var showVideoBtn: UIButton = {
-        let btn = UIButton(type: .custom)
-        btn.setTitle("showVideo", for: .normal)
-        btn.backgroundColor = UIColor.gray
-        btn.setTitleColor(UIColor.red, for: .normal)
-        btn.addTarget(self, action: #selector(showVideoVC(_:)), for: .touchUpInside)
-        btn.frame = CGRect(x: 120, y: 320, width: 100, height: 40)
-        return btn
-    }()
+    static let titles = ["show screen ad again","show short video play","list video show","add categary title","Bluetooth"]
     
-    private lazy var listVideoBtn: UIButton = {
-          let btn = UIButton(type: .custom)
-          btn.setTitle("listVideo", for: .normal)
-          btn.backgroundColor = UIColor.gray
-          btn.setTitleColor(UIColor.red, for: .normal)
-          btn.addTarget(self, action: #selector(showVideoVC(_:)), for: .touchUpInside)
-          btn.frame = CGRect(x: 120, y: 390, width: 100, height: 40)
-          return btn
-      }()
+    private lazy var table: UITableView = {
+        let ta = UITableView(frame: CGRect(x: 0, y: 220, width: view.bounds.width  , height: view.bounds.height - 220), style: .plain)
+        ta.showsVerticalScrollIndicator = false
+        ta.delegate = self
+        ta.dataSource = self
+        ta.register(UITableViewCell.classForCoder(), forCellReuseIdentifier: "nothing")
+        return ta
+    }()
     private lazy var parserBtn: UIButton = {
         let btn = UIButton(type: .custom)
         btn.setTitle("下载", for: .normal)
         btn.backgroundColor = UIColor.gray
         btn.setTitleColor(UIColor.red, for: .normal)
         btn.addTarget(self, action: #selector(parseM3u8(_:)), for: .touchUpInside)
-        btn.frame = CGRect(x: 30, y: 450, width: 100, height: 40)
+        btn.frame = CGRect(x: 30, y: 100, width: 100, height: 40)
         return btn
     }()
     private lazy var pauseBtn: UIButton = {
@@ -47,13 +29,13 @@ class RootViewController: UIViewController {
         btn.backgroundColor = UIColor.gray
         btn.setTitleColor(UIColor.white, for: .normal)
         btn.addTarget(self, action: #selector(showVideoVC(_:)), for: .touchUpInside)
-        btn.frame = CGRect(x: 150, y: 450, width: 70, height: 40)
+        btn.frame = CGRect(x: 150, y: 100, width: 70, height: 40)
         btn.isHidden = true
         return btn
     }()
     private let speedlab: UILabel = {
         let lab = UILabel()
-        lab.frame = CGRect(x: 250, y: 450, width: 100, height: 40)
+        lab.frame = CGRect(x: 250, y: 100, width: 100, height: 40)
         return lab
     }()
     
@@ -63,7 +45,7 @@ class RootViewController: UIViewController {
         btn.backgroundColor = UIColor.gray
         btn.setTitleColor(UIColor.red, for: .normal)
         btn.addTarget(self, action: #selector(showVideoVC(_:)), for: .touchUpInside)
-        btn.frame = CGRect(x: 120, y: 510, width: 100, height: 40)
+        btn.frame = CGRect(x: 30, y: 150, width: 100, height: 40)
         btn.isHidden = true
         return btn
     }()
@@ -76,21 +58,19 @@ class RootViewController: UIViewController {
     
     //"http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8"  // 非加密 2层 m3u8
     let videoUrl = "http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8"
-
     var isAdShow: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.white
         self.title = "首页"
-        view.addSubview(showAdBtn)
-        view.addSubview(showVideoBtn)
-        view.addSubview(listVideoBtn)
         view.addSubview(parserBtn)
         view.addSubview(pauseBtn)
         view.addSubview(speedlab)
         view.addSubview(localVideoBtn)
-        loadADView()
+        view.addSubview(table)
+        
+        showAd()
         if DownLoadHelper.checkIsInterruptDownload(videoUrl.md5()) {
             parserBtn.setTitle("继续下载", for: .normal)
             parserBtn.tag = 99
@@ -102,23 +82,17 @@ class RootViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-//        if !isAdShow {
-//            loadADView()
-//        }
+        //        if !isAdShow {
+        //            loadADView()
+        //        }
+        navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
-    @objc func showAd() {
+    func showAd() {
         loadADView()
     }
     
     @objc func showVideoVC(_ sender: UIButton) {
-        if sender == showVideoBtn {
-            let c = VideoPlayController()
-            navigationController?.pushViewController(c, animated: true)
-        } else if sender == listVideoBtn {
-            let cc = VideoTableController()
-            navigationController?.pushViewController(cc, animated: true)
-        }
         if sender == localVideoBtn {
             let identifer = videoUrl.md5()
             if DownLoadHelper.filesIsExist(identifer) {
@@ -161,9 +135,51 @@ class RootViewController: UIViewController {
             }
         }
     }
+    func addCateTitle() {
+        let categoryVC = CategrayController()
+        self.present(categoryVC, animated: true, completion: nil)
+    }
     
 }
 
+extension RootViewController: UITableViewDelegate , UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return RootViewController.titles.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "nothing", for: indexPath)
+        cell.textLabel?.text = RootViewController.titles[indexPath.row]
+        return cell
+    }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch indexPath.row {
+        case 0:
+            showAd()
+            
+            break
+        case 1:
+            let c = VideoPlayController()
+            navigationController?.pushViewController(c, animated: true)
+            break
+        case 2:
+            let cc = VideoTableController()
+            navigationController?.pushViewController(cc, animated: true)
+            break
+        case 3:
+            addCateTitle()
+            break
+        case 4:
+            let c = BluetoothController()
+            navigationController?.pushViewController(c, animated: true)
+            break
+        default:
+            break
+        }
+    }
+    
+}
 
 
 // MARK: - 模拟 请求广告数据， 下载
@@ -274,5 +290,5 @@ extension RootViewController: TSDownloadDelegate {
         let str = String(format: "%.2f%%", progress*100)
         parserBtn.setTitle(str, for: .normal)
     }
-  
+    
 }

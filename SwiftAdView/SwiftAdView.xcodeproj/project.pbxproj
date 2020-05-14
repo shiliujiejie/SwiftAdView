@@ -30,6 +30,18 @@
 		0493192322C20C1F000B805F /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0493192222C20C1F000B805F /* RootViewController.swift */; };
 		049BF6472417D19400F3611A /* VideoPlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049BF6462417D19400F3611A /* VideoPlayController.swift */; };
 		049BF6892418DF0100F3611A /* PresentPlayCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049BF6882418DF0100F3611A /* PresentPlayCell.swift */; };
+		04C9D9FC24693B6100B0BA35 /* CategrayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C9D9FB24693B6100B0BA35 /* CategrayController.swift */; };
+		04C9DA04246AF0C500B0BA35 /* MyChannelReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C9D9FE246AF0C500B0BA35 /* MyChannelReusableView.swift */; };
+		04C9DA05246AF0C500B0BA35 /* MyChannelReusableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04C9D9FF246AF0C500B0BA35 /* MyChannelReusableView.xib */; };
+		04C9DA06246AF0C500B0BA35 /* ChannelRecommendReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C9DA00246AF0C500B0BA35 /* ChannelRecommendReusableView.swift */; };
+		04C9DA07246AF0C500B0BA35 /* ChannelRecommendCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04C9DA01246AF0C500B0BA35 /* ChannelRecommendCell.xib */; };
+		04C9DA08246AF0C500B0BA35 /* ChannelRecommendReusableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04C9DA02246AF0C500B0BA35 /* ChannelRecommendReusableView.xib */; };
+		04C9DA09246AF0C500B0BA35 /* ChannelRecommendCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C9DA03246AF0C500B0BA35 /* ChannelRecommendCell.swift */; };
+		04C9DA0B246AF12700B0BA35 /* CateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C9DA0A246AF12700B0BA35 /* CateModel.swift */; };
+		04C9DA0D246AF1E200B0BA35 /* SQLiteManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C9DA0C246AF1E200B0BA35 /* SQLiteManager.swift */; };
+		04C9DA10246AF24C00B0BA35 /* AddCategoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C9DA0E246AF24C00B0BA35 /* AddCategoryCell.swift */; };
+		04C9DA11246AF24C00B0BA35 /* AddCategoryCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04C9DA0F246AF24C00B0BA35 /* AddCategoryCell.xib */; };
+		04C9DA14246C085000B0BA35 /* BluetoothController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C9DA13246C085000B0BA35 /* BluetoothController.swift */; };
 		04CC2BCB245711EF009CDB9D /* TSManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CC2BCA245711EF009CDB9D /* TSManager.swift */; };
 		04CC2BCD24571221009CDB9D /* M3u8Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CC2BCC24571221009CDB9D /* M3u8Parser.swift */; };
 		04CC2BCF24571287009CDB9D /* TSModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CC2BCE24571287009CDB9D /* TSModel.swift */; };
@@ -64,6 +76,18 @@
 		0493192222C20C1F000B805F /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		049BF6462417D19400F3611A /* VideoPlayController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoPlayController.swift; sourceTree = "<group>"; };
 		049BF6882418DF0100F3611A /* PresentPlayCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PresentPlayCell.swift; sourceTree = "<group>"; };
+		04C9D9FB24693B6100B0BA35 /* CategrayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategrayController.swift; sourceTree = "<group>"; };
+		04C9D9FE246AF0C500B0BA35 /* MyChannelReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyChannelReusableView.swift; sourceTree = "<group>"; };
+		04C9D9FF246AF0C500B0BA35 /* MyChannelReusableView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MyChannelReusableView.xib; sourceTree = "<group>"; };
+		04C9DA00246AF0C500B0BA35 /* ChannelRecommendReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelRecommendReusableView.swift; sourceTree = "<group>"; };
+		04C9DA01246AF0C500B0BA35 /* ChannelRecommendCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChannelRecommendCell.xib; sourceTree = "<group>"; };
+		04C9DA02246AF0C500B0BA35 /* ChannelRecommendReusableView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChannelRecommendReusableView.xib; sourceTree = "<group>"; };
+		04C9DA03246AF0C500B0BA35 /* ChannelRecommendCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelRecommendCell.swift; sourceTree = "<group>"; };
+		04C9DA0A246AF12700B0BA35 /* CateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CateModel.swift; sourceTree = "<group>"; };
+		04C9DA0C246AF1E200B0BA35 /* SQLiteManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SQLiteManager.swift; sourceTree = "<group>"; };
+		04C9DA0E246AF24C00B0BA35 /* AddCategoryCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddCategoryCell.swift; sourceTree = "<group>"; };
+		04C9DA0F246AF24C00B0BA35 /* AddCategoryCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AddCategoryCell.xib; sourceTree = "<group>"; };
+		04C9DA13246C085000B0BA35 /* BluetoothController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothController.swift; sourceTree = "<group>"; };
 		04CC2BCA245711EF009CDB9D /* TSManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TSManager.swift; sourceTree = "<group>"; };
 		04CC2BCC24571221009CDB9D /* M3u8Parser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = M3u8Parser.swift; sourceTree = "<group>"; };
 		04CC2BCE24571287009CDB9D /* TSModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TSModel.swift; sourceTree = "<group>"; };
@@ -107,6 +131,8 @@
 		0422894922BC9BAE00EE9B93 /* SwiftAdView */ = {
 			isa = PBXGroup;
 			children = (
+				04C9DA12246C080500B0BA35 /* BluetoothDemo */,
+				04C9D9FD246AF09A00B0BA35 /* CateAddDemo */,
 				04CC2BC924570E23009CDB9D /* TSDownloader */,
 				045E77D2243D906A00EE2A69 /* AVPlayer */,
 				042DA813241C0EE80067FA38 /* PlayVideoControllers */,
@@ -167,6 +193,32 @@
 				045E77D7243D906A00EE2A69 /* FullScreenPlayController.swift */,
 			);
 			path = AVPlayer;
+			sourceTree = "<group>";
+		};
+		04C9D9FD246AF09A00B0BA35 /* CateAddDemo */ = {
+			isa = PBXGroup;
+			children = (
+				04C9DA0E246AF24C00B0BA35 /* AddCategoryCell.swift */,
+				04C9DA0F246AF24C00B0BA35 /* AddCategoryCell.xib */,
+				04C9DA0C246AF1E200B0BA35 /* SQLiteManager.swift */,
+				04C9DA03246AF0C500B0BA35 /* ChannelRecommendCell.swift */,
+				04C9DA01246AF0C500B0BA35 /* ChannelRecommendCell.xib */,
+				04C9DA00246AF0C500B0BA35 /* ChannelRecommendReusableView.swift */,
+				04C9DA02246AF0C500B0BA35 /* ChannelRecommendReusableView.xib */,
+				04C9D9FE246AF0C500B0BA35 /* MyChannelReusableView.swift */,
+				04C9D9FF246AF0C500B0BA35 /* MyChannelReusableView.xib */,
+				04C9D9FB24693B6100B0BA35 /* CategrayController.swift */,
+				04C9DA0A246AF12700B0BA35 /* CateModel.swift */,
+			);
+			path = CateAddDemo;
+			sourceTree = "<group>";
+		};
+		04C9DA12246C080500B0BA35 /* BluetoothDemo */ = {
+			isa = PBXGroup;
+			children = (
+				04C9DA13246C085000B0BA35 /* BluetoothController.swift */,
+			);
+			path = BluetoothDemo;
 			sourceTree = "<group>";
 		};
 		04CC2BC924570E23009CDB9D /* TSDownloader */ = {
@@ -259,11 +311,15 @@
 			files = (
 				0422895522BC9BAF00EE9B93 /* LaunchScreen.storyboard in Resources */,
 				0422896F22BD160D00EE9B93 /* timg.jpeg in Resources */,
+				04C9DA08246AF0C500B0BA35 /* ChannelRecommendReusableView.xib in Resources */,
 				0422896A22BCE15A00EE9B93 /* guide02.png in Resources */,
+				04C9DA11246AF24C00B0BA35 /* AddCategoryCell.xib in Resources */,
+				04C9DA07246AF0C500B0BA35 /* ChannelRecommendCell.xib in Resources */,
 				0422897122BE276900EE9B93 /* foldingcell.gif in Resources */,
 				0422896422BCC34C00EE9B93 /* 1.mp4 in Resources */,
 				0422895222BC9BAF00EE9B93 /* Assets.xcassets in Resources */,
 				0422895022BC9BAE00EE9B93 /* Main.storyboard in Resources */,
+				04C9DA05246AF0C500B0BA35 /* MyChannelReusableView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -320,22 +376,30 @@
 				049BF6472417D19400F3611A /* VideoPlayController.swift in Sources */,
 				045E77DB243D906A00EE2A69 /* PlayerView.swift in Sources */,
 				0422894D22BC9BAE00EE9B93 /* ViewController.swift in Sources */,
+				04C9DA14246C085000B0BA35 /* BluetoothController.swift in Sources */,
 				0422896822BCD22600EE9B93 /* SwiftAdFileConfig.swift in Sources */,
 				04CC2BCD24571221009CDB9D /* M3u8Parser.swift in Sources */,
+				04C9DA04246AF0C500B0BA35 /* MyChannelReusableView.swift in Sources */,
 				045E77DC243D906A00EE2A69 /* FullScreenPlayController.swift in Sources */,
 				0422894B22BC9BAE00EE9B93 /* AppDelegate.swift in Sources */,
 				0422896022BC9C1800EE9B93 /* SwiftyTimer.swift in Sources */,
 				045E77DA243D906A00EE2A69 /* PlayerViewConfig.swift in Sources */,
 				04CC2BCB245711EF009CDB9D /* TSManager.swift in Sources */,
+				04C9D9FC24693B6100B0BA35 /* CategrayController.swift in Sources */,
 				04CC2BD3245863B4009CDB9D /* DownLoadedTSPlayerVC.swift in Sources */,
 				049BF6892418DF0100F3611A /* PresentPlayCell.swift in Sources */,
+				04C9DA0D246AF1E200B0BA35 /* SQLiteManager.swift in Sources */,
 				04CC2BD1245712F2009CDB9D /* DownloadHelper.swift in Sources */,
+				04C9DA09246AF0C500B0BA35 /* ChannelRecommendCell.swift in Sources */,
 				0422896222BC9C6D00EE9B93 /* SwiftAdView.swift in Sources */,
 				0493192322C20C1F000B805F /* RootViewController.swift in Sources */,
 				04CC2BCF24571287009CDB9D /* TSModel.swift in Sources */,
 				042DA815241C0F3D0067FA38 /* VideoTableController.swift in Sources */,
 				0493192122C204EC000B805F /* WebKitController.swift in Sources */,
+				04C9DA10246AF24C00B0BA35 /* AddCategoryCell.swift in Sources */,
+				04C9DA0B246AF12700B0BA35 /* CateModel.swift in Sources */,
 				045E77D8243D906A00EE2A69 /* PlayerCoverView.swift in Sources */,
+				04C9DA06246AF0C500B0BA35 /* ChannelRecommendReusableView.swift in Sources */,
 				045E77DE243DB19600EE2A69 /* M3u8ResourceLoader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -484,7 +548,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = CGS2C7PHWW;
+				DEVELOPMENT_TEAM = B88MNPK37X;
 				INFOPLIST_FILE = SwiftAdView/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -504,7 +568,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = CGS2C7PHWW;
+				DEVELOPMENT_TEAM = B88MNPK37X;
 				INFOPLIST_FILE = SwiftAdView/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (

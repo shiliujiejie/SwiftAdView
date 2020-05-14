@@ -74,7 +74,7 @@ class VideoTableController: UIViewController {
         player.delegate = self
         return player
     }()
-     var videos = ["http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8","http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8","http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4c0c9e59031868222924048327/f0.mp4","https://github.com/shiliujiejie/adResource/raw/master/2.mp4", "https://github.com/shiliujiejie/adResource/raw/master/1.mp4", "https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
+     var videos = ["http://192.168.1.188:50009/m3u8/1.m3u8","http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8","http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8","http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4c0c9e59031868222924048327/f0.mp4","https://github.com/shiliujiejie/adResource/raw/master/2.mp4", "https://github.com/shiliujiejie/adResource/raw/master/1.mp4", "https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
     var currentIndex: Int = 0
     
     /// 在头部播放 或在cell中播放
@@ -98,6 +98,8 @@ class VideoTableController: UIViewController {
         if !first.hasPrefix("http") {
             url = URL(fileURLWithPath: first)
         }
+  
+        //playerView.encryptParams = [PlayerView.kKeyURL: "fwfrfh4rontq3bfn"]
         playerView.startPlay(url: url, in: tableHeader)
         view.addSubview(leftBackButton)
         view.addSubview(rightBackButton)

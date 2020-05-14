@@ -9,6 +9,7 @@ pod 'Kingfisher'
 pod 'Alamofire'
 pod 'GCDWebServer'
 pod 'NicooPlayer'
+pod 'SQLite.swift'
 
 end
 
