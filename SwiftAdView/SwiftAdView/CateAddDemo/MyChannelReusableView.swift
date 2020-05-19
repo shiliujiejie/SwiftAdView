@@ -1,10 +1,3 @@
-//
-//  MyChannelRecommendView.swift
-//  News
-//
-//  Created by 杨蒙 on 2018/2/3.
-//  Copyright © 2018年 hrscy. All rights reserved.
-//
 
 import UIKit
 
@@ -18,8 +11,6 @@ class MyChannelReusableView: UICollectionReusableView {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        editChannelButton.layer.borderColor = UIColor.lightGray.cgColor
-        editChannelButton.layer.borderWidth = 1
         editChannelButton.setTitle("完成", for: .selected)
         NotificationCenter.default.addObserver(self, selector: #selector(longPressTarget), name: NSNotification.Name(rawValue: "longPressTarget"), object: nil)
     }

@@ -56,8 +56,11 @@ class RootViewController: UIViewController {
         return tsm
     }()
     
-    //"http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8"  // 非加密 2层 m3u8
-    let videoUrl = "http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8"
+    //"http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8"  // 非加密 2层 m3u8 https://www.xvideos.com/video55854303/_
+    let videoUrl = "http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8" //"https://youku.cdn7-okzy.com/20200313/17735_1e626ef5/1000k/hls/index.m3u8" //"https://video.kkyun-iqiyi.com/20180301/WNvThg3j/index.m3u8"
+      //"https://vs1.baduziyuan.com/20180106/5hykgzke/800kb/hls/index.m3u8"
+     //"https://www.nmgxwhz.com:65/20200328/mmTagJcX/index.m3u8"
+    //"http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8"
     var isAdShow: Bool = false
     
     override func viewDidLoad() {
@@ -135,10 +138,6 @@ class RootViewController: UIViewController {
             }
         }
     }
-    func addCateTitle() {
-        let categoryVC = CategrayController()
-        self.present(categoryVC, animated: true, completion: nil)
-    }
     
 }
 
@@ -168,7 +167,9 @@ extension RootViewController: UITableViewDelegate , UITableViewDataSource {
             navigationController?.pushViewController(cc, animated: true)
             break
         case 3:
-            addCateTitle()
+            let categoryVC = CategrayController()
+          
+            self.navigationController?.pushViewController(categoryVC, animated: true)
             break
         case 4:
             let c = BluetoothController()

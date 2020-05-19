@@ -32,7 +32,8 @@ class AddCategoryCell: UICollectionViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        backgroundColor = UIColor.lightGray
+        contentView.backgroundColor = .clear
+        titleButton.backgroundColor = UIColor(white: 245/255, alpha: 1)
     }
 
     @IBAction func deleteCategoryButtonClicked(_ sender: UIButton) {

@@ -1,14 +1,5 @@
-//
-//  ChannelRecommendCell.swift
-//  News
-//
-//  Created by 杨蒙 on 2018/2/3.
-//  Copyright © 2018年 hrscy. All rights reserved.
-//
 
 import UIKit
-
-
 
 class ChannelRecommendCell: UICollectionViewCell {
     static let cellId = "ChannelRecommendCell"
@@ -17,9 +8,9 @@ class ChannelRecommendCell: UICollectionViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        titleButton.backgroundColor = UIColor.groupTableViewBackground
+        titleButton.backgroundColor = UIColor(white: 245/255, alpha: 1)
        
-        layer.cornerRadius = 3
+        //titleButton.layer.cornerRadius = 22
         
     }
 }

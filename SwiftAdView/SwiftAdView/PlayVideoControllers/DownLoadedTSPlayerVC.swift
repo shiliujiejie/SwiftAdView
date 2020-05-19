@@ -38,19 +38,27 @@ class DownLoadedVideoPlayerVC: UIViewController {
     private func playLocal_1_func() {
         let pathq = DownLoadHelper.getDocumentsDirectory().appendingPathComponent(DownLoadHelper.downloadFile).appendingPathComponent(identifer).path
         server.addGETHandler(forBasePath: "/", directoryPath: pathq, indexFilename: "\(identifer).m3u8", cacheAge: 3600, allowRangeRequests: true)
-        let videoLocalUrl = "\(getLocalServerBaseUrl()):\(port)/\(identifer).m3u8"
-        print("videoLocalUrl == \(videoLocalUrl)")
-        let vc = VideoTableController()
-        vc.videos = [videoLocalUrl]
-        self.present(vc, animated: true, completion: nil)
-        server.start()
+        
+        server.start(withPort: 8095, bonjourName: nil)
+        
+        if server.serverURL != nil {
+            let videoLocalUrl = "\(server.serverURL!.absoluteString)\(identifer).m3u8"
+            print("videoLocalUrl == \(videoLocalUrl), \(server.serverURL!.absoluteString)")
+            let vc = VideoTableController()
+            vc.videos = [videoLocalUrl]
+            self.present(vc, animated: true, completion: nil)
+        }
     }
     
     //MARK: - 本地服务器搭建
     private func playLocal_2_func() {
         let pathq = DownLoadHelper.getDocumentsDirectory().appendingPathComponent(DownLoadHelper.downloadFile).appendingPathComponent(identifer).path
         server.addGETHandler(forBasePath: "/", directoryPath: pathq, indexFilename: "\(identifer).m3u8", cacheAge: 3600, allowRangeRequests: true)
-        let videoLocalUrl = "\(getLocalServerBaseUrl()):\(port)/\(identifer).m3u8"
+        
+        server.start(withPort: port, bonjourName: nil)
+        if server.serverURL == nil { return }
+        
+        let videoLocalUrl = "\(server.serverURL!.absoluteString)\(identifer).m3u8"
         print("videoLocalUrl == \(videoLocalUrl)")
         videoPlayer.playLocalVideoInFullscreen(videoLocalUrl, "localFile", view)
         videoPlayer.playLocalFileVideoCloseCallBack = { [weak self] (playValue) in
@@ -59,10 +67,6 @@ class DownLoadedVideoPlayerVC: UIViewController {
             self?.navigationController?.popViewController(animated: false)
         }
         server.start()
-    }
-    
-    private func getLocalServerBaseUrl() -> String {
-        return "http://127.0.0.1"
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -80,3 +84,4 @@ extension DownLoadedVideoPlayerVC: NicooPlayerDelegate {
         
     }
 }
+

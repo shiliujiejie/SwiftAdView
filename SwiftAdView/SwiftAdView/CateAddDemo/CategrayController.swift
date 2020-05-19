@@ -15,7 +15,7 @@ class CategrayController: UIViewController {
     private var categories = [HomeNewsTitle]()
     private let customLayout: UICollectionViewFlowLayout = {
         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: (screenWidth - 50) * 0.25, height: 44)
+        layout.itemSize = CGSize(width: (screenWidth - 50) * 0.25, height: 46)
         layout.minimumInteritemSpacing = 10
         layout.minimumLineSpacing = 10
         return layout
@@ -31,7 +31,7 @@ class CategrayController: UIViewController {
         
         return collection
     }()
-   // @IBOutlet weak var collectionView: UICollectionView!
+    var lockItemNumber: Int = 4
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,6 +49,12 @@ class CategrayController: UIViewController {
          
         collectionView.allowsMultipleSelection = true
         collectionView.addGestureRecognizer(longPressRecognizer)
+        for i in 0 ..< 4 {
+            guard let newsCatee = NewsTitleCategory(rawValue: "news_hot") else { return  }
+            let new = HomeNewsTitle.init(category: newsCatee, tip_new: i, default_add: i, web_url: "", concern_id: "", icon_url: "", flags:i, type: i, name: "推荐\(i)", selected: false)
+            homeTitles.append(new)
+            self.collectionView.reloadData()
+        }
         for i in 0 ..< 20 {
             guard let newsCatee = NewsTitleCategory(rawValue: "news_hot") else { return  }
             let new = HomeNewsTitle.init(category: newsCatee, tip_new: i, default_add: i, web_url: "", concern_id: "", icon_url: "", flags:i, type: i, name: "index\(i)", selected: false)
@@ -66,6 +72,7 @@ class CategrayController: UIViewController {
         let selectedPoint = longPress.location(in: collectionView)
         // 转换成索引
         if let selectedIndexPath = collectionView.indexPathForItem(at: selectedPoint) {
+            if selectedIndexPath.section > 0 { return }
             switch longPress.state {
             case .began:
                 if isEdit && selectedIndexPath.section == 0 { // 选中的是上部的 cell,并且是可编辑状态
@@ -76,10 +83,11 @@ class CategrayController: UIViewController {
                 }
             case .changed:
                 // 固定第一、二个不能移动
-                if selectedIndexPath.item <= 1 { collectionView.endInteractiveMovement(); break }
+                if selectedIndexPath.item <= 3 { collectionView.endInteractiveMovement(); break }
                 collectionView.updateInteractiveMovementTargetPosition(longPress.location(in: longPressRecognizer.view))
             case .ended:
                 collectionView.endInteractiveMovement()
+                collectionView.reloadData()
             default:
                 collectionView.cancelInteractiveMovement()
             }
@@ -136,7 +144,7 @@ extension CategrayController: UICollectionViewDelegate, UICollectionViewDataSour
     
     /// headerView 的大小
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: screenWidth, height: 50)
+        return CGSize(width: screenWidth, height: 60)
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -151,7 +159,16 @@ extension CategrayController: UICollectionViewDelegate, UICollectionViewDataSour
         if indexPath.section == 0 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AddCategoryCell.cellId, for: indexPath) as! AddCategoryCell
             cell.titleButton.setTitle(homeTitles[indexPath.item].name, for: .normal)
-            cell.isEdit = isEdit
+            cell.isEdit = indexPath.item < lockItemNumber ? false : isEdit
+            if indexPath.item < lockItemNumber {
+                cell.titleButton.layer.borderColor = UIColor(red: 10/255.0, green: 94/255.0, blue: 254/255.0, alpha: 1).cgColor
+                cell.titleButton.layer.borderWidth = 0.7
+                cell.titleButton.setTitleColor(UIColor(red: 10/255.0, green: 94/255.0, blue: 254/255.0, alpha: 1), for: .normal)
+            } else {
+                cell.titleButton.layer.borderColor = UIColor.clear.cgColor
+                cell.titleButton.layer.borderWidth = 0
+                cell.titleButton.setTitleColor(UIColor.darkText, for: .normal)
+            }
             cell.delegate = self
             return cell
         } else {
@@ -178,7 +195,7 @@ extension CategrayController: UICollectionViewDelegate, UICollectionViewDataSour
     /// 移动 cell
     func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         // 固定第一、二个不能移动
-        if destinationIndexPath.item <= 1 {
+        if destinationIndexPath.item < lockItemNumber {
             collectionView.endInteractiveMovement()
             collectionView.reloadData()
             return

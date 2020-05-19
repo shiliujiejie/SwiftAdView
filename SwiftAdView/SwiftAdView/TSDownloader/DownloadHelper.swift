@@ -123,7 +123,9 @@ public class DownLoadHelper: NSObject {
 extension DownLoadHelper {
     
     func pauseDownload() {
-        downLoadRequest.cancel()
+        if downLoadRequest != nil {
+            downLoadRequest.cancel()
+        }
     }
     func resume() {
         guard let resuData = resumeData else {
