@@ -6,7 +6,7 @@ import GCDWebServer
 /// 模拟播放已下载好的本地视频
 class DownLoadedVideoPlayerVC: UIViewController {
     
-    private var port: UInt = 8080
+    private var port: UInt = 8095
     var identifer: String = ""
     let server = GCDWebServer()
     
@@ -31,7 +31,7 @@ class DownLoadedVideoPlayerVC: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        playLocal_1_func()
+        playLocal_2_func()
     }
     
     //MARK: - 本地服务器搭建 方法一： pod "GCDWebServer"  +  本方法
@@ -39,7 +39,7 @@ class DownLoadedVideoPlayerVC: UIViewController {
         let pathq = DownLoadHelper.getDocumentsDirectory().appendingPathComponent(DownLoadHelper.downloadFile).appendingPathComponent(identifer).path
         server.addGETHandler(forBasePath: "/", directoryPath: pathq, indexFilename: "\(identifer).m3u8", cacheAge: 3600, allowRangeRequests: true)
         
-        server.start(withPort: 8095, bonjourName: nil)
+        server.start(withPort: port, bonjourName: nil)
         
         if server.serverURL != nil {
             let videoLocalUrl = "\(server.serverURL!.absoluteString)\(identifer).m3u8"
@@ -66,7 +66,6 @@ class DownLoadedVideoPlayerVC: UIViewController {
             self?.server.stop()
             self?.navigationController?.popViewController(animated: false)
         }
-        server.start()
     }
     
     override func viewWillDisappear(_ animated: Bool) {

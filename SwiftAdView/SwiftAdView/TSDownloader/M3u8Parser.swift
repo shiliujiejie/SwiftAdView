@@ -114,6 +114,7 @@ class M3u8Parser: NSObject {
                     if let depthM3u8Content = try? String(contentsOf: URL(string: depthParseUrl)!, encoding: .utf8) {
                         // 解析到
                         if !depthM3u8Content.isEmpty {
+                            print("depthM3u8Content == \(depthM3u8Content)")
                             /// 解析到了ts流
                             if depthM3u8Content.range(of: "#EXTINF:") != nil {
                                 print("<Depth> m3u8 url: \n \(depthParseUrl) \n can be parse, start parsing.(m3u8解析 - 修成正果)")
@@ -138,8 +139,6 @@ class M3u8Parser: NSObject {
             }
         }
     }
-    
-    
 }
 
 // MARK: - Private funcs
@@ -313,6 +312,7 @@ private extension M3u8Parser {
                 }
             }
             tsModel.tsUrl = segmentURL
+            //print("tsModel.tsUrl ==== \(segmentURL)")
             tsModel.index = currentIndex
             tsModels.append(tsModel)
             segmentArray.remove(at: 0)
@@ -325,7 +325,7 @@ private extension M3u8Parser {
         for tsModel in tsModels {
             allTSDurations += tsModel.duration
         }
-        print("allTSDurations = \(allTSDurations)")
+        //print("allTSDurations = \(allTSDurations)")
         tsListModel.duration = allTSDurations
         DispatchQueue.main.async {
             self.parseSuccessHandler?(self.tsListModel)

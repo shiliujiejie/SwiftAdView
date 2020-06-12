@@ -56,8 +56,11 @@ class RootViewController: UIViewController {
         return tsm
     }()
     
-    //"http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8"  // 非加密 2层 m3u8 https://www.xvideos.com/video55854303/_
-    let videoUrl = "http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8" //"https://youku.cdn7-okzy.com/20200313/17735_1e626ef5/1000k/hls/index.m3u8" //"https://video.kkyun-iqiyi.com/20180301/WNvThg3j/index.m3u8"
+    //1层加密 ：http://cdn.wayada.com/video_user/ot/n4/12otn4aa4b3ac33d1a685cb04d1b20312396a61069.m3u8
+    //非加密 2层 "http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8"
+    //"https://video.kkyun-iqiyi.com/20180301/WNvThg3j/index.m3u8"
+    
+    let videoUrl = "https://youku.cdn7-okzy.com/20200313/17735_1e626ef5/1000k/hls/index.m3u8" //"https://video.kkyun-iqiyi.com/20180301/WNvThg3j/index.m3u8"
       //"https://vs1.baduziyuan.com/20180106/5hykgzke/800kb/hls/index.m3u8"
      //"https://www.nmgxwhz.com:65/20200328/mmTagJcX/index.m3u8"
     //"http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8"
