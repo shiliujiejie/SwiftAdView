@@ -1,10 +1,3 @@
-//
-//  VideoPlayController.swift
-//  CaoLiuApp
-//
-//  Created by mac on 2019/3/11.
-//  Copyright © 2019年 AnakinChen Network Technology. All rights reserved.
-//
 
 import UIKit
 import AssetsLibrary

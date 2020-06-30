@@ -1,10 +1,3 @@
-//
-//  AppDelegate.swift
-//  SwiftAdView
-//
-//  Created by mac on 2019/6/20.
-//  Copyright © 2019年 mac. All rights reserved.
-//
 
 import UIKit
 import NicooPlayer

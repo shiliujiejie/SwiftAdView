@@ -4,11 +4,9 @@ import AVKit
 
 class FullScreenPlayController: AVPlayerViewController {
 
-
     override var shouldAutorotate: Bool  {
         return true
     }
-    
     deinit {
         print("FullScreenPlayController - deinit")
     }

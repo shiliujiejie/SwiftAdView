@@ -1,9 +1,3 @@
-//
-//  NicooPlayerControlView.swift
-//  NicooPlayer
-//
-//  Created by 小星星 on 2018/6/19.
-//
 
 import UIKit
 import SnapKit

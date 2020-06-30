@@ -1,10 +1,3 @@
-//
-//  PlayerCoverView.swift
-//  SwiftAdView
-//
-//  Created by mac on 2020-03-11.
-//  Copyright © 2020 mac. All rights reserved.
-//
 
 import UIKit
 
