@@ -3,7 +3,7 @@ import UIKit
 
 class RootViewController: UIViewController {
     
-    static let titles = ["show screen ad again","show short video play","list video show","add categary title","Bluetooth"]
+    static let titles = ["show screen ad again","show short video play","list video show","TablePlayNative","add categary title","Bluetooth"]
     
     private lazy var table: UITableView = {
         let ta = UITableView(frame: CGRect(x: 0, y: 220, width: view.bounds.width  , height: view.bounds.height - 220), style: .plain)
@@ -60,7 +60,7 @@ class RootViewController: UIViewController {
     //非加密 2层 "http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8"
     //"https://video.kkyun-iqiyi.com/20180301/WNvThg3j/index.m3u8"
     
-    let videoUrl = "https://youku.cdn7-okzy.com/20200313/17735_1e626ef5/1000k/hls/index.m3u8" //"https://video.kkyun-iqiyi.com/20180301/WNvThg3j/index.m3u8"
+    let videoUrl = "https://hls2-l3.xvideos-cdn.com/22f4ea3eb16c8eb75c127e5d1deadc3ee3c89299-1591284352/videos/hls/cb/08/0a/cb080a19f84756f76880b3aaa0fd7f52/hls-720p-6b9f7.m3u8" //"https://youku.cdn7-okzy.com/20200313/17735_1e626ef5/1000k/hls/index.m3u8" //"https://video.kkyun-iqiyi.com/20180301/WNvThg3j/index.m3u8"
       //"https://vs1.baduziyuan.com/20180106/5hykgzke/800kb/hls/index.m3u8"
      //"https://www.nmgxwhz.com:65/20200328/mmTagJcX/index.m3u8"
     //"http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8"
@@ -169,15 +169,19 @@ extension RootViewController: UITableViewDelegate , UITableViewDataSource {
             let cc = VideoTableController()
             navigationController?.pushViewController(cc, animated: true)
             break
-        case 3:
-            let categoryVC = CategrayController()
-          
-            self.navigationController?.pushViewController(categoryVC, animated: true)
+            case 3:
+            let c = TablePlayNativeController()
+            navigationController?.pushViewController(c, animated: true)
             break
         case 4:
+            let categoryVC = CategrayController()
+            self.navigationController?.pushViewController(categoryVC, animated: true)
+            break
+        case 5:
             let c = BluetoothController()
             navigationController?.pushViewController(c, animated: true)
             break
+            
         default:
             break
         }

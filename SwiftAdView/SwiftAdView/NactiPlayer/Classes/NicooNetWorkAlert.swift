@@ -63,7 +63,7 @@ public extension NicooNetWorkAlert {
     
     /// 展示
     public func showInWindow() {
-        orientationSupport = NicooPlayerOrietation.orientationPortrait     ///这里展示无网操作时。将屏幕支持改为竖屏
+        orientationSupport = PlayerOrietation.orientationPortrait     ///这里展示无网操作时。将屏幕支持改为竖屏
         if let window = UIApplication.shared.keyWindow {
             if !window.subviews.contains(self) {
                 window.addSubview(self)

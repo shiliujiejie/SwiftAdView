@@ -1,12 +1,7 @@
-//
-//  NicooPlayerOrietation.swift
-//
-//  Created by 小星星 on 2018/6/27.
-//
 
 import UIKit
 
-public enum NicooPlayerOrietation: Int {
+public enum PlayerOrietation: Int {
     case orientationPortrait
     case orientationLeftAndRight
     case orientationAll
@@ -22,7 +17,7 @@ public enum NicooPlayerOrietation: Int {
         }
     }
 }
-public var orientationSupport: NicooPlayerOrietation = .orientationPortrait
+public var orientationSupport: PlayerOrietation = .orientationPortrait
 
 // log
 public func NLog(_ item: Any, _ file: String = #file,  _ line: Int = #line, _ function: String = #function) {

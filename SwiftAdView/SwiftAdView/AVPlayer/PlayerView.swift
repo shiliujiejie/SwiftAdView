@@ -1,14 +1,11 @@
 
+
 import UIKit
 import Foundation
 import AVFoundation
 
+
 public class PlayerView: UIView {
-    
-    static public var kFakeIV = "FakeIV"  // 需要被替换的IV
-    static public var kIV = "IV"          // 真实偏移量 key
-    static public var kTSURl = "TSURl"    // ts 文件所在的目录 key
-    static public var kKeyURL = "KEYURL"  // 加密密钥地址。或者内容所在目录
     
     enum PlayerStatus {
         case Failed
@@ -75,13 +72,14 @@ public class PlayerView: UIView {
     public var controlViewHeight: CGFloat = 50.0
     /// The minimum time required to drag a progress bar (Unit: second)
     public var minTimeForDragProgress: Float = 30.0
-    /// 自定义播放器的加密参数，只有此播放器能播特定处理的视频
-    public var encryptParams: [String: String]?
+    /// 操作栏是否带阴影
+    public var controlViewCoverLayer: Bool = true
+    /// 是否是预览 与 playerIsUserInteractionEnabled 一起使用
+    public var isPerView: Bool = false
     
     deinit {
         print("播放器释放")
         NotificationCenter.default.removeObserver(self)
-       
         realeasePlayer()
     }
    
@@ -148,8 +146,7 @@ public class PlayerView: UIView {
         coverView.progressView.backgroundColor = enable ? progressBackgroundColor : .clear
         pauseImg.alpha = enable ? 1 : 0
     }
-    /// 常规播放调用
-    public func startPlay(url: URL?, in view: UIView) {
+    public func startPlay(url: URL?, in view: UIView, _ uri: String? = nil) {
         delegate?.customActionsBeforePlay()
         realeasePlayer()
         guard let trueUrl = url else {
@@ -159,13 +156,13 @@ public class PlayerView: UIView {
         if view.subviews.contains(self) {
             return
         }
+       
         playUrl = url
         if coverView != nil {
             coverView.removeFromSuperview()
         }
-        
-        if let params = encryptParams, let urlStr = url?.absoluteString {
-            avItem = M3u8ResourceLoader.shared.playerItem(with: urlStr, params: params)
+        if let uriKey = uri, let urlStr = url?.absoluteString, !uriKey.isEmpty {
+            avItem = M3u8ResourceLoader.shared.playerItem(with: urlStr, uriKey: uriKey)
         } else {
             avItem = AVPlayerItem(asset: AVURLAsset(url: trueUrl, options: nil))
         }
@@ -183,11 +180,12 @@ public class PlayerView: UIView {
         self.addSubview(coverView)
         
         layoutPageSubviews()
-        
         addPlayerObserver()
         
         player?.play()
-        coverView.startLoading()
+        if !isPerView {
+           coverView.startLoading()
+        }
         coverView.controlView.isUserInteractionEnabled = false
         listenTothePlayer()
     }
@@ -204,6 +202,7 @@ public class PlayerView: UIView {
         config.selectedProgrossHight = selectedProgrossHight
         config.controlViewHeight = controlViewHeight
         config.loadingBarHeight = loadingBarHeight
+        config.controlViewCoverLayer = controlViewCoverLayer
         if progressHeight > controlViewHeight {
             config.controlViewHeight = progressHeight
         }
@@ -291,9 +290,10 @@ extension PlayerView {
     }
     
     @objc func applicationBecomeActivity(_ sender: NSNotification) {
-        guard let nextVc = self.getNextVC() else { return }
-        if nextVc.isViewLoaded && nextVc.view.window != nil {
-            playerStatu = .Playing
+        if let vc = self.getNextVC() {
+            if vc.isViewLoaded && vc.view.window != nil {
+                 playerStatu = .Playing
+            }
         }
     }
     
@@ -307,16 +307,16 @@ extension PlayerView {
         }) as? NSObject
     }
     func getNextVC() -> UIViewController? {
-           var next = self.superview
-           while (next != nil) {
-               let nextResponder = next?.next
+        var next = self.superview
+        while (next != nil) {
+            let nextResponder = next?.next
             if nextResponder?.isKind(of: UIViewController.self) ?? false {
-                   return nextResponder as? UIViewController
-               }
-               next = next?.superview
-           }
-           return nil
-       }
+                return nextResponder as? UIViewController
+            }
+            next = next?.superview
+        }
+        return nil
+    }
     
 }
 

@@ -1,18 +1,13 @@
-//
-//  NicooImgManager.swift
-//  NicooPlayer
-//
-//  Created by 小星星 on 2018/6/19.
-//
 
 import UIKit
 
 class NicooImgManager: UIView {
     class func foundImage(imageName:String) -> UIImage? {
-        let bundleB  = Bundle(for: self.classForCoder()) //先找到最外层Bundle
-        guard let resrouseURL = bundleB.url(forResource: "NicooPlayer", withExtension: "bundle") else { return nil }
-        let bundle = Bundle(url: resrouseURL) // 根据URL找到自己的Bundle
-        return UIImage(named: imageName, in: bundle , compatibleWith: nil) //在自己的Bundle中找图片
+//        let bundleB  = Bundle(for: self.classForCoder()) //先找到最外层Bundle
+//        guard let resrouseURL = bundleB.url(forResource: "NicooPlayer", withExtension: "bundle") else { return nil }
+//        let bundle = Bundle(url: resrouseURL) // 根据URL找到自己的Bundle
+//        return UIImage(named: imageName, in: bundle , compatibleWith: nil) //在自己的Bundle中找图片
+        return UIImage(named: imageName)
     }
     
 }
@@ -27,67 +22,67 @@ public extension UIDevice {
     /// 判断是否为X系列
     ///
     /// - Returns: 兼容X系列手机
-    public func isiPhoneXSeriesDevices() -> Bool {
+    func isiPhoneXSeriesDevices() -> Bool {
         return (iosType() == "iPhoneX" || iosType() == "iPhoneXS" || iosType() == "iPhoneXSMax" || iosType() == "iPhoneXR")
     }
     /// 判断是否为iPhoneX
     ///
     /// - Returns: 兼容
-    public func isiPhoneX() -> Bool {
+    func isiPhoneX() -> Bool {
         return iosType() == "iPhoneX"
     }
     /// 判断是否为5S
     ///
     /// - Returns: 兼容
-    public func isiPhone5S() -> Bool {
+    func isiPhone5S() -> Bool {
         return iosType() == "iPhone5S"
     }
     /// 判断是否为6P
     ///
     /// - Returns: 兼容
-    public func isiPhone6Plus() -> Bool {
+    func isiPhone6Plus() -> Bool {
         return iosType() == "iPhone6Plus"
     }
     /// 判断是否为6
     ///
     /// - Returns: 兼容
-    public func isiPhone6() -> Bool {
+    func isiPhone6() -> Bool {
         return iosType() == "iPhone6"
     }
     /// 判断是否为6S
     ///
     /// - Returns: 兼容
-    public func isiPhone6s() -> Bool {
+    func isiPhone6s() -> Bool {
         return iosType() == "iPhone6S"
     }
     /// 判断是否为6SP
     ///
     /// - Returns: 兼容
-    public func isiPhone6SPlus() -> Bool {
+    func isiPhone6SPlus() -> Bool {
         return iosType() == "iPhone6SPlus"
     }
     /// 判断是否为SE
     ///
     /// - Returns: 兼容
-    public func isiPhoneSE() -> Bool {
+    func isiPhoneSE() -> Bool {
         return iosType() == "iPhoneSE"
     }
     /// 判断是否为 模拟器(模拟器不区分型号)
     ///
     /// - Returns: 兼容
-    public func isSimulator() -> Bool {
+    func isSimulator() -> Bool {
         return iosType() == "Simulator"
     }
     /// 判断是否为7
     ///
     /// - Returns: 兼容
-    public func isiPhone7() -> Bool {
+    func isiPhone7() -> Bool {
         return iosType() == "iPhone7"
     }
     /// 判断是否为7P
     ///
     /// - Returns: 兼容
-    public func isiPhone7Plus() -> Bool {
+    func isiPhone7Plus() -> Bool {
         return iosType() == "iPhone7Plus"
     }
     func iosType() -> String {
@@ -122,7 +117,7 @@ public extension UIDevice {
     /// 兼容iPad
     ///
     /// - Returns: 判断是否为iPad
-    public func isPad() -> Bool {
+    func isPad() -> Bool {
         if UIDevice.current.userInterfaceIdiom == .pad {
             return true
         }

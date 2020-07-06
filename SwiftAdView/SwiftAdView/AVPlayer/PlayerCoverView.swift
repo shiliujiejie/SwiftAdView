@@ -1,3 +1,10 @@
+//
+//  PlayerCoverView.swift
+//  SwiftAdView
+//
+//  Created by mac on 2020-03-11.
+//  Copyright © 2020 mac. All rights reserved.
+//
 
 import UIKit
 
@@ -98,7 +105,9 @@ class PlayerCoverView: UIView {
         self.addGestureRecognizer(coverTapGesture)
         self.addGestureRecognizer(doubleTapGesture)
         coverTapGesture.require(toFail: doubleTapGesture)
-        createCoverLayer()
+        if  config.controlViewCoverLayer {
+            createCoverLayer()
+        }
     }
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -195,6 +204,7 @@ extension PlayerCoverView {
         
         animationGroup.animations = [scaleAnimX, scaleAnimY, alphaAnim]
         loadingBar.layer.add(animationGroup, forKey: nil)
+        loadingBar.setNeedsLayout()
     }
     
     func stopLoading() {
@@ -235,7 +245,7 @@ private extension PlayerCoverView {
             make.centerX.equalToSuperview()
             make.centerY.equalToSuperview()
             make.height.equalTo(70)
-            make.width.equalTo(150)
+            make.width.equalTo(180)
         }
     }
   

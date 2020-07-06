@@ -1,9 +1,3 @@
-//
-//  NicooPlayerView.swift
-//  NicooPlayer
-//
-//  Created by 小星星 on 2018/6/19.
-//
 
 import UIKit
 import AVFoundation
@@ -113,6 +107,7 @@ open class NicooPlayerView: UIView {
             playControllViewEmbed.closeButton.isSelected = isFullScreen!
             playControllViewEmbed.fullScreenBtn.isSelected = isFullScreen!
             playControllViewEmbed.fullScreen = isFullScreen!
+            
 //            if let view = UIApplication.shared.value(forKey: "statusBar") as? UIView {  // 状态栏变化
 //                if !isFullScreen! {
 //                    view.alpha = 1.0
@@ -320,7 +315,7 @@ open class NicooPlayerView: UIView {
         self.avItem?.removeObserver(self, forKeyPath: "loadedTimeRanges")
         self.avItem?.removeObserver(self, forKeyPath: "playbackBufferEmpty")
         self.avItem?.removeObserver(self, forKeyPath: "playbackLikelyToKeepUp")
-        orientationSupport = NicooPlayerOrietation.orientationPortrait
+        orientationSupport = PlayerOrietation.orientationPortrait
         destructPlayerResource()
     }
     
@@ -615,10 +610,10 @@ private extension NicooPlayerView {
         playControllViewEmbed.panGesture.isEnabled = true //!isM3U8
         autoHideBar()
         if playControllViewEmbed.playLocalFile! {       // 播放本地视频时只支持左右
-            orientationSupport = NicooPlayerOrietation.orientationLeftAndRight
+            orientationSupport = PlayerOrietation.orientationLeftAndRight
         } else {
             showLoadingHud()      /// 网络视频才显示菊花
-            orientationSupport = NicooPlayerOrietation.orientationAll
+            orientationSupport = PlayerOrietation.orientationAll
         }
         
         player?.play()
@@ -706,7 +701,7 @@ private extension NicooPlayerView {
                 if strongSelf.playControllViewEmbed.playLocalFile! {   // 直接全屏播放本地视频
                     strongSelf.removeFromSuperview()
                     strongSelf.cancleAutoHideBar()
-                    orientationSupport = NicooPlayerOrietation.orientationPortrait
+                    orientationSupport = PlayerOrietation.orientationPortrait
                     strongSelf.playLocalFileVideoCloseCallBack?(self?.playedValue ?? 0.0)
                     strongSelf.interfaceOrientation(UIInterfaceOrientation.landscapeRight)
                     strongSelf.interfaceOrientation(UIInterfaceOrientation.portrait)
@@ -743,12 +738,12 @@ private extension NicooPlayerView {
         playControllViewEmbed.screenLockButtonClickBlock = { [weak self] (sender) in
             guard let strongSelf = self else { return }
             if sender.isSelected {
-                orientationSupport = NicooPlayerOrietation.orientationLeftAndRight
+                orientationSupport = PlayerOrietation.orientationLeftAndRight
             }else {
                 if strongSelf.playControllViewEmbed.playLocalFile! {
-                    orientationSupport = NicooPlayerOrietation.orientationLeftAndRight
+                    orientationSupport = PlayerOrietation.orientationLeftAndRight
                 } else {
-                    orientationSupport = NicooPlayerOrietation.orientationAll
+                    orientationSupport = PlayerOrietation.orientationAll
                 }
             }
         }
@@ -1024,16 +1019,6 @@ private extension NicooPlayerView {
                 self.snp.makeConstraints({ (make) in
                     make.edges.equalTo(UIApplication.shared.keyWindow!)
                 })
-                if #available(iOS 11.0, *) {                           // 横屏播放时，适配X
-                    if UIDevice.current.isiPhoneXSeriesDevices() {
-                        self.playControllViewEmbed.snp.remakeConstraints({ (make) in
-                            make.leading.equalTo(self.safeAreaLayoutGuide.snp.leading).offset(28)
-                            make.trailing.equalTo(self.safeAreaLayoutGuide.snp.trailing).offset(-28)
-                            make.top.equalTo(self.safeAreaLayoutGuide.snp.top)
-                            make.bottom.equalToSuperview()
-                        })
-                    }
-                }
                 self.layoutIfNeeded()
                 self.playControllViewEmbed.layoutIfNeeded()
                 self.playControllViewEmbed.videoNameLable.isHidden = false
@@ -1048,9 +1033,6 @@ private extension NicooPlayerView {
                     UIView.animate(withDuration: 0.2, delay: 0, options: UIView.AnimationOptions.curveLinear, animations: {
                         self.snp.makeConstraints({ (make) in
                             make.edges.equalTo(containerView)
-                        })
-                        self.playControllViewEmbed.snp.remakeConstraints({ (make) in
-                            make.edges.equalToSuperview()
                         })
                         self.layoutIfNeeded()
                         self.playControllViewEmbed.layoutIfNeeded()

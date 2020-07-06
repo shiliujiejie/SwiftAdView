@@ -9,6 +9,7 @@ class PlayerViewConfig: NSObject {
     var loadingBarColor: UIColor? = UIColor.white
     var loadingBarHeight: CGFloat = 2.0
     /// 进度条 颜色
+    var controlViewCoverLayer: Bool = true
     var progressTintColor: UIColor? = UIColor(white: 0.85, alpha: 0.9)
     var progressBackgroundColor: UIColor? = UIColor.clear
     var progreesStrackTintColor: UIColor? = UIColor(white: 0.5, alpha: 0.5)

@@ -4,8 +4,6 @@ PODS:
     - GCDWebServer/Core (= 3.5.4)
   - GCDWebServer/Core (3.5.4)
   - Kingfisher (4.10.1)
-  - NicooPlayer (1.3.6):
-    - SnapKit
   - SnapKit (4.2.0)
   - SQLite.swift (0.12.2):
     - SQLite.swift/standard (= 0.12.2)
@@ -15,7 +13,6 @@ DEPENDENCIES:
   - Alamofire
   - GCDWebServer
   - Kingfisher
-  - NicooPlayer
   - SnapKit
   - SQLite.swift
 
@@ -24,7 +21,6 @@ SPEC REPOS:
     - Alamofire
     - GCDWebServer
     - Kingfisher
-    - NicooPlayer
     - SnapKit
     - SQLite.swift
 
@@ -32,10 +28,9 @@ SPEC CHECKSUMS:
   Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
   GCDWebServer: 2c156a56c8226e2d5c0c3f208a3621ccffbe3ce4
   Kingfisher: c148cd7b47ebde9989f6bc7c27dcaa79d81279a0
-  NicooPlayer: bc73270444b8370ead3fedcfdd965b833821160d
   SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
   SQLite.swift: d2b4642190917051ce6bd1d49aab565fe794eea3
 
-PODFILE CHECKSUM: 1a54a2a27fe17a48fb7e7cbc520c5d224245e023
+PODFILE CHECKSUM: 069fec692eac78a280808f4a00b5a5faa02de833
 
 COCOAPODS: 1.8.4

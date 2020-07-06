@@ -47,6 +47,58 @@
 		04CC2BCF24571287009CDB9D /* TSModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CC2BCE24571287009CDB9D /* TSModel.swift */; };
 		04CC2BD1245712F2009CDB9D /* DownloadHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CC2BD0245712F2009CDB9D /* DownloadHelper.swift */; };
 		04CC2BD3245863B4009CDB9D /* DownLoadedTSPlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CC2BD2245863B4009CDB9D /* DownLoadedTSPlayerVC.swift */; };
+		04DD09C324AC917000DCC901 /* NicooPlayerOrietation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04DD098F24AC917000DCC901 /* NicooPlayerOrietation.swift */; };
+		04DD09C424AC917000DCC901 /* NicooPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04DD099024AC917000DCC901 /* NicooPlayerView.swift */; };
+		04DD09C524AC917000DCC901 /* NicooAssetResourceLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04DD099124AC917000DCC901 /* NicooAssetResourceLoader.swift */; };
+		04DD09C624AC917000DCC901 /* NicooPlayerControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04DD099224AC917000DCC901 /* NicooPlayerControlView.swift */; };
+		04DD09C724AC917000DCC901 /* NicooVideoRequestTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04DD099324AC917000DCC901 /* NicooVideoRequestTask.swift */; };
+		04DD09C824AC917000DCC901 /* NicooBrightnessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04DD099424AC917000DCC901 /* NicooBrightnessView.swift */; };
+		04DD09C924AC917000DCC901 /* NicooNetWorkAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04DD099524AC917000DCC901 /* NicooNetWorkAlert.swift */; };
+		04DD09CA24AC917000DCC901 /* NicooImgManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04DD099624AC917000DCC901 /* NicooImgManager.swift */; };
+		04DD09CB24AC917000DCC901 /* NicooLoadedFailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04DD099724AC917000DCC901 /* NicooLoadedFailedView.swift */; };
+		04DD09CC24AC917000DCC901 /* NicooPlayer_slider.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD099924AC917000DCC901 /* NicooPlayer_slider.png */; };
+		04DD09CD24AC917000DCC901 /* pause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD099A24AC917000DCC901 /* pause@2x.png */; };
+		04DD09CE24AC917000DCC901 /* Player_pause@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD099B24AC917000DCC901 /* Player_pause@3x.png */; };
+		04DD09CF24AC917000DCC901 /* play@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD099C24AC917000DCC901 /* play@3x.png */; };
+		04DD09D024AC917000DCC901 /* NicooPlayer_slider@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD099D24AC917000DCC901 /* NicooPlayer_slider@2x.png */; };
+		04DD09D124AC917000DCC901 /* lockscreen@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD099E24AC917000DCC901 /* lockscreen@3x.png */; };
+		04DD09D224AC917000DCC901 /* back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD099F24AC917000DCC901 /* back@2x.png */; };
+		04DD09D324AC917000DCC901 /* back@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09A024AC917000DCC901 /* back@3x.png */; };
+		04DD09D424AC917000DCC901 /* lockscreen@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09A124AC917000DCC901 /* lockscreen@2x.png */; };
+		04DD09D524AC917000DCC901 /* NicooPlayer_slider@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09A224AC917000DCC901 /* NicooPlayer_slider@3x.png */; };
+		04DD09D624AC917000DCC901 /* play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09A324AC917000DCC901 /* play@2x.png */; };
+		04DD09D724AC917000DCC901 /* Player_pause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09A424AC917000DCC901 /* Player_pause@2x.png */; };
+		04DD09D824AC917000DCC901 /* NicooPlayer_fullscreen.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09A524AC917000DCC901 /* NicooPlayer_fullscreen.png */; };
+		04DD09D924AC917000DCC901 /* pause@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09A624AC917000DCC901 /* pause@3x.png */; };
+		04DD09DA24AC917000DCC901 /* share@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09A724AC917000DCC901 /* share@2x.png */; };
+		04DD09DB24AC917000DCC901 /* forward@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09A824AC917000DCC901 /* forward@2x.png */; };
+		04DD09DC24AC917000DCC901 /* backward@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09A924AC917000DCC901 /* backward@2x.png */; };
+		04DD09DD24AC917000DCC901 /* backward@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09AA24AC917000DCC901 /* backward@3x.png */; };
+		04DD09DE24AC917000DCC901 /* forward@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09AB24AC917000DCC901 /* forward@3x.png */; };
+		04DD09DF24AC917000DCC901 /* sliderHightLight.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09AC24AC917000DCC901 /* sliderHightLight.png */; };
+		04DD09E024AC917000DCC901 /* share@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09AD24AC917000DCC901 /* share@3x.png */; };
+		04DD09E124AC917000DCC901 /* back_hight@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09AE24AC917000DCC901 /* back_hight@3x.png */; };
+		04DD09E224AC917000DCC901 /* unlock@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09AF24AC917000DCC901 /* unlock@3x.png */; };
+		04DD09E324AC917000DCC901 /* replay@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09B024AC917000DCC901 /* replay@3x.png */; };
+		04DD09E424AC917000DCC901 /* replay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09B124AC917000DCC901 /* replay@2x.png */; };
+		04DD09E524AC917000DCC901 /* unlock@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09B224AC917000DCC901 /* unlock@2x.png */; };
+		04DD09E624AC917000DCC901 /* player_close.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09B324AC917000DCC901 /* player_close.png */; };
+		04DD09E724AC917000DCC901 /* back_hight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09B424AC917000DCC901 /* back_hight@2x.png */; };
+		04DD09E824AC917000DCC901 /* share_hight@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09B524AC917000DCC901 /* share_hight@3x.png */; };
+		04DD09E924AC917000DCC901 /* replay_hight@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09B624AC917000DCC901 /* replay_hight@3x.png */; };
+		04DD09EA24AC917000DCC901 /* sliderflash@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09B724AC917000DCC901 /* sliderflash@3x.png */; };
+		04DD09EB24AC917000DCC901 /* NicooPlayer_fullscreen@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09B824AC917000DCC901 /* NicooPlayer_fullscreen@3x.png */; };
+		04DD09EC24AC917000DCC901 /* player_close@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09B924AC917000DCC901 /* player_close@2x.png */; };
+		04DD09ED24AC917000DCC901 /* shrinkScreen@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09BA24AC917000DCC901 /* shrinkScreen@3x.png */; };
+		04DD09EE24AC917000DCC901 /* shrinkScreen@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09BB24AC917000DCC901 /* shrinkScreen@2x.png */; };
+		04DD09EF24AC917000DCC901 /* NicooPlayer_fullscreen@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09BC24AC917000DCC901 /* NicooPlayer_fullscreen@2x.png */; };
+		04DD09F024AC917000DCC901 /* player_close@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09BD24AC917000DCC901 /* player_close@3x.png */; };
+		04DD09F124AC917000DCC901 /* sliderflash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09BE24AC917000DCC901 /* sliderflash@2x.png */; };
+		04DD09F224AC917000DCC901 /* replay_hight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09BF24AC917000DCC901 /* replay_hight@2x.png */; };
+		04DD09F324AC917000DCC901 /* share_hight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09C024AC917000DCC901 /* share_hight@2x.png */; };
+		04DD09F424AC917000DCC901 /* sliderflash.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09C124AC917000DCC901 /* sliderflash.png */; };
+		04DD09F524AC917000DCC901 /* player_brightness@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09C224AC917000DCC901 /* player_brightness@2x.png */; };
+		04DD09F724AC945000DCC901 /* TablePlayNativeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04DD09F624AC945000DCC901 /* TablePlayNativeController.swift */; };
 		19E6992F279053C4A5F2A89E /* Pods_SwiftAdView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 325DA2BE3B0AC373EF94A5B8 /* Pods_SwiftAdView.framework */; };
 /* End PBXBuildFile section */
 
@@ -93,6 +145,58 @@
 		04CC2BCE24571287009CDB9D /* TSModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TSModel.swift; sourceTree = "<group>"; };
 		04CC2BD0245712F2009CDB9D /* DownloadHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadHelper.swift; sourceTree = "<group>"; };
 		04CC2BD2245863B4009CDB9D /* DownLoadedTSPlayerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownLoadedTSPlayerVC.swift; sourceTree = "<group>"; };
+		04DD098F24AC917000DCC901 /* NicooPlayerOrietation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NicooPlayerOrietation.swift; sourceTree = "<group>"; };
+		04DD099024AC917000DCC901 /* NicooPlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NicooPlayerView.swift; sourceTree = "<group>"; };
+		04DD099124AC917000DCC901 /* NicooAssetResourceLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NicooAssetResourceLoader.swift; sourceTree = "<group>"; };
+		04DD099224AC917000DCC901 /* NicooPlayerControlView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NicooPlayerControlView.swift; sourceTree = "<group>"; };
+		04DD099324AC917000DCC901 /* NicooVideoRequestTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NicooVideoRequestTask.swift; sourceTree = "<group>"; };
+		04DD099424AC917000DCC901 /* NicooBrightnessView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NicooBrightnessView.swift; sourceTree = "<group>"; };
+		04DD099524AC917000DCC901 /* NicooNetWorkAlert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NicooNetWorkAlert.swift; sourceTree = "<group>"; };
+		04DD099624AC917000DCC901 /* NicooImgManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NicooImgManager.swift; sourceTree = "<group>"; };
+		04DD099724AC917000DCC901 /* NicooLoadedFailedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NicooLoadedFailedView.swift; sourceTree = "<group>"; };
+		04DD099924AC917000DCC901 /* NicooPlayer_slider.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = NicooPlayer_slider.png; sourceTree = "<group>"; };
+		04DD099A24AC917000DCC901 /* pause@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pause@2x.png"; sourceTree = "<group>"; };
+		04DD099B24AC917000DCC901 /* Player_pause@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Player_pause@3x.png"; sourceTree = "<group>"; };
+		04DD099C24AC917000DCC901 /* play@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "play@3x.png"; sourceTree = "<group>"; };
+		04DD099D24AC917000DCC901 /* NicooPlayer_slider@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NicooPlayer_slider@2x.png"; sourceTree = "<group>"; };
+		04DD099E24AC917000DCC901 /* lockscreen@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lockscreen@3x.png"; sourceTree = "<group>"; };
+		04DD099F24AC917000DCC901 /* back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back@2x.png"; sourceTree = "<group>"; };
+		04DD09A024AC917000DCC901 /* back@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back@3x.png"; sourceTree = "<group>"; };
+		04DD09A124AC917000DCC901 /* lockscreen@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lockscreen@2x.png"; sourceTree = "<group>"; };
+		04DD09A224AC917000DCC901 /* NicooPlayer_slider@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NicooPlayer_slider@3x.png"; sourceTree = "<group>"; };
+		04DD09A324AC917000DCC901 /* play@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "play@2x.png"; sourceTree = "<group>"; };
+		04DD09A424AC917000DCC901 /* Player_pause@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Player_pause@2x.png"; sourceTree = "<group>"; };
+		04DD09A524AC917000DCC901 /* NicooPlayer_fullscreen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = NicooPlayer_fullscreen.png; sourceTree = "<group>"; };
+		04DD09A624AC917000DCC901 /* pause@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pause@3x.png"; sourceTree = "<group>"; };
+		04DD09A724AC917000DCC901 /* share@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "share@2x.png"; sourceTree = "<group>"; };
+		04DD09A824AC917000DCC901 /* forward@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forward@2x.png"; sourceTree = "<group>"; };
+		04DD09A924AC917000DCC901 /* backward@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "backward@2x.png"; sourceTree = "<group>"; };
+		04DD09AA24AC917000DCC901 /* backward@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "backward@3x.png"; sourceTree = "<group>"; };
+		04DD09AB24AC917000DCC901 /* forward@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forward@3x.png"; sourceTree = "<group>"; };
+		04DD09AC24AC917000DCC901 /* sliderHightLight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sliderHightLight.png; sourceTree = "<group>"; };
+		04DD09AD24AC917000DCC901 /* share@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "share@3x.png"; sourceTree = "<group>"; };
+		04DD09AE24AC917000DCC901 /* back_hight@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back_hight@3x.png"; sourceTree = "<group>"; };
+		04DD09AF24AC917000DCC901 /* unlock@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unlock@3x.png"; sourceTree = "<group>"; };
+		04DD09B024AC917000DCC901 /* replay@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "replay@3x.png"; sourceTree = "<group>"; };
+		04DD09B124AC917000DCC901 /* replay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "replay@2x.png"; sourceTree = "<group>"; };
+		04DD09B224AC917000DCC901 /* unlock@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unlock@2x.png"; sourceTree = "<group>"; };
+		04DD09B324AC917000DCC901 /* player_close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = player_close.png; sourceTree = "<group>"; };
+		04DD09B424AC917000DCC901 /* back_hight@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back_hight@2x.png"; sourceTree = "<group>"; };
+		04DD09B524AC917000DCC901 /* share_hight@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "share_hight@3x.png"; sourceTree = "<group>"; };
+		04DD09B624AC917000DCC901 /* replay_hight@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "replay_hight@3x.png"; sourceTree = "<group>"; };
+		04DD09B724AC917000DCC901 /* sliderflash@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sliderflash@3x.png"; sourceTree = "<group>"; };
+		04DD09B824AC917000DCC901 /* NicooPlayer_fullscreen@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NicooPlayer_fullscreen@3x.png"; sourceTree = "<group>"; };
+		04DD09B924AC917000DCC901 /* player_close@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "player_close@2x.png"; sourceTree = "<group>"; };
+		04DD09BA24AC917000DCC901 /* shrinkScreen@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shrinkScreen@3x.png"; sourceTree = "<group>"; };
+		04DD09BB24AC917000DCC901 /* shrinkScreen@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shrinkScreen@2x.png"; sourceTree = "<group>"; };
+		04DD09BC24AC917000DCC901 /* NicooPlayer_fullscreen@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NicooPlayer_fullscreen@2x.png"; sourceTree = "<group>"; };
+		04DD09BD24AC917000DCC901 /* player_close@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "player_close@3x.png"; sourceTree = "<group>"; };
+		04DD09BE24AC917000DCC901 /* sliderflash@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sliderflash@2x.png"; sourceTree = "<group>"; };
+		04DD09BF24AC917000DCC901 /* replay_hight@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "replay_hight@2x.png"; sourceTree = "<group>"; };
+		04DD09C024AC917000DCC901 /* share_hight@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "share_hight@2x.png"; sourceTree = "<group>"; };
+		04DD09C124AC917000DCC901 /* sliderflash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sliderflash.png; sourceTree = "<group>"; };
+		04DD09C224AC917000DCC901 /* player_brightness@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "player_brightness@2x.png"; sourceTree = "<group>"; };
+		04DD09F624AC945000DCC901 /* TablePlayNativeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TablePlayNativeController.swift; sourceTree = "<group>"; };
 		325DA2BE3B0AC373EF94A5B8 /* Pods_SwiftAdView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SwiftAdView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		413D21ABC1A5F4E5780750E8 /* Pods-SwiftAdView.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwiftAdView.release.xcconfig"; path = "Target Support Files/Pods-SwiftAdView/Pods-SwiftAdView.release.xcconfig"; sourceTree = "<group>"; };
 		CD7B4C664A7DD87E72904414 /* Pods-SwiftAdView.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwiftAdView.debug.xcconfig"; path = "Target Support Files/Pods-SwiftAdView/Pods-SwiftAdView.debug.xcconfig"; sourceTree = "<group>"; };
@@ -131,6 +235,7 @@
 		0422894922BC9BAE00EE9B93 /* SwiftAdView */ = {
 			isa = PBXGroup;
 			children = (
+				04DD098D24AC917000DCC901 /* NactiPlayer */,
 				04C9DA12246C080500B0BA35 /* BluetoothDemo */,
 				04C9D9FD246AF09A00B0BA35 /* CateAddDemo */,
 				04CC2BC924570E23009CDB9D /* TSDownloader */,
@@ -179,6 +284,7 @@
 				049BF6882418DF0100F3611A /* PresentPlayCell.swift */,
 				049BF6462417D19400F3611A /* VideoPlayController.swift */,
 				042DA814241C0F3D0067FA38 /* VideoTableController.swift */,
+				04DD09F624AC945000DCC901 /* TablePlayNativeController.swift */,
 			);
 			path = PlayVideoControllers;
 			sourceTree = "<group>";
@@ -230,6 +336,80 @@
 				04CC2BCE24571287009CDB9D /* TSModel.swift */,
 			);
 			path = TSDownloader;
+			sourceTree = "<group>";
+		};
+		04DD098D24AC917000DCC901 /* NactiPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				04DD098E24AC917000DCC901 /* Classes */,
+				04DD099824AC917000DCC901 /* Assets */,
+			);
+			path = NactiPlayer;
+			sourceTree = "<group>";
+		};
+		04DD098E24AC917000DCC901 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				04DD098F24AC917000DCC901 /* NicooPlayerOrietation.swift */,
+				04DD099024AC917000DCC901 /* NicooPlayerView.swift */,
+				04DD099124AC917000DCC901 /* NicooAssetResourceLoader.swift */,
+				04DD099224AC917000DCC901 /* NicooPlayerControlView.swift */,
+				04DD099324AC917000DCC901 /* NicooVideoRequestTask.swift */,
+				04DD099424AC917000DCC901 /* NicooBrightnessView.swift */,
+				04DD099524AC917000DCC901 /* NicooNetWorkAlert.swift */,
+				04DD099624AC917000DCC901 /* NicooImgManager.swift */,
+				04DD099724AC917000DCC901 /* NicooLoadedFailedView.swift */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		04DD099824AC917000DCC901 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				04DD099924AC917000DCC901 /* NicooPlayer_slider.png */,
+				04DD099A24AC917000DCC901 /* pause@2x.png */,
+				04DD099B24AC917000DCC901 /* Player_pause@3x.png */,
+				04DD099C24AC917000DCC901 /* play@3x.png */,
+				04DD099D24AC917000DCC901 /* NicooPlayer_slider@2x.png */,
+				04DD099E24AC917000DCC901 /* lockscreen@3x.png */,
+				04DD099F24AC917000DCC901 /* back@2x.png */,
+				04DD09A024AC917000DCC901 /* back@3x.png */,
+				04DD09A124AC917000DCC901 /* lockscreen@2x.png */,
+				04DD09A224AC917000DCC901 /* NicooPlayer_slider@3x.png */,
+				04DD09A324AC917000DCC901 /* play@2x.png */,
+				04DD09A424AC917000DCC901 /* Player_pause@2x.png */,
+				04DD09A524AC917000DCC901 /* NicooPlayer_fullscreen.png */,
+				04DD09A624AC917000DCC901 /* pause@3x.png */,
+				04DD09A724AC917000DCC901 /* share@2x.png */,
+				04DD09A824AC917000DCC901 /* forward@2x.png */,
+				04DD09A924AC917000DCC901 /* backward@2x.png */,
+				04DD09AA24AC917000DCC901 /* backward@3x.png */,
+				04DD09AB24AC917000DCC901 /* forward@3x.png */,
+				04DD09AC24AC917000DCC901 /* sliderHightLight.png */,
+				04DD09AD24AC917000DCC901 /* share@3x.png */,
+				04DD09AE24AC917000DCC901 /* back_hight@3x.png */,
+				04DD09AF24AC917000DCC901 /* unlock@3x.png */,
+				04DD09B024AC917000DCC901 /* replay@3x.png */,
+				04DD09B124AC917000DCC901 /* replay@2x.png */,
+				04DD09B224AC917000DCC901 /* unlock@2x.png */,
+				04DD09B324AC917000DCC901 /* player_close.png */,
+				04DD09B424AC917000DCC901 /* back_hight@2x.png */,
+				04DD09B524AC917000DCC901 /* share_hight@3x.png */,
+				04DD09B624AC917000DCC901 /* replay_hight@3x.png */,
+				04DD09B724AC917000DCC901 /* sliderflash@3x.png */,
+				04DD09B824AC917000DCC901 /* NicooPlayer_fullscreen@3x.png */,
+				04DD09B924AC917000DCC901 /* player_close@2x.png */,
+				04DD09BA24AC917000DCC901 /* shrinkScreen@3x.png */,
+				04DD09BB24AC917000DCC901 /* shrinkScreen@2x.png */,
+				04DD09BC24AC917000DCC901 /* NicooPlayer_fullscreen@2x.png */,
+				04DD09BD24AC917000DCC901 /* player_close@3x.png */,
+				04DD09BE24AC917000DCC901 /* sliderflash@2x.png */,
+				04DD09BF24AC917000DCC901 /* replay_hight@2x.png */,
+				04DD09C024AC917000DCC901 /* share_hight@2x.png */,
+				04DD09C124AC917000DCC901 /* sliderflash.png */,
+				04DD09C224AC917000DCC901 /* player_brightness@2x.png */,
+			);
+			path = Assets;
 			sourceTree = "<group>";
 		};
 		62C2EAC1BAA3DFF506647D30 /* Frameworks */ = {
@@ -309,17 +489,59 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04DD09D724AC917000DCC901 /* Player_pause@2x.png in Resources */,
+				04DD09E324AC917000DCC901 /* replay@3x.png in Resources */,
+				04DD09ED24AC917000DCC901 /* shrinkScreen@3x.png in Resources */,
+				04DD09CC24AC917000DCC901 /* NicooPlayer_slider.png in Resources */,
 				0422895522BC9BAF00EE9B93 /* LaunchScreen.storyboard in Resources */,
+				04DD09DE24AC917000DCC901 /* forward@3x.png in Resources */,
+				04DD09DC24AC917000DCC901 /* backward@2x.png in Resources */,
 				0422896F22BD160D00EE9B93 /* timg.jpeg in Resources */,
+				04DD09D424AC917000DCC901 /* lockscreen@2x.png in Resources */,
+				04DD09EF24AC917000DCC901 /* NicooPlayer_fullscreen@2x.png in Resources */,
 				04C9DA08246AF0C500B0BA35 /* ChannelRecommendReusableView.xib in Resources */,
 				0422896A22BCE15A00EE9B93 /* guide02.png in Resources */,
+				04DD09D224AC917000DCC901 /* back@2x.png in Resources */,
 				04C9DA11246AF24C00B0BA35 /* AddCategoryCell.xib in Resources */,
+				04DD09E924AC917000DCC901 /* replay_hight@3x.png in Resources */,
+				04DD09F424AC917000DCC901 /* sliderflash.png in Resources */,
+				04DD09F324AC917000DCC901 /* share_hight@2x.png in Resources */,
+				04DD09D624AC917000DCC901 /* play@2x.png in Resources */,
+				04DD09DA24AC917000DCC901 /* share@2x.png in Resources */,
 				04C9DA07246AF0C500B0BA35 /* ChannelRecommendCell.xib in Resources */,
+				04DD09E724AC917000DCC901 /* back_hight@2x.png in Resources */,
+				04DD09EA24AC917000DCC901 /* sliderflash@3x.png in Resources */,
+				04DD09EE24AC917000DCC901 /* shrinkScreen@2x.png in Resources */,
+				04DD09CD24AC917000DCC901 /* pause@2x.png in Resources */,
+				04DD09D824AC917000DCC901 /* NicooPlayer_fullscreen.png in Resources */,
+				04DD09CF24AC917000DCC901 /* play@3x.png in Resources */,
+				04DD09D324AC917000DCC901 /* back@3x.png in Resources */,
+				04DD09E524AC917000DCC901 /* unlock@2x.png in Resources */,
+				04DD09F524AC917000DCC901 /* player_brightness@2x.png in Resources */,
+				04DD09E424AC917000DCC901 /* replay@2x.png in Resources */,
+				04DD09E824AC917000DCC901 /* share_hight@3x.png in Resources */,
+				04DD09D524AC917000DCC901 /* NicooPlayer_slider@3x.png in Resources */,
+				04DD09DB24AC917000DCC901 /* forward@2x.png in Resources */,
 				0422897122BE276900EE9B93 /* foldingcell.gif in Resources */,
+				04DD09E124AC917000DCC901 /* back_hight@3x.png in Resources */,
+				04DD09EB24AC917000DCC901 /* NicooPlayer_fullscreen@3x.png in Resources */,
+				04DD09DD24AC917000DCC901 /* backward@3x.png in Resources */,
 				0422896422BCC34C00EE9B93 /* 1.mp4 in Resources */,
+				04DD09F024AC917000DCC901 /* player_close@3x.png in Resources */,
 				0422895222BC9BAF00EE9B93 /* Assets.xcassets in Resources */,
+				04DD09D124AC917000DCC901 /* lockscreen@3x.png in Resources */,
+				04DD09EC24AC917000DCC901 /* player_close@2x.png in Resources */,
 				0422895022BC9BAE00EE9B93 /* Main.storyboard in Resources */,
+				04DD09E224AC917000DCC901 /* unlock@3x.png in Resources */,
+				04DD09D024AC917000DCC901 /* NicooPlayer_slider@2x.png in Resources */,
+				04DD09F224AC917000DCC901 /* replay_hight@2x.png in Resources */,
+				04DD09D924AC917000DCC901 /* pause@3x.png in Resources */,
+				04DD09E624AC917000DCC901 /* player_close.png in Resources */,
 				04C9DA05246AF0C500B0BA35 /* MyChannelReusableView.xib in Resources */,
+				04DD09E024AC917000DCC901 /* share@3x.png in Resources */,
+				04DD09F124AC917000DCC901 /* sliderflash@2x.png in Resources */,
+				04DD09DF24AC917000DCC901 /* sliderHightLight.png in Resources */,
+				04DD09CE24AC917000DCC901 /* Player_pause@3x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -377,6 +599,7 @@
 				045E77DB243D906A00EE2A69 /* PlayerView.swift in Sources */,
 				0422894D22BC9BAE00EE9B93 /* ViewController.swift in Sources */,
 				04C9DA14246C085000B0BA35 /* BluetoothController.swift in Sources */,
+				04DD09C324AC917000DCC901 /* NicooPlayerOrietation.swift in Sources */,
 				0422896822BCD22600EE9B93 /* SwiftAdFileConfig.swift in Sources */,
 				04CC2BCD24571221009CDB9D /* M3u8Parser.swift in Sources */,
 				04C9DA04246AF0C500B0BA35 /* MyChannelReusableView.swift in Sources */,
@@ -384,23 +607,32 @@
 				0422894B22BC9BAE00EE9B93 /* AppDelegate.swift in Sources */,
 				0422896022BC9C1800EE9B93 /* SwiftyTimer.swift in Sources */,
 				045E77DA243D906A00EE2A69 /* PlayerViewConfig.swift in Sources */,
+				04DD09C824AC917000DCC901 /* NicooBrightnessView.swift in Sources */,
 				04CC2BCB245711EF009CDB9D /* TSManager.swift in Sources */,
 				04C9D9FC24693B6100B0BA35 /* CategrayController.swift in Sources */,
+				04DD09CA24AC917000DCC901 /* NicooImgManager.swift in Sources */,
 				04CC2BD3245863B4009CDB9D /* DownLoadedTSPlayerVC.swift in Sources */,
+				04DD09C524AC917000DCC901 /* NicooAssetResourceLoader.swift in Sources */,
 				049BF6892418DF0100F3611A /* PresentPlayCell.swift in Sources */,
 				04C9DA0D246AF1E200B0BA35 /* SQLiteManager.swift in Sources */,
+				04DD09C724AC917000DCC901 /* NicooVideoRequestTask.swift in Sources */,
 				04CC2BD1245712F2009CDB9D /* DownloadHelper.swift in Sources */,
 				04C9DA09246AF0C500B0BA35 /* ChannelRecommendCell.swift in Sources */,
+				04DD09C624AC917000DCC901 /* NicooPlayerControlView.swift in Sources */,
+				04DD09C924AC917000DCC901 /* NicooNetWorkAlert.swift in Sources */,
 				0422896222BC9C6D00EE9B93 /* SwiftAdView.swift in Sources */,
+				04DD09C424AC917000DCC901 /* NicooPlayerView.swift in Sources */,
 				0493192322C20C1F000B805F /* RootViewController.swift in Sources */,
 				04CC2BCF24571287009CDB9D /* TSModel.swift in Sources */,
 				042DA815241C0F3D0067FA38 /* VideoTableController.swift in Sources */,
 				0493192122C204EC000B805F /* WebKitController.swift in Sources */,
 				04C9DA10246AF24C00B0BA35 /* AddCategoryCell.swift in Sources */,
 				04C9DA0B246AF12700B0BA35 /* CateModel.swift in Sources */,
+				04DD09F724AC945000DCC901 /* TablePlayNativeController.swift in Sources */,
 				045E77D8243D906A00EE2A69 /* PlayerCoverView.swift in Sources */,
 				04C9DA06246AF0C500B0BA35 /* ChannelRecommendReusableView.swift in Sources */,
 				045E77DE243DB19600EE2A69 /* M3u8ResourceLoader.swift in Sources */,
+				04DD09CB24AC917000DCC901 /* NicooLoadedFailedView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

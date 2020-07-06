@@ -1,5 +1,4 @@
 import UIKit
-import NicooPlayer
 import GCDWebServer
 
 /// 播放本地视频

@@ -1,13 +1,6 @@
-//
-//  NicooBrightnessView.swift
-//  NicooPlayer
-//
-//  Created by 小星星 on 2018/6/19.
-//
 
 import UIKit
 import SnapKit
-
 
 extension UINavigationController { // 用于状态栏的显示，样式
     override open var preferredStatusBarStyle: UIStatusBarStyle {

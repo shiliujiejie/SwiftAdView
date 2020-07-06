@@ -23,12 +23,11 @@ class NicooPlayerControlView: UIView {
     
     lazy var topBarBgLayer: CAGradientLayer = {
         let gradientLayer = CAGradientLayer()
-        gradientLayer.colors = [UIColor(white: 0.0, alpha: 0.6).cgColor, UIColor.darkGray.withAlphaComponent(0.0).cgColor]
         gradientLayer.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.height, height: 60)
-        gradientLayer.locations = [0, 0.99, 1]
+        gradientLayer.colors =  [UIColor(white: 0.0, alpha: 0.4).cgColor,UIColor(white: 0.0, alpha: 0.2).cgColor,UIColor.clear.cgColor]
+        gradientLayer.locations = [0.3, 0.6, 1.0]
         return gradientLayer
     }()
-    
     lazy var closeButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(NicooImgManager.foundImage(imageName: ""), for: .normal)
@@ -85,7 +84,6 @@ class NicooPlayerControlView: UIView {
     /// 底部控制栏
     lazy var bottomControlBarView: UIView = {
         let view = UIView()
-       // view.backgroundColor = UIColor(white: 0.2, alpha: 0.2)
         //创建渐变层
         view.layer.addSublayer(bottomBarBgLayer)
         return view
@@ -93,9 +91,8 @@ class NicooPlayerControlView: UIView {
     
     lazy var bottomBarBgLayer: CAGradientLayer = {
         let gradientLayer = CAGradientLayer()
-        gradientLayer.colors = [UIColor.darkGray.withAlphaComponent(0.0).cgColor, UIColor(white: 0.0, alpha: 0.6).cgColor]
-        gradientLayer.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.height, height: 40)
-        gradientLayer.locations = [0, 0.99, 1]
+        gradientLayer.colors = [UIColor.clear.cgColor,  UIColor(white: 0.0, alpha: 0.2).cgColor,UIColor(white: 0.0, alpha: 0.5).cgColor]
+        gradientLayer.locations = [0.3, 0.6, 1.0]
         return gradientLayer
     }()
     
@@ -217,6 +214,7 @@ class NicooPlayerControlView: UIView {
                 self.perform(#selector(autoHideScreenLockButton), with: nil, afterDelay: 5)
             }
             updateTopBarWith(fullScreen: fullScreen!)
+            updateBottomBarWith(fullScreen: fullScreen!)
         }
     }
     /// 是否锁屏
@@ -226,13 +224,13 @@ class NicooPlayerControlView: UIView {
                 screenLockButton.isSelected = true
                 doubleTapGesture.isEnabled = false
                 panGesture.isEnabled = false
-                orientationSupport = NicooPlayerOrietation.orientationLeftAndRight
+                orientationSupport = PlayerOrietation.orientationLeftAndRight
             }else {
                 screenLockButton.isSelected = false
                 doubleTapGesture.isEnabled = true
                 panGesture.isEnabled = true
                 /// 全屏播放本地时，只支持左右，非直接全屏播放支持上左右
-                orientationSupport = playLocalFile! ? NicooPlayerOrietation.orientationLeftAndRight : NicooPlayerOrietation.orientationAll
+                orientationSupport = playLocalFile! ? PlayerOrietation.orientationLeftAndRight : PlayerOrietation.orientationAll
             }
         }
     }
@@ -393,7 +391,6 @@ extension NicooPlayerControlView {
             self.replayButtonClickBlock!(sender)
         }
     }
-    
 }
 
 // MARK: - UIGestureRecognizerDelegate
@@ -435,7 +432,7 @@ extension NicooPlayerControlView {
             make.height.equalTo(0)
         }
         bottomControlBarView.snp.updateConstraints { (make) in
-            make.height.equalTo(fullScreen! ? 10 : 60)
+            make.height.equalTo(fullScreen! ? 10 : 80)
         }
         
         UIView.animate(withDuration: 0.1, animations: {
@@ -455,13 +452,12 @@ extension NicooPlayerControlView {
         }
         
         bottomControlBarView.snp.updateConstraints { (make) in
-            make.height.equalTo(60)
+            make.height.equalTo(90)
         }
         UIView.animate(withDuration: 0.2, animations: {
             self.layoutIfNeeded()
         })
     }
-    
     
 }
 
@@ -475,14 +471,16 @@ extension NicooPlayerControlView {
         layoutMunesButton()
         layoutVideoNameLable()
         layoutBottomControlBarView()
-        layoutPlayOrPauseBtn()
+       
         if barType == PlayerBottomBarType.PlayerBottomBarTimeBothSides {
             layoutPositionTimeLab()
         }
-        layoutFullScreenBtn()
+
         layoutDurationTimeLab()
         layoutLoadedProgressView()
         layoutTimeSlider()
+        layoutPlayOrPauseBtn()
+        layoutFullScreenBtn()
         layoutLoadingActivityView()
         layoutReplayContainerView()
         layoutReplayButton()
@@ -493,12 +491,7 @@ extension NicooPlayerControlView {
     private func layoutBottomControlBarView() {
         bottomControlBarView.snp.makeConstraints { (make) in
             make.leading.bottom.trailing.equalTo(0)
-            if UIDevice.current.isPad() {             //兼容iPad
-                make.height.equalTo(80)
-            } else {
-                make.height.equalTo(60)
-            }
-            
+            make.height.equalTo(90)
         }
     }
     private func layoutCloseButton() {
@@ -547,7 +540,7 @@ extension NicooPlayerControlView {
     }
     private func layoutScreenLockButton() {
         screenLockButton.snp.makeConstraints { (make) in
-            make.leading.equalTo(10)
+            make.leading.equalTo((UIDevice.current.isiPhoneXSeriesDevices() || UIDevice.current.isSimulator()) ? 50 : 10)
             make.centerY.equalToSuperview()
             make.height.equalTo(45)
             make.width.equalTo(45)
@@ -569,31 +562,26 @@ extension NicooPlayerControlView {
             }
         }
     }
-    private func layoutPlayOrPauseBtn() {
-        playOrPauseBtn.snp.makeConstraints { (make) in
-            make.top.leading.equalTo(5)
-            make.bottom.equalTo(-5)
-            make.width.equalTo(30)
-        }
-    }
     private func layoutPositionTimeLab() {
         positionTimeLab.snp.makeConstraints { (make) in
-            make.leading.equalTo(playOrPauseBtn.snp.trailing).offset(5)
-            make.centerY.equalTo(bottomControlBarView.snp.centerY)
-            make.height.equalTo(25)
-            make.width.equalTo(45)
+            make.top.equalTo(0)
+            make.leading.equalTo(10)
+            make.height.equalTo(20)
+        }
+    }
+    private func layoutDurationTimeLab() {
+        durationTimeLab.snp.makeConstraints { (make) in
+            make.top.equalTo(0)
+            make.trailing.equalTo(-10)
+            make.height.equalTo(20)
         }
     }
     private func layoutLoadedProgressView() {
         loadedProgressView.snp.makeConstraints { (make) in
-            make.centerY.equalTo(bottomControlBarView.snp.centerY)
+            make.centerY.equalTo(positionTimeLab.snp.bottom).offset(15)
             make.height.equalTo(1.5)
-            if barType == PlayerBottomBarType.PlayerBottomBarTimeBothSides {
-                make.leading.equalTo(positionTimeLab.snp.trailing).offset(5)
-            } else {
-                make.leading.equalTo(playOrPauseBtn.snp.trailing).offset(5)
-            }
-            make.trailing.equalTo(durationTimeLab.snp.leading).offset(-5)
+            make.leading.equalTo(positionTimeLab)
+            make.trailing.equalTo(durationTimeLab)
         }
     }
     private func layoutTimeSlider() {
@@ -604,39 +592,55 @@ extension NicooPlayerControlView {
             make.height.equalTo(30)
         }
     }
-    private func layoutDurationTimeLab() {
-        durationTimeLab.snp.makeConstraints { (make) in
-            make.trailing.equalTo(fullScreenBtn.snp.leading).offset(-5)
-            make.height.equalTo(25)
-            make.centerY.equalTo(bottomControlBarView.snp.centerY)
-            if barType == PlayerBottomBarType.PlayerBottomBarTimeBothSides {
-                make.width.equalTo(45)
-            } else {
-                make.width.equalTo(80)
-            }
+    private func layoutPlayOrPauseBtn() {
+        playOrPauseBtn.snp.makeConstraints { (make) in
+            make.top.equalTo(timeSlider.snp.bottom)
+            make.leading.equalTo(timeSlider)
+            make.width.height.equalTo(30)
         }
     }
     private func layoutFullScreenBtn() {
         fullScreenBtn.snp.makeConstraints { (make) in
-            make.top.bottom.equalToSuperview()
-            make.trailing.equalTo(-5)
-            make.width.equalTo(40)
+            make.top.equalTo(timeSlider.snp.bottom)
+            make.trailing.equalTo(timeSlider)
+            make.height.equalTo(30)
+            make.width.equalTo(30)
         }
     }
-    
     private func updateTopBarWith(fullScreen: Bool) {
         topControlBarView.snp.updateConstraints { (make) in
             make.height.equalTo(fullScreen ? 60 : 40)
         }
         closeButton.snp.updateConstraints { (make) in
             make.top.equalTo(fullScreen ? 20 : 0)
+            make.width.equalTo(fullScreen ? 30 : 0)
+            if fullScreen {
+                make.leading.equalTo((UIDevice.current.isiPhoneXSeriesDevices() || UIDevice.current.isSimulator()) ? 50 : 0)
+            } else {
+                make.leading.equalTo(0)
+            }
         }
         videoNameLable.snp.updateConstraints { (make) in
             make.top.equalTo(fullScreen ? 20 : 0)
         }
         munesButton.snp.updateConstraints { (make) in
             make.top.equalTo(fullScreen ? 20 : 0)
-    
+        }
+    }
+    private func updateBottomBarWith(fullScreen: Bool) {
+        positionTimeLab.snp.updateConstraints { (make) in
+            if fullScreen {
+                make.leading.equalTo((UIDevice.current.isiPhoneXSeriesDevices() || UIDevice.current.isSimulator()) ? 50 : 10)
+            } else {
+                make.leading.equalTo(10)
+            }
+        }
+        durationTimeLab.snp.updateConstraints { (make) in
+            if fullScreen {
+                 make.trailing.equalTo((UIDevice.current.isiPhoneXSeriesDevices() || UIDevice.current.isSimulator()) ? -50 : -10)
+            } else {
+                 make.trailing.equalTo(-10)
+            }
         }
     }
     
@@ -645,13 +649,11 @@ extension NicooPlayerControlView {
         topControlBarView.layoutIfNeeded()
         bottomControlBarView.layoutIfNeeded()
         if fullScreen! {
-            topBarBgLayer.frame = CGRect(x: -80, y: 0, width: topControlBarView.frame.size.width + 160, height: topControlBarView.frame.size.height)
-            bottomBarBgLayer.frame = CGRect(x: -80, y: 0, width: bottomControlBarView.frame.size.width + 160, height: 60)
+            topBarBgLayer.frame = CGRect(x: 0, y: 0, width: topControlBarView.frame.size.width  , height: topControlBarView.frame.size.height)
+            bottomBarBgLayer.frame = CGRect(x: 0, y: 0, width: bottomControlBarView.frame.size.width , height: 90)
         } else {
             topBarBgLayer.frame = CGRect(x: 0, y: 0, width: topControlBarView.frame.size.width, height: topControlBarView.frame.size.height)
-            bottomBarBgLayer.frame = CGRect(x: 0, y: 0, width: bottomControlBarView.frame.size.width, height: 60)
+            bottomBarBgLayer.frame = CGRect(x: 0, y: 0, width: bottomControlBarView.frame.size.width, height: 90)
         }
-       
     }
-    
 }
