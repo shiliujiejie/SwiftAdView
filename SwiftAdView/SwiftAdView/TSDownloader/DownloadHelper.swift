@@ -15,12 +15,12 @@ public class DownLoadHelper: NSObject {
     var tsListModel: TSListModel!
     /// 正在下载的 ts 脚标
     var downloadIndex: Int = 0
-    /// 某个ts下载失败后重试1次， 为1时，不再下载，0时重试一次
-    var retryTimes: Int = 0
     /// 已下载时长
     var downLoadedDuration: Float = 0.0
+    /// 某个ts下载失败后重试1次， 为1时，不再下载，0时重试一次
+    private var retryTimes: Int = 0
     /// 当前正在下载的ts文件的总大小（byte）
-    var tsDataByte: Int64 = 0
+    private var tsDataByte: Int64 = 0
     
     var downloadSuccessHandler:(() -> Void)?
     var downloadFailHandler:((_ failMsg: String) -> Void)?
@@ -50,7 +50,8 @@ public class DownLoadHelper: NSObject {
         }
         return false
     }
-    open class func filesIsExist(_ identifer: String) -> Bool {
+    /// 是否已经是下载完成的文件夹
+    open class func filesIsAllExist(_ identifer: String) -> Bool {
         let filePath = getDocumentsDirectory().appendingPathComponent(downloadFile).appendingPathComponent(identifer)
         if FileManager.default.fileExists(atPath: filePath.path) {
             let files = findFiles(path: filePath.path, filterTypes: ["m3u8"])

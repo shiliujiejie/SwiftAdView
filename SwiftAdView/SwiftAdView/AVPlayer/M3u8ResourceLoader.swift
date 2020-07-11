@@ -4,29 +4,48 @@ import UIKit
 import AVKit
 
 class M3u8ResourceLoader: NSObject, AVAssetResourceLoaderDelegate {
-
-    /// 假的链接(乱写的，前缀反正不要http或者https，后缀一定要.m3u8，中间随便)
-    fileprivate let m3u8_url_vir = "m3u8Scheme://fake.m3u8"
-    /// 真的链接
-    fileprivate var m3u8_url: String = ""
+    
     /// 单例
     fileprivate static let instance = M3u8ResourceLoader()
-    /// 这里可以隐式解包
-    private var URIKey: String?
     /// 获取单例
     public static var shared: M3u8ResourceLoader {
         get {
             return instance
         }
     }
+    /// 假的链接(乱写的，前缀反正不要http或者https，后缀一定要.m3u8，中间随便)
+    fileprivate let m3u8_url_vir = "scheme://fake.m3u8"
+    /// 真的链接
+    fileprivate var m3u8_url: String = ""
+    /// 真实的加密密钥
+    private var URIKey: String?
+    /// 是否播放时缓存
+    private var cacheWhenPlaying: Bool = false
+    let tsManager = TSManager()
+    
     /// 生成AVPlayerItem
-    public func playerItem(with url: String, uriKey: String) -> AVPlayerItem {
-        /// 直接用虚假的m3u8(m3u8_url_vir)进行初始化，原因是：
-        ///外界传进来的url有可能不是以.m3u8结尾的，即不是m3u8格式的链接，如果直接用url进行初始化，那么代理方法拦截时，系统不会以m3u8文件格式去处理拦截的url，就是系统只会发起一次网络请求，之后的操作完全无效，而用虚假的m3u8链接，是为了混淆系统，让系统直接认为我们请求的链接就是m3u8格式的链接，那么代理里面的拦截就会执行下去，真正的请求链接通过赋值给变量m3u8_url进行保存，只需要在代理方法里面发起真正的链接请求就行了
+    public func playerItem(with url: URL, uriKey: String? = nil, cacheWhenPlaying: Bool? = false) -> AVPlayerItem {
         URIKey = uriKey
-        m3u8_url = url
-        let urlAsset = AVURLAsset(url: URL(string: m3u8_url_vir)!, options: nil)
-        urlAsset.resourceLoader.setDelegate(self, queue: .main)
+        m3u8_url = url.absoluteString
+       
+        self.cacheWhenPlaying = cacheWhenPlaying ?? false
+        if self.cacheWhenPlaying {
+            tsManager.m3u8URL = m3u8_url
+            tsManager.directoryName = m3u8_url.md5()
+            if URIKey != nil && !URIKey!.isEmpty {
+                tsManager.download(URIKey)
+            } else {
+                tsManager.download()
+            }
+        }
+        var urlAsset: AVURLAsset
+        if URIKey != nil {
+            /// 用虚假的m3u8(m3u8_url_vir)进行初始化 原因是：外界传进来的url有可能不是以.m3u8结尾的，即不是m3u8格式的链接，如果直接用url进行初始化，那么代理方法拦截时，系统不会以m3u8文件格式去处理拦截的url，就是系统只会发起一次网络请求，之后的操作完全无效，而用虚假的m3u8链接，是为了混淆系统，让系统直接认为我们请求的链接就是m3u8格式的链接，那么代理里面的拦截就会执行下去，真正的请求链接通过赋值给变量m3u8_url进行保存，只需要在代理方法里面发起真正的链接请求就行了
+            urlAsset = AVURLAsset(url: URL(string: m3u8_url_vir)!, options: nil)
+            urlAsset.resourceLoader.setDelegate(self, queue: .main)
+        } else {
+            urlAsset = AVURLAsset(url: url, options: nil)
+        }
         let item = AVPlayerItem(asset: urlAsset)
         if #available(iOS 9.0, *) {
             item.canUseNetworkResourcesForLiveStreamingWhilePaused = true
@@ -37,20 +56,20 @@ class M3u8ResourceLoader: NSObject, AVAssetResourceLoaderDelegate {
     ///true代表意思：系统，你要等等，不能播放，需要等我通知，你才能继续（相当于系统进程被阻断，直到收到了某些消息，才能继续运行）
     /// false代表意思：系统，你不要等，直接播放
     func resourceLoader(_ resourceLoader: AVAssetResourceLoader, shouldWaitForLoadingOfRequestedResource loadingRequest: AVAssetResourceLoadingRequest) -> Bool {
-        
+         print("CurrentRequest -- Url )")
         /// 获取到拦截的链接url
         guard let url = loadingRequest.request.url?.absoluteString else {
             return false
         }
-        //print("CurrentRequest -- Url == \(url)")
+        print("CurrentRequest -- Url == \(url)")
         
         /// 判断url请求是不是 ts (请求很频繁，因为一个视频分割成多个ts，直接放最前)
         if url.hasSuffix(".ts") {
             /// 处理的操作异步进行
-            //print("Fake_Ts -- url = \(url)")
+            print("Fake_Ts -- url = \(url)")
             guard let realUrl = URL(string: m3u8_url) else { return false }
             DispatchQueue.main.async {
-            /// 在这里可以对ts链接进行各种处理，反正都是字符串，处理完毕后更换掉系统原先的请求，用新的url去重新请求
+            /// 在这里可以对ts链接进行各种处理，（后台ts文件和m3u8文件在同一目录下）
                 let newUrl = url.replacingOccurrences(of: self.m3u8_url_vir, with: realUrl.deletingLastPathComponent().absoluteString)
                 
                 if let url = URL(string: newUrl) {
@@ -59,7 +78,8 @@ class M3u8ResourceLoader: NSObject, AVAssetResourceLoaderDelegate {
                     loadingRequest.redirect = URLRequest(url: url)
                     /// 302: 重定向(不懂？上百度)
                     loadingRequest.response = HTTPURLResponse(url: url, statusCode: 302, httpVersion: nil, headerFields: nil)
-                    
+                    //Data.init(contentsOf: <#T##URL#>)
+                    //loadingRequest.dataRequest?.respond(with: <#T##Data#>)
                 //总之上面两步就是替换原先旧的网络请求，发起新的网络请求，如果不需要对ts链接进行任何操作的，屏蔽上两步
                 /// 通知系统请求结束
                     loadingRequest.finishLoading()
@@ -73,9 +93,12 @@ class M3u8ResourceLoader: NSObject, AVAssetResourceLoaderDelegate {
             return true
         }
         
+        if url == m3u8_url {
+            print("true_M3u8 --Url == \(url)")
+        }
         /// 判断url请求是不是 m3u8 (第一次发起的是m3u8请求，但是只请求一次，就放中间)
         if url == m3u8_url_vir {
-            //print("Fake_M3u8 --Url == \(url)")
+            print("Fake_M3u8 --Url == \(url)")
             /// 处理的操作异步进行
             DispatchQueue.global().async {
             ///在这里通过请求m3u8_url链接获取m3u8的数据，其实就是一段字符串(和上面的apple_m3u8字符串相似)，将字符串直接转为Data格式，可以直接从网上下载，直接转为Data，有一点必须注意，网络请求必须是同步的，不能为异步的
@@ -83,7 +106,7 @@ class M3u8ResourceLoader: NSObject, AVAssetResourceLoaderDelegate {
                     DispatchQueue.main.async {
                         /// 获取到原始m3u8字符串
                         if let m3u8String = String(data: data, encoding: .utf8) {
-                            //print("M3u8_Text String ==\n\n \(m3u8String)")
+                            print("M3u8_Text String ==\n\n \(m3u8String)")
                             /// 可以对字符串进行任意的修改，比如：
                             /// 1、后端对URI里面的链接进行过加密，可以在这里解密后修改替换回去
                             ///2、URI链接没进行前缀替换，前缀还是http或者https的，系统请求之后是不会在代理方法里面拦截之后的操作，这需要我们手动替换前缀，上面的字符串前缀是替换过的(还不明白的自己看上面URI里面的链接)
@@ -116,7 +139,7 @@ class M3u8ResourceLoader: NSObject, AVAssetResourceLoaderDelegate {
         
         /// 判断url请求是不是 key (key只请求一次，就放最后面)
         if !url.hasSuffix(".ts") && url != m3u8_url_vir {
-            //print("Fake_Key--Url == \(url)")
+            print("Fake_Key--Url == \(url)")
             /// 处理的操作异步进行  http://vm.4ywc.cn/enc.key
             DispatchQueue.main.async {
                 ///获取key的数据，其实也是一串字符串，如果需要验证证书之类的，用Alamofire请求吧，同上面的m3u8一样，也要同步
@@ -167,3 +190,13 @@ class M3u8ResourceLoader: NSObject, AVAssetResourceLoaderDelegate {
 }
 
 
+extension String {
+    func urlScheme(scheme:String) -> URL? {
+        if let url = URL.init(string: self) {
+            var components = URLComponents.init(url: url, resolvingAgainstBaseURL: false)
+            components?.scheme = scheme
+            return components?.url
+        }
+        return nil
+    }
+}

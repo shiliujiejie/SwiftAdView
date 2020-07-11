@@ -146,7 +146,7 @@ public class PlayerView: UIView {
         coverView.progressView.backgroundColor = enable ? progressBackgroundColor : .clear
         pauseImg.alpha = enable ? 1 : 0
     }
-    public func startPlay(url: URL?, in view: UIView, _ uri: String? = nil) {
+    public func startPlay(url: URL?, in view: UIView, uri: String? = nil, cache: Bool? = false) {
         delegate?.customActionsBeforePlay()
         realeasePlayer()
         guard let trueUrl = url else {
@@ -161,11 +161,7 @@ public class PlayerView: UIView {
         if coverView != nil {
             coverView.removeFromSuperview()
         }
-        if let uriKey = uri, let urlStr = url?.absoluteString, !uriKey.isEmpty {
-            avItem = M3u8ResourceLoader.shared.playerItem(with: urlStr, uriKey: uriKey)
-        } else {
-            avItem = AVPlayerItem(asset: AVURLAsset(url: trueUrl, options: nil))
-        }
+        avItem = M3u8ResourceLoader.shared.playerItem(with: trueUrl, uriKey: uri, cacheWhenPlaying: cache)
         player = AVPlayer(playerItem: avItem!)
         playerLayer = AVPlayerLayer(player: player!)
         playerLayer?.frame = self.bounds

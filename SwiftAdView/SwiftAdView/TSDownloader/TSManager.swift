@@ -26,17 +26,19 @@ class TSManager: NSObject {
     private let m3u8Parser = M3u8Parser()
     private let downLoader = DownLoadHelper()
     
-    open func parse() {
-        m3u8Parser.parseM3u8(url: m3u8URL, succeedHandler: { [weak self] (tsList) in
+    /// 解析url
+    open func parse(_ uriKey: String? = nil) {
+        m3u8Parser.parseM3u8(url: m3u8URL, key: uriKey, succeedHandler: { [weak self] (tsList) in
             print("tsList == \(tsList.tsModelArray)")
             self?.delegate?.m3u8ParserSuccess()
         }) { [weak self] (errorMsg) in
             print(" 解析失败描述 = \(errorMsg)")
-             self?.delegate?.m3u8ParserFailed()
+            self?.delegate?.m3u8ParserFailed()
         }
     }
-    open func download() {
-        m3u8Parser.parseM3u8(url: m3u8URL, succeedHandler: { [weak self] (tsList) in
+    /// 下载
+    open func download(_ uriKey: String? = nil) {
+        m3u8Parser.parseM3u8(url: m3u8URL, key: uriKey, succeedHandler: { [weak self] (tsList) in
             print("tsModelLs == \(tsList.tsModelArray)")
             self?.delegate?.m3u8ParserSuccess()
             self?.downLoadTsModels(tsList)
@@ -61,12 +63,29 @@ class TSManager: NSObject {
             self?.delegate?.m3u8ParserFailed()
         }
     }
+    /// 暂停
     open func pause() {
         downLoader.pauseDownload()
     }
     /// app内 pause(暂停) 后，click resume（点击 继续下载）
     open func resume() {
         downLoader.resume()
+    }
+    /// 删除所有下载好的本地文件夹
+    open func removeAllCacheFiles() {
+        DownLoadHelper.deleteAllDownloadedContents()
+    }
+    /// 置顶文件夹名删除本地文件夹
+    open func deleteFile(_ identifer: String) {
+        DownLoadHelper.deleteDownloadedContents(identifer)
+    }
+    /// 是否被中断的下载
+    open func isInterruptTask(_ identifer: String) -> Bool {
+        return DownLoadHelper.checkIsInterruptDownload(identifer)
+    }
+    /// 是否已成功下载
+    open func downloadSucceeded(_ identifer: String) -> Bool  {
+        return DownLoadHelper.filesIsAllExist(identifer)
     }
     
 }

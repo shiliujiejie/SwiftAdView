@@ -24,6 +24,9 @@ class M3u8Parser: NSObject {
     /// 第一次解析出来的.m3u8后缀
     var lastM3u8File: String = ""
     
+    /// 自定义的密钥
+    var URIKey: String?
+    
     var currentIndex: Int = 0
     
     
@@ -31,9 +34,11 @@ class M3u8Parser: NSObject {
     var parseFailHandler:((_ failMsg: String) -> Void)?
     
     func parseM3u8(url: String,
+                   key: String? = nil,
                    succeedHandler: @escaping (TSListModel) -> (),
                    failHandler: @escaping (_ failMessage: String) -> ())
     {
+        URIKey = key
         parseSuccessHandler = succeedHandler
         parseFailHandler = failHandler
         parseFirstLayerM3u8(url)
@@ -193,11 +198,15 @@ private extension M3u8Parser {
 // MARK: - Privite Funcs
 private extension M3u8Parser {
     
-    /// 下载秘钥
+    /// 下载秘钥/自定义密钥保存
     ///
     /// - Parameter m3u8Content: 带ts列表的有效 m3u8Content
     func downLoadKeyWith(_ m3u8Content: String) {
         if !m3u8Content.contains("#EXT-X-KEY:") { return }
+        if URIKey != nil && !URIKey!.isEmpty { // 自定义密钥不为空
+            writeCustomURIKeyToFile()
+            return
+        }
         var keySttr = ""
         // 用正则表达式取出秘钥所在 url
         keySttr = DownLoadHelper.regexGetSub(pattern: "URI=\"(.+?)\"", str: m3u8Content)
@@ -242,6 +251,24 @@ private extension M3u8Parser {
             }
         } else {
             print("KEY Data download < failed > Reason: < KEY Data isEmpty >")
+        }
+    }
+    /// 写入自定义URI
+    func writeCustomURIKeyToFile() {
+        if let dataKey = URIKey!.data(using: .utf8) {
+            DownLoadHelper.checkOrCreatedM3u8Directory(self.identifier)
+            let filePath = DownLoadHelper.getDocumentsDirectory().appendingPathComponent(DownLoadHelper.downloadFile).appendingPathComponent(self.identifier).appendingPathComponent("key")
+            if !FileManager.default.fileExists(atPath: filePath.path) {
+                print("URI Data is not exist, write custom URI Data to: \(filePath) ")
+                let success = FileManager.default.createFile(atPath: filePath.path, contents: dataKey, attributes: nil)
+                if success {
+                    print("URI Data write to file Succeed")
+                } else {
+                    print("URI Data write to file Failed! =\(dataKey.count)")
+                }
+            }
+        } else {
+            print("URI Data isEmpty")
         }
     }
     

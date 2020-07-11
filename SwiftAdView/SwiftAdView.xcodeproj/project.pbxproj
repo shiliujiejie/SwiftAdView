@@ -235,7 +235,7 @@
 		0422894922BC9BAE00EE9B93 /* SwiftAdView */ = {
 			isa = PBXGroup;
 			children = (
-				04DD098D24AC917000DCC901 /* NactiPlayer */,
+				04DD098D24AC917000DCC901 /* SactiPlayer */,
 				04C9DA12246C080500B0BA35 /* BluetoothDemo */,
 				04C9D9FD246AF09A00B0BA35 /* CateAddDemo */,
 				04CC2BC924570E23009CDB9D /* TSDownloader */,
@@ -338,13 +338,13 @@
 			path = TSDownloader;
 			sourceTree = "<group>";
 		};
-		04DD098D24AC917000DCC901 /* NactiPlayer */ = {
+		04DD098D24AC917000DCC901 /* SactiPlayer */ = {
 			isa = PBXGroup;
 			children = (
 				04DD098E24AC917000DCC901 /* Classes */,
 				04DD099824AC917000DCC901 /* Assets */,
 			);
-			path = NactiPlayer;
+			path = SactiPlayer;
 			sourceTree = "<group>";
 		};
 		04DD098E24AC917000DCC901 /* Classes */ = {

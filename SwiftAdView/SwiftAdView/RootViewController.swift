@@ -50,7 +50,7 @@ class RootViewController: UIViewController {
         return btn
     }()
     
-    lazy var tsMger: TSManager = {
+    lazy var tsManager: TSManager = {
         let tsm = TSManager()
         tsm.delegate = self
         return tsm
@@ -60,7 +60,7 @@ class RootViewController: UIViewController {
     //非加密 2层 "http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8"
     //"https://video.kkyun-iqiyi.com/20180301/WNvThg3j/index.m3u8"
     
-    let videoUrl = "https://hls2-l3.xvideos-cdn.com/22f4ea3eb16c8eb75c127e5d1deadc3ee3c89299-1591284352/videos/hls/cb/08/0a/cb080a19f84756f76880b3aaa0fd7f52/hls-720p-6b9f7.m3u8" //"https://youku.cdn7-okzy.com/20200313/17735_1e626ef5/1000k/hls/index.m3u8" //"https://video.kkyun-iqiyi.com/20180301/WNvThg3j/index.m3u8"
+    let videoUrl = "https://youku.cdn7-okzy.com/20200313/17735_1e626ef5/1000k/hls/index.m3u8" //"https://video.kkyun-iqiyi.com/20180301/WNvThg3j/index.m3u8"
       //"https://vs1.baduziyuan.com/20180106/5hykgzke/800kb/hls/index.m3u8"
      //"https://www.nmgxwhz.com:65/20200328/mmTagJcX/index.m3u8"
     //"http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8"
@@ -76,21 +76,27 @@ class RootViewController: UIViewController {
         view.addSubview(localVideoBtn)
         view.addSubview(table)
         
+        /// 闪屏广告
         showAd()
-        if DownLoadHelper.checkIsInterruptDownload(videoUrl.md5()) {
-            parserBtn.setTitle("继续下载", for: .normal)
-            parserBtn.tag = 99
+        
+        if tsManager.downloadSucceeded(videoUrl.md5()) { /// 先判断是否已经下载成功
+            parserBtn.setTitle("已下载", for: .normal)
+            parserBtn.tag = -1  // 可以用枚举替代
+            speedlab.text = "已完成下载"
+            localVideoBtn.isHidden = false
         } else {
-            parserBtn.setTitle("下载", for: .normal)
-            parserBtn.tag = 0
+            if tsManager.isInterruptTask(videoUrl.md5()) { /// 是否下载中断
+                parserBtn.setTitle("继续下载", for: .normal)
+                parserBtn.tag = 99
+            } else {
+                parserBtn.setTitle("下载", for: .normal)
+                parserBtn.tag = 0
+            }
         }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        //        if !isAdShow {
-        //            loadADView()
-        //        }
         navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
@@ -101,44 +107,38 @@ class RootViewController: UIViewController {
     @objc func showVideoVC(_ sender: UIButton) {
         if sender == localVideoBtn {
             let identifer = videoUrl.md5()
-            if DownLoadHelper.filesIsExist(identifer) {
+            if tsManager.downloadSucceeded(identifer) {
                 let localPlayVC = DownLoadedVideoPlayerVC()
                 localPlayVC.identifer = identifer
                 navigationController?.pushViewController(localPlayVC, animated: true)
             }
         } else if sender == pauseBtn {
             if sender.isSelected {
-                tsMger.resume()
+                tsManager.resume()
                 sender.isSelected = false
             } else {
-                tsMger.pause()
+                tsManager.pause()
                 sender.isSelected = true
             }
         }
     }
+    
     @objc func parseM3u8(_ sender: UIButton) {
-        if DownLoadHelper.filesIsExist(videoUrl.md5()) {
-            parserBtn.setTitle("已下载", for: .normal)
-            speedlab.text = "已完成下载"
-            localVideoBtn.isHidden = false
-            return
-        }
-        sender.setTitle("解析中...", for: .normal)
+        
         if sender.tag == 99 {
-            tsMger.directoryName = videoUrl.md5()
-            tsMger.m3u8URL = videoUrl
-            tsMger.downloadFromLastInterruptedIndex()
+            sender.setTitle("解析中...", for: .normal)
+            tsManager.directoryName = videoUrl.md5()
+            tsManager.m3u8URL = videoUrl
+            tsManager.downloadFromLastInterruptedIndex()
             pauseBtn.isHidden = false
-        } else {
-            let filesExist = DownLoadHelper.filesIsExist(videoUrl.md5())
-            if !filesExist {
-                tsMger.directoryName = videoUrl.md5()
-                tsMger.m3u8URL = videoUrl
-                tsMger.download()
-                pauseBtn.isHidden = false
-            } else {
-                print("当前视频已经下载了")
-            }
+        } else if sender.tag == -1 {
+            print("当前视频已经下载了")
+        } else if sender.tag == 0 {
+            sender.setTitle("解析中...", for: .normal)
+            tsManager.directoryName = videoUrl.md5()
+            tsManager.m3u8URL = videoUrl
+            tsManager.download()
+            pauseBtn.isHidden = false
         }
     }
     
@@ -272,6 +272,7 @@ extension RootViewController {
 
 // MARK: - TSDownloadDelegate
 extension RootViewController: TSDownloadDelegate {
+    
     func downloadSpeedUpdate(speed: String) {
         speedlab.text = speed
     }
