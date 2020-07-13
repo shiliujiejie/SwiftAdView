@@ -1,7 +1,7 @@
 
 import UIKit
 
-public enum PlayerOrietation: Int {
+public enum RXPlayerOrietation: Int {
     case orientationPortrait
     case orientationLeftAndRight
     case orientationAll
@@ -17,7 +17,7 @@ public enum PlayerOrietation: Int {
         }
     }
 }
-public var orientationSupport: PlayerOrietation = .orientationPortrait
+public var orientationSupport: RXPlayerOrietation = .orientationPortrait
 
 // log
 public func NLog(_ item: Any, _ file: String = #file,  _ line: Int = #line, _ function: String = #function) {

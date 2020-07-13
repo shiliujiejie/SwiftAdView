@@ -1,12 +1,16 @@
 
 import UIKit
 import AVKit
+import GCDWebServer
 
 class VideoTableController: UIViewController {
    
     override var prefersStatusBarHidden: Bool {
         return true
     }
+    private var port: UInt = 8095
+    let server = GCDWebServer()
+    
     lazy var leftBackButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(named: "navBackWhite"), for: .normal)
@@ -59,20 +63,20 @@ class VideoTableController: UIViewController {
         player.controlViewBottomInset = 0
         player.progressHeight = 1.5
         player.controlViewHeight = 50
-        player.loadingBarColor = UIColor.white
-        player.progressTintColor = UIColor.blue
+        player.loadingBarColor = .white
+        player.progressTintColor = .blue
         player.progreesStrackTintColor = UIColor(white: 0.89, alpha: 1.0)
         player.loadingBarHeight = 3.0
         player.minTimeForDragProgress = 120   /// 进度条 可以拖动的视频 最短要求 180秒
         player.delegate = self
         return player
     }()
-    lazy var playerView1: NicooPlayerView = {
-        let player = NicooPlayerView.init(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenWidth*9/16), bothSidesTimelable: true)
+    lazy var playerView1: RXPlayerView = {
+        let player = RXPlayerView.init(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenWidth*9/16), bothSidesTimelable: true)
         player.delegate = self
         return player
     }()
-     var videos = ["http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8","http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8","http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4c0c9e59031868222924048327/f0.mp4","https://github.com/shiliujiejie/adResource/raw/master/2.mp4", "https://github.com/shiliujiejie/adResource/raw/master/1.mp4", "https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
+     var videos = ["https://youku.cdn3-okzy.com/20200510/8835_8aff0fe8/index.m3u8","http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8","http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8","http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4c0c9e59031868222924048327/f0.mp4","https://github.com/shiliujiejie/adResource/raw/master/2.mp4", "https://github.com/shiliujiejie/adResource/raw/master/1.mp4","https://video.kkyun-iqiyi.com/20180301/WNvThg3j/index.m3u8", "https://vs1.baduziyuan.com/20180106/5hykgzke/800kb/hls/index.m3u8", "https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
     var currentIndex: Int = 0
     
     /// 在头部播放 或在cell中播放
@@ -90,15 +94,20 @@ class VideoTableController: UIViewController {
         view.addSubview(tableHeader)
         view.addSubview(tableView)
         tableHeader.addSubview(timelabel)
+        if server.isRunning {
+            server.stop()
+        }
         
         let first = videos[0]
         var url = URL(string: first)
-        if !first.hasPrefix("http") {
+        if !first.hasPrefix("http") { /// 本地目录
             url = URL(fileURLWithPath: first)
         }
   
         //playerView.encryptParams = [PlayerView.kKeyURL: "fwfrfh4rontq3bfn"]
-        playerView.startPlay(url: url, in: tableHeader)
+        
+        playVideo(url!, in: tableHeader)
+        
         view.addSubview(leftBackButton)
         view.addSubview(rightBackButton)
         layoutPageSubviews()
@@ -106,6 +115,9 @@ class VideoTableController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewDidAppear(animated)
         playerView.pause()
+        if server.isRunning {
+            server.stop()
+        }
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -129,11 +141,34 @@ class VideoTableController: UIViewController {
     func playNextVideo(_ index: Int) {
         if currentIndex != index {
             playerView.stopPlaying()
-            playerView.startPlay(url: URL(string: videos[index]), in: tableHeader)
-            currentIndex = index
+            //playerView.startPlay(url: URL(string: videos[index]), in: tableHeader)
+            if let url = URL(string: videos[index]) {
+                playVideo(url, in: tableHeader)
+                currentIndex = index
+            }
         }
     }
     
+    func playVideo(_ url: URL,in view: UIView) {
+        let identifer = url.absoluteString.md5()
+        if server.isRunning {
+            server.stop()
+        }
+        if DownLoadHelper.filesIsAllExist(identifer) { /// 已缓存
+            let pathq = DownLoadHelper.getDocumentsDirectory().appendingPathComponent(DownLoadHelper.downloadFile).appendingPathComponent(identifer).path
+            server.addGETHandler(forBasePath: "/", directoryPath: pathq, indexFilename: "\(identifer).m3u8", cacheAge: 3600, allowRangeRequests: true)
+            
+            server.start(withPort: port, bonjourName: nil)
+            
+            if server.serverURL != nil {
+                let videoLocalUrl = "\(server.serverURL!.absoluteString)\(identifer).m3u8"
+                print("videoLocalServerUrl == \(videoLocalUrl)")
+                playerView.startPlay(url: URL(string: videoLocalUrl), in: view)
+            }
+        } else {
+            playerView.startPlay(url: url, in: view, uri: nil, cache: true)
+        }
+    }
 
 }
 
@@ -147,13 +182,14 @@ extension VideoTableController: UITableViewDelegate, UITableViewDataSource {
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: TablePlayCell.cellId, for: indexPath) as! TablePlayCell
+        cell.nameLabel.text = videos[indexPath.row]
         cell.playActionHandle = { [weak self] in
             guard let strongSelf = self else { return }
             if strongSelf.playInHeader {
                  strongSelf.playNextVideo(indexPath.row)
             } else {
                 strongSelf.currentIndex = indexPath.row
-                strongSelf.playerView.startPlay(url: URL(string: strongSelf.videos[indexPath.row]), in: cell.bgImage)
+                strongSelf.playVideo(URL(string: strongSelf.videos[indexPath.row])!, in: cell.bgImage)
                 /// 如果要做预览
                 //strongSelf.playerView.player?.volume = 0
             }
@@ -219,8 +255,8 @@ extension VideoTableController: PlayerViewDelegate {
     }
 }
 
-extension VideoTableController: NicooPlayerDelegate {
-    func retryToPlayVideo(_ player: NicooPlayerView, _ videoModel: NicooVideoModel?, _ fatherView: UIView?) {
+extension VideoTableController: RXPlayerDelegate {
+    func retryToPlayVideo(_ player: RXPlayerView, _ videoModel: RXVideoModel?, _ fatherView: UIView?) {
         
     }
 }

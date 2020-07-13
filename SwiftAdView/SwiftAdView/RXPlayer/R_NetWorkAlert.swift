@@ -1,15 +1,7 @@
-//
-//  NicooNetWorkAlert.swift
-//  NicooPlayer
-//
-//  Created by 小星星 on 2018/8/23.
-//
 
 import UIKit
 
-/// 网络提示框， 用于播放远程视频时，网络变化，或4G网下播放，提示用户
-
-open class NicooNetWorkAlert: UIView {
+open class RXNetWorkAlert: UIView {
     
     static private let kAlertViewWidth: CGFloat = 269.5
     static private let kAlertViewHeight: CGFloat = 125
@@ -59,11 +51,11 @@ open class NicooNetWorkAlert: UIView {
 
 // MARK: - Public funcs in the component
 
-public extension NicooNetWorkAlert {
+public extension RXNetWorkAlert {
     
     /// 展示
     public func showInWindow() {
-        orientationSupport = PlayerOrietation.orientationPortrait     ///这里展示无网操作时。将屏幕支持改为竖屏
+        orientationSupport = RXPlayerOrietation.orientationPortrait     ///这里展示无网操作时。将屏幕支持改为竖屏
         if let window = UIApplication.shared.keyWindow {
             if !window.subviews.contains(self) {
                 window.addSubview(self)
@@ -86,7 +78,7 @@ public extension NicooNetWorkAlert {
 
 // MARK: - Private funcs
 
-private extension NicooNetWorkAlert {
+private extension RXNetWorkAlert {
     
     // MARK: - User Actions
     
@@ -117,7 +109,7 @@ private extension NicooNetWorkAlert {
         guard let titles = itemTitles, titles.count > 0 else {
             return
         }
-        let buttonWidth = NicooNetWorkAlert.kAlertViewWidth / CGFloat(titles.count)
+        let buttonWidth = RXNetWorkAlert.kAlertViewWidth / CGFloat(titles.count)
         for i in 0 ..< titles.count {
             let title = titles[i]
             let button = createButton()
@@ -125,7 +117,7 @@ private extension NicooNetWorkAlert {
             button.titleLabel?.font = UIFont.systemFont(ofSize: 17)
             button.setTitleColor(i == 0 ? UIColor(red: 51.0/255.0, green: 51.0/255.0, blue: 51.0/255.0, alpha: 1) : UIColor(red: 0.0/255.0, green: 122.0/255.0, blue: 255.0/255.0, alpha: 1), for: .normal)
             button.setTitleColor(UIColor.gray, for: .highlighted)
-            button.addTarget(self, action: #selector(NicooNetWorkAlert.menuButtonClick(_:)), for: .touchUpInside)
+            button.addTarget(self, action: #selector(RXNetWorkAlert.menuButtonClick(_:)), for: .touchUpInside)
             alertView.addSubview(button)
             button.snp.makeConstraints { (make) in
                 make.width.equalTo(buttonWidth)
@@ -140,7 +132,7 @@ private extension NicooNetWorkAlert {
 
 // MARK: - Layout
 
-private extension NicooNetWorkAlert {
+private extension RXNetWorkAlert {
     
     func layoutPageSubviews() {
         layoutAlertView()

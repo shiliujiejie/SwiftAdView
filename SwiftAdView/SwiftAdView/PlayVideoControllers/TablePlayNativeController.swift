@@ -4,7 +4,13 @@ import AVKit
 
 class TablePlayNativeController: UIViewController {
    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
     override var prefersStatusBarHidden: Bool {
+        return false
+    }
+    override var prefersHomeIndicatorAutoHidden: Bool {
         return true
     }
     lazy var leftBackButton: UIButton = {
@@ -19,7 +25,7 @@ class TablePlayNativeController: UIViewController {
     /// 这里用UITableView 来做， 也可以使用UICollectionView 一样的效果（纯属 个人习惯）
     lazy var tableView: UITableView = {
         let table = UITableView.init(frame: view.bounds, style: .plain)
-        table.backgroundColor = UIColor.white
+        table.backgroundColor = .white
         table.delegate = self
         table.dataSource = self
         table.bounces = false
@@ -44,14 +50,14 @@ class TablePlayNativeController: UIViewController {
         label.layer.masksToBounds = true
         return label
     }()
-    lazy var playerView: NicooPlayerView = {
-        let player = NicooPlayerView.init(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenWidth*9/16), bothSidesTimelable: true)
+    lazy var playerView: RXPlayerView = {
+        let player = RXPlayerView.init(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenWidth*9/16), bothSidesTimelable: true)
+        player.videoNameShowOnlyFullScreen = true
         player.delegate = self
         return player
     }()
-     var videos = ["http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8","http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8","http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4c0c9e59031868222924048327/f0.mp4","https://github.com/shiliujiejie/adResource/raw/master/2.mp4", "https://github.com/shiliujiejie/adResource/raw/master/1.mp4", "https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
+     var videos = ["https://youku.cdn3-okzy.com/20200510/8835_8aff0fe8/index.m3u8","https://youku.cdn3-okzy.com/20200612/9795_f0b54684/index.m3u8","http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8","http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8","http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4c0c9e59031868222924048327/f0.mp4","https://github.com/shiliujiejie/adResource/raw/master/2.mp4", "https://github.com/shiliujiejie/adResource/raw/master/1.mp4", "https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
     var currentIndex: Int = 0
-
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,7 +78,7 @@ class TablePlayNativeController: UIViewController {
         if !first.hasPrefix("http") {
             url = URL(fileURLWithPath: first)
         }
-        playerView.playVideo(url, "videoName", tableHeader)
+        playerView.playVideo(url, first, tableHeader)
         view.addSubview(leftBackButton)
         layoutPageSubviews()
     }
@@ -91,15 +97,12 @@ class TablePlayNativeController: UIViewController {
         self.navigationController?.popViewController(animated: true)
     }
     
-    
     func playNextVideo(_ index: Int) {
         if currentIndex != index {
-            playerView.playVideo(URL(string: videos[index]), "videoName:\(index)", tableHeader)
+            playerView.playVideo(URL(string: videos[index]), videos[index], tableHeader)
             currentIndex = index
         }
     }
-    
-
 }
 
 extension TablePlayNativeController: UITableViewDelegate, UITableViewDataSource {
@@ -112,6 +115,7 @@ extension TablePlayNativeController: UITableViewDelegate, UITableViewDataSource 
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: TablePlayCell.cellId, for: indexPath) as! TablePlayCell
+        cell.nameLabel.text = videos[indexPath.row]
         cell.playActionHandle = { [weak self] in
             guard let strongSelf = self else { return }
             strongSelf.playNextVideo(indexPath.row)
@@ -123,13 +127,12 @@ extension TablePlayNativeController: UITableViewDelegate, UITableViewDataSource 
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        
     }
     
 }
 
-extension TablePlayNativeController: NicooPlayerDelegate {
-    func retryToPlayVideo(_ player: NicooPlayerView, _ videoModel: NicooVideoModel?, _ fatherView: UIView?) {
+extension TablePlayNativeController: RXPlayerDelegate {
+    func retryToPlayVideo(_ player: RXPlayerView, _ videoModel: RXVideoModel?, _ fatherView: UIView?) {
         
     }
 }
@@ -159,8 +162,8 @@ private extension TablePlayNativeController {
     }
     func layoutLeftBackButton() {
         leftBackButton.snp.makeConstraints { (make) in
-            make.leading.equalTo(16)
-            make.top.equalTo(screenHeight >= 812 ? 40 : 20)
+            make.leading.equalTo(10)
+            make.top.equalTo(screenHeight >= 812 ? 48 : 24)
             make.width.height.equalTo(35)
         }
     }

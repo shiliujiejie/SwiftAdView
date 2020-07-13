@@ -12,6 +12,7 @@ protocol TSDownloadDelegate: class {
 
 class TSManager: NSObject {
     
+    static let kIdentifier = "identifier"
     static let kLocalTimes = "downloadTsTimes"
     static let kInterruptIndex = "interruptIndex"
     
@@ -87,6 +88,12 @@ class TSManager: NSObject {
     open func downloadSucceeded(_ identifer: String) -> Bool  {
         return DownLoadHelper.filesIsAllExist(identifer)
     }
+    /// 中断下载
+    open func downlodInterrupt() {
+        print("中断下载")
+        downLoader.pauseDownload()
+        saveInterruptIndex()
+    }
     
 }
 
@@ -94,26 +101,77 @@ private extension TSManager {
     
     /// 获取上次中断下载的ts的 index
     func getLastInterruptIndex() -> [String: Any]? {
-        if let paramInterrupt = UserDefaults.standard.value(forKey: directoryName) as? [String : Any] {
-            print("paramInterrupt --- get = \(paramInterrupt))")
-            return paramInterrupt
+//        if let paramInterrupt = UserDefaults.standard.value(forKey: directoryName) as? [String : Any] {
+//            print("paramInterrupt --- get = \(paramInterrupt))")
+//            return paramInterrupt
+//        }
+        let plistFilePath = DownLoadHelper.getDocumentsDirectory().appendingPathComponent(DownLoadHelper.downloadFile).appendingPathComponent(DownLoadHelper.interruptPlist)
+        if FileManager.default.fileExists(atPath: plistFilePath.path) {
+            if let paramInterrupt = NSMutableArray(contentsOf: plistFilePath) {
+                let interruptCurrent = paramInterrupt.filter { (dic) -> Bool in
+                    return ((dic as! NSDictionary)[TSManager.kIdentifier] as! String) == directoryName
+                }
+                if interruptCurrent.count > 0 {
+                    return (interruptCurrent[0] as! [String : Any])
+                }
+            }
         }
         return nil
     }
     /// 保存中断下载的ts index
     func saveInterruptIndex() {
-        let params: [String : Any] = [TSManager.kLocalTimes: downLoader.downLoadedDuration, TSManager.kInterruptIndex: downLoader.downloadIndex]
-        UserDefaults.standard.set(params, forKey: directoryName)
-        print("paramInterrupt --- save = \(params)")
+        if downLoader.downloadIndex == 0 || downLoader.downLoadedDuration == 0 { return }
+        let paramKey: NSDictionary = [TSManager.kIdentifier : directoryName,TSManager.kLocalTimes: downLoader.downLoadedDuration, TSManager.kInterruptIndex: downLoader.downloadIndex]
+        let sourceArray = NSMutableArray()
+        sourceArray.add(paramKey)
+        let plistFilePath = DownLoadHelper.getDocumentsDirectory().appendingPathComponent(DownLoadHelper.downloadFile).appendingPathComponent(DownLoadHelper.interruptPlist)
+        if !FileManager.default.fileExists(atPath: plistFilePath.path) { /// 文件不存在
+            sourceArray.write(to: plistFilePath, atomically: true)
+        } else {
+            if let source = NSMutableArray(contentsOf: plistFilePath) {
+                let interruptCurrent = source.filter { (dic) -> Bool in
+                    return ((dic as! NSDictionary)[TSManager.kIdentifier] as! String) == directoryName
+                }
+                if interruptCurrent.count == 0 {
+                    source.add(paramKey)
+                } else {
+                    if let indexLast = (interruptCurrent[0] as! NSDictionary)[TSManager.kInterruptIndex] as? Int {
+                        if indexLast < downLoader.downloadIndex {
+                            source.remove(interruptCurrent[0])
+                            source.add(paramKey)
+                        }
+                    } else {
+                        source.remove(interruptCurrent[0])
+                        source.add(paramKey)
+                    }
+                }
+                source.write(to: plistFilePath, atomically: true)
+            }
+        }
+       // UserDefaults.standard.set(paramKey, forKey: directoryName)
+        print("paramInterrupt --- save = \(paramKey)")
     }
     /// 删除中断下载的ts index
     func deleteInterruptIndex() {
-        UserDefaults.standard.removeObject(forKey: directoryName)
+        let plistFilePath = DownLoadHelper.getDocumentsDirectory().appendingPathComponent(DownLoadHelper.downloadFile).appendingPathComponent(DownLoadHelper.interruptPlist)
+        if FileManager.default.fileExists(atPath: plistFilePath.path) {
+            if let source = NSMutableArray(contentsOf: plistFilePath) {
+                let interruptCurrent = source.filter { (dic) -> Bool in
+                    return ((dic as! NSDictionary)[TSManager.kIdentifier] as! String) == directoryName
+                }
+                if interruptCurrent.count > 0 {
+                    source.remove(interruptCurrent[0])
+                    source.write(to: plistFilePath, atomically: true)
+                }
+            }
+        }
+        //UserDefaults.standard.removeObject(forKey: directoryName)
     }
     func downLoadTsModels(_ tsListModel: TSListModel) {
         downLoader.m3u8Data = m3u8Parser.m3u8Data
         downLoader.downLoadTsFiles(index: 0,tsLsModel: tsListModel, succeedHandler: { [weak self] in
             print(" all ts file download succeed")
+            self?.deleteInterruptIndex()
             DispatchQueue.main.async {
                 self?.delegate?.tsDownloadSucceeded()
             }
@@ -138,6 +196,7 @@ private extension TSManager {
         downLoader.m3u8Data = m3u8Parser.m3u8Data
         downLoader.downLoadTsFiles(index: index,tsLsModel: tsListModel, succeedHandler: { [weak self] in
             print(" all ts file download succeed")
+            self?.deleteInterruptIndex()
             DispatchQueue.main.async {
                self?.delegate?.tsDownloadSucceeded()
             }

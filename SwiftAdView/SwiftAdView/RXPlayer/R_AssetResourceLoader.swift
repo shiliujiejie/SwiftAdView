@@ -1,38 +1,32 @@
-//
-//  NicooAssetResourceLoader.swift
-//  NicooPlayer
-//
-//  Created by 小星星 on 2018/9/29.
-//
 
 import UIKit
 import AVFoundation
 import MobileCoreServices
 
 /// 给播放器实现的代理：
-public protocol NicooLoaderUrlConnectionDelegate: class {
+public protocol RXLoaderUrlConnectionDelegate: class {
     
-    func didFinishLoadingWithTask(task: NicooVideoRequestTask)
-    func didFailLoadingWithTask(task: NicooVideoRequestTask, errorCode: Int)
+    func didFinishLoadingWithTask(task: RXVideoRequestTask)
+    func didFailLoadingWithTask(task: RXVideoRequestTask, errorCode: Int)
 }
 
 
 
 /// 播放器的数据请求代理对象
-class NicooAssetResourceLoader: NSObject {
+class RXAssetResourceLoader: NSObject {
     
     /// 所有请求集合
     public var pendingRequests = [AVAssetResourceLoadingRequest]()   //  存播放器请求的数据的
     
-    public weak var delegate: NicooLoaderUrlConnectionDelegate?
+    public weak var delegate: RXLoaderUrlConnectionDelegate?
     
-    public var task: NicooVideoRequestTask?
+    public var task: RXVideoRequestTask?
     
 }
 
 // MARK: - Open Api
 
-extension NicooAssetResourceLoader {
+extension RXAssetResourceLoader {
     
     /**
      获取相应协议头的URL
@@ -60,7 +54,7 @@ extension NicooAssetResourceLoader {
 
 // MARK: - Privited Funcs
 
-extension NicooAssetResourceLoader {
+extension RXAssetResourceLoader {
     
     private func configLoadingRequest(loadingRequest: AVAssetResourceLoadingRequest) {
         
@@ -77,7 +71,7 @@ extension NicooAssetResourceLoader {
                 self.task!.setUrl(url: interceptedURL as NSURL, offSet: range.location)
             }
         } else {
-            task = NicooVideoRequestTask()
+            task = RXVideoRequestTask()
             task?.delegate = self
             task?.setUrl(url: interceptedURL as NSURL, offSet: 0)
         }
@@ -159,7 +153,7 @@ extension NicooAssetResourceLoader {
 
 // MARK: - AVAssetResourceLoaderDelegate
 
-extension NicooAssetResourceLoader: AVAssetResourceLoaderDelegate {
+extension RXAssetResourceLoader: AVAssetResourceLoaderDelegate {
     
     /**
      *  必须返回Yes，如果返回NO，则resourceLoader将会加载出现故障的数据
@@ -183,24 +177,24 @@ extension NicooAssetResourceLoader: AVAssetResourceLoaderDelegate {
     
 }
 
-// MARK: - NicooVideoRequestTaskDelegate
+// MARK: - RXVideoRequestTaskDelegate
 
-extension NicooAssetResourceLoader: NicooVideoRequestTaskDelegate {
+extension RXAssetResourceLoader: RXVideoRequestTaskDelegate {
     
-    func didReceiveVideoDataWithTask(task: NicooVideoRequestTask) {
+    func didReceiveVideoDataWithTask(task: RXVideoRequestTask) {
         processPendingRequests()
     }
     
-    func didReceiveVideoLengthWithTask(task: NicooVideoRequestTask, videoLength: Int, mimeType: String) {
+    func didReceiveVideoLengthWithTask(task: RXVideoRequestTask, videoLength: Int, mimeType: String) {
         
     }
     
-    func didFinishLoadingWithTask(task: NicooVideoRequestTask) {
+    func didFinishLoadingWithTask(task: RXVideoRequestTask) {
         
         delegate?.didFinishLoadingWithTask(task: task)
     }
     
-    func didFailLoadingWithTask(task: NicooVideoRequestTask, errorCode: Int) {
+    func didFailLoadingWithTask(task: RXVideoRequestTask, errorCode: Int) {
         delegate?.didFailLoadingWithTask(task: task, errorCode: errorCode)
         
     }

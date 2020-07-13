@@ -29,10 +29,7 @@ class PresentPlayCell: UICollectionViewCell {
         layoutPageSubviews()
     }
     
-   
-    
 }
-
 
 
 // MARK: - layout
@@ -49,7 +46,6 @@ private extension PresentPlayCell {
         }
     }
     
-  
 }
 
 
@@ -61,6 +57,13 @@ class TablePlayCell: UITableViewCell {
         view.backgroundColor = UIColor.white
         view.layer.cornerRadius = 5
         return view
+    }()
+    let nameLabel: UILabel = {
+        let v = UILabel()
+        v.textColor = .white
+        v.numberOfLines = 2
+        v.font = UIFont.systemFont(ofSize: 14)
+        return v
     }()
     let bgImage: UIImageView = {
         let imageView = UIImageView()
@@ -99,6 +102,7 @@ class TablePlayCell: UITableViewCell {
         contentView.addSubview(shadow)
         shadow.addSubview(bgImage)
         bgImage.addSubview(playButton)
+        contentView.addSubview(nameLabel)
         layoutPageSubviews()
        // shadow.addShadow(radius: 2, opacity: 0.5, UIColor.darkGray)
         shadow.addShadow(opacity: 1, position: 13, pathWidth: 7, .lightGray)
@@ -116,7 +120,7 @@ private extension TablePlayCell {
         layoutShadowBackground()
         layoutImageBackground()
         layoutPlayButton()
-        
+        layoutNamelabel()
     }
     
     func layoutShadowBackground() {
@@ -142,7 +146,12 @@ private extension TablePlayCell {
         }
     }
     
-    
+    func layoutNamelabel() {
+        nameLabel.snp.makeConstraints { (make) in
+            make.leading.trailing.equalTo(bgImage)
+            make.top.equalTo(8)
+        }
+    }
   
 }
 

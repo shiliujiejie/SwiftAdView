@@ -5,6 +5,7 @@ import Alamofire
 public class DownLoadHelper: NSObject {
     
     public static let downloadFile = "TSDownloads"
+    public static let interruptPlist = "Interrupt.plist"
     
     var m3u8Data: String = ""
     
@@ -32,6 +33,7 @@ public class DownLoadHelper: NSObject {
         let documentsDirectory = paths[0]
         return documentsDirectory
     }
+    /// 创建单个视频ts文件夹
     open class func checkOrCreatedM3u8Directory(_ identifer: String) {
         let filePath = getDocumentsDirectory().appendingPathComponent(downloadFile).appendingPathComponent(identifer)
         if !FileManager.default.fileExists(atPath: filePath.path) {

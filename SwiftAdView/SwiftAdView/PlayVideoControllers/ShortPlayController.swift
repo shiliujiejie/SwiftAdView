@@ -3,13 +3,17 @@ import UIKit
 import AssetsLibrary
 import AVKit
 import Photos
+import GCDWebServer
 
 /// 个人中心弹出播放页
-class VideoPlayController: UIViewController {
+class ShortPlayController: UIViewController {
 
     var currentIndex:Int = 0
     var currentPlayIndex: Int = 0
     var isFirstIn = true
+    
+    private var port: UInt = 8095
+    let server = GCDWebServer()
     
     override var prefersStatusBarHidden: Bool {
         return true
@@ -61,14 +65,17 @@ class VideoPlayController: UIViewController {
         return collectionView
     }()
    
-    var videos = ["http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8","https://github.com/shiliujiejie/adResource/raw/master/2.mp4", "https://github.com/shiliujiejie/adResource/raw/master/1.mp4", "https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
+    var videos = ["http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8","http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8","http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4c0c9e59031868222924048327/f0.mp4","https://github.com/shiliujiejie/adResource/raw/master/2.mp4","https://video.kkyun-iqiyi.com/20180301/WNvThg3j/index.m3u8", "https://vs1.baduziyuan.com/20180106/5hykgzke/800kb/hls/index.m3u8","http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8","https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         self.navigationController?.setNavigationBarHidden(true, animated: true)
         view.backgroundColor = UIColor.clear
+        if server.isRunning {
+            server.stop()
+        }
         setUpUI()
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -78,6 +85,9 @@ class VideoPlayController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewDidAppear(animated)
         playerView.pause()
+        if server.isRunning {
+            server.stop()
+        }
     }
    
     private func setUpUI() {
@@ -98,6 +108,9 @@ class VideoPlayController: UIViewController {
     }
     
     @objc func rightButtonClick() {
+      
+//        playerView.resetRate(rate: 1.5)
+//        return
         if playerView.player != nil {
              let fullPlayer = FullScreenPlayController()
             fullPlayer.player = playerView.player!
@@ -105,11 +118,31 @@ class VideoPlayController: UIViewController {
             present(fullPlayer, animated: false, completion: nil)
         }
     }
+    func playVideo(_ url: URL,in view: UIView) {
+        let identifer = url.absoluteString.md5()
+        if server.isRunning {
+            server.stop()
+        }
+        if DownLoadHelper.filesIsAllExist(identifer) { /// 已缓存
+            let pathq = DownLoadHelper.getDocumentsDirectory().appendingPathComponent(DownLoadHelper.downloadFile).appendingPathComponent(identifer).path
+            server.addGETHandler(forBasePath: "/", directoryPath: pathq, indexFilename: "\(identifer).m3u8", cacheAge: 3600, allowRangeRequests: true)
+            
+            server.start(withPort: port, bonjourName: nil)
+            
+            if server.serverURL != nil {
+                let videoLocalUrl = "\(server.serverURL!.absoluteString)\(identifer).m3u8"
+                print("videoLocalServerUrl == \(videoLocalUrl)")
+                playerView.startPlay(url: URL(string: videoLocalUrl), in: view)
+            }
+        } else {
+            playerView.startPlay(url: url, in: view, uri: nil, cache: true)
+        }
+    }
     
 }
 
 // MARK: - PlayerViewDelegate
-extension VideoPlayController: PlayerViewDelegate {
+extension ShortPlayController: PlayerViewDelegate {
 
     func playerProgress(progress: Float, currentPlayTime: Float) {
         print("progress  --- \(progress) currentPlayTime = \(currentPlayTime) currentTimeString = \(PlayerView.formatTimPosition(position: Int(currentPlayTime), duration: Int(playerView.videoDuration))) videoTime_length = \(PlayerView.formatTimDuration(duration: Int(playerView.videoDuration)))")
@@ -142,7 +175,7 @@ extension VideoPlayController: PlayerViewDelegate {
 }
 
 // MARK: - UICollectionViewDelegate, UICollectionViewDataSource
-extension VideoPlayController: UICollectionViewDelegate, UICollectionViewDataSource {
+extension ShortPlayController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return videos.count
@@ -152,7 +185,8 @@ extension VideoPlayController: UICollectionViewDelegate, UICollectionViewDataSou
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PresentPlayCell.cellId, for: indexPath) as! PresentPlayCell
         if indexPath.row == currentIndex && isFirstIn {
             if let url = URL(string: videos[indexPath.row]) {
-                self.playerView.startPlay(url: url, in: cell.bgImage)
+                //self.playerView.startPlay(url: url, in: cell.bgImage)
+                playVideo(url, in: cell.bgImage)
                 self.isFirstIn = false
                 self.currentPlayIndex = self.currentIndex
             }
@@ -167,14 +201,14 @@ extension VideoPlayController: UICollectionViewDelegate, UICollectionViewDataSou
 
 
 // MARK: - UICollectionViewDelegateFlowLayout
-extension VideoPlayController: UICollectionViewDelegateFlowLayout {
+extension ShortPlayController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return UIScreen.main.bounds.size;
     }
 }
 
-extension VideoPlayController:UIScrollViewDelegate {
+extension ShortPlayController:UIScrollViewDelegate {
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         DispatchQueue.main.async {
             /// 禁用手势
@@ -198,7 +232,8 @@ extension VideoPlayController:UIScrollViewDelegate {
                 if let cell = self.collection.cellForItem(at: indexPath) as? PresentPlayCell {
                     if self.currentPlayIndex != self.currentIndex { // 上下滑动
                         if let url =  URL(string: self.videos[indexPath.row]) {
-                            self.playerView.startPlay(url: url, in: cell.bgImage)
+                           // self.playerView.startPlay(url: url, in: cell.bgImage)
+                            self.playVideo(url, in: cell.bgImage)
                             self.isFirstIn = false
                             self.currentPlayIndex = self.currentIndex
                         }
@@ -213,7 +248,7 @@ extension VideoPlayController:UIScrollViewDelegate {
 
 
 // MARK: - Layout
-private extension VideoPlayController {
+private extension ShortPlayController {
     
     func layoutPageSubviews() {
         layoutLeftBackButton()

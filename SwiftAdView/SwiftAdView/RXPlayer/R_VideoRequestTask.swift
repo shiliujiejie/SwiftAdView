@@ -1,12 +1,5 @@
-//
-//  NicooVideoRequestTask.swift
-//  NicooPlayer
-//
-//  Created by 小星星 on 2018/9/29.
-//
 
 import UIKit
-
 
 /// 视频缓存文件沙河地址
 public struct VideoFilePath {
@@ -16,24 +9,24 @@ public struct VideoFilePath {
 }
 
 /// 视频加载请求代理
-public protocol NicooVideoRequestTaskDelegate: class {
+public protocol RXVideoRequestTaskDelegate: class {
     
-    func didReceiveVideoLengthWithTask(task: NicooVideoRequestTask, videoLength: Int, mimeType: String)
-    func didReceiveVideoDataWithTask(task: NicooVideoRequestTask)
-    func didFinishLoadingWithTask(task: NicooVideoRequestTask)
-    func didFailLoadingWithTask(task: NicooVideoRequestTask, errorCode: Int)
+    func didReceiveVideoLengthWithTask(task: RXVideoRequestTask, videoLength: Int, mimeType: String)
+    func didReceiveVideoDataWithTask(task: RXVideoRequestTask)
+    func didFinishLoadingWithTask(task: RXVideoRequestTask)
+    func didFailLoadingWithTask(task: RXVideoRequestTask, errorCode: Int)
     
 }
 
-public extension NicooVideoRequestTaskDelegate {
-    func didReceiveVideoLengthWithTask(task: NicooVideoRequestTask, videoLength: Int, mimeType: String){}
-    func didReceiveVideoDataWithTask(task: NicooVideoRequestTask){}
-    func didFinishLoadingWithTask(task: NicooVideoRequestTask){}
-    func didFailLoadingWithTask(task: NicooVideoRequestTask, errorCode: Int){}
+public extension RXVideoRequestTaskDelegate {
+    func didReceiveVideoLengthWithTask(task: RXVideoRequestTask, videoLength: Int, mimeType: String){}
+    func didReceiveVideoDataWithTask(task: RXVideoRequestTask){}
+    func didFinishLoadingWithTask(task: RXVideoRequestTask){}
+    func didFailLoadingWithTask(task: RXVideoRequestTask, errorCode: Int){}
 }
 
 /// 用于向服务器拉去视频数据
-open class NicooVideoRequestTask: NSObject {
+open class RXVideoRequestTask: NSObject {
     
     public var url: NSURL?
     public var offSet: Int = 0
@@ -41,7 +34,7 @@ open class NicooVideoRequestTask: NSObject {
     public var downLoadingOffset: Int = 0
     public var mimeType: String?
     public var isFinishLoad: Bool = false
-    public weak var delegate: NicooVideoRequestTaskDelegate?
+    public weak var delegate: RXVideoRequestTaskDelegate?
     
     private var connection: NSURLConnection?
     private var tasks: [NSURLConnection] = [NSURLConnection]()
@@ -67,7 +60,7 @@ open class NicooVideoRequestTask: NSObject {
 
 // MARK: - OpenApi
 
-extension NicooVideoRequestTask {
+extension RXVideoRequestTask {
     
     open func setUrl(url: NSURL, offSet: Int) {
         func initialTmpFile() {
@@ -140,7 +133,7 @@ extension NicooVideoRequestTask {
 
 // MARK: - NSURLConnectionData Delegate
 
-extension NicooVideoRequestTask: NSURLConnectionDataDelegate {
+extension RXVideoRequestTask: NSURLConnectionDataDelegate {
     
     public func connection(_ connection: NSURLConnection, didReceive data: Data) {
         fileHandle?.seekToEndOfFile()

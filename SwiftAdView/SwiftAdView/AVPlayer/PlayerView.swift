@@ -1,9 +1,7 @@
 
-
 import UIKit
 import Foundation
 import AVFoundation
-
 
 public class PlayerView: UIView {
     
@@ -18,11 +16,9 @@ public class PlayerView: UIView {
     private var playerStatu: PlayerStatus? {
         didSet {
             if playerStatu == .Playing {
-                player?.rate = 1.0
                 player?.play()
                 pauseImg.isHidden = true
             }else if playerStatu == .Pause {
-                player?.rate = 0.0
                 player?.pause()
                 pauseImg.isHidden = false
             }
@@ -38,25 +34,30 @@ public class PlayerView: UIView {
     }()
     /// 播放控制View
     private var coverView: PlayerCoverView!
-    /// 当前播放进度
-    private var playedValue: Float = 0
+   
     /// 加载进度
     private var loadedValue: Float = 0
-    
     private var avItem: AVPlayerItem?
     private var playerTimerObserver: NSObject?
     private var playerLayer: AVPlayerLayer?
     
-    /// 视频总时长
-    public var videoDuration: Float = 0
+    /// 公开播放器，便于外部使用
     public var player: AVPlayer?
     
+    /// 当前播放到 时间
+    public var playedValue: Float = 0
+    /// 视频总时长
+    public var videoDuration: Float = 0
+    
     public weak var delegate: PlayerViewDelegate?
+    
+    /// 播放链接
     public var playUrl: URL?
     /// 操作栏底部 相对父视图的 距离
     public var controlViewBottomInset: CGFloat = 0
     /// 加载动画颜色
     public var loadingBarColor: UIColor? = UIColor.white
+    /// 加载动画线条粗细
     public var loadingBarHeight: CGFloat = 2.0
     /// 进度条 颜色
     public var progressTintColor: UIColor? = UIColor(white: 0.85, alpha: 0.9)
@@ -76,9 +77,12 @@ public class PlayerView: UIView {
     public var controlViewCoverLayer: Bool = true
     /// 是否是预览 与 playerIsUserInteractionEnabled 一起使用
     public var isPerView: Bool = false
+    /// 播放时缓存
+    public var cacheWhenPlaying: Bool = false
     
     deinit {
         print("播放器释放")
+        M3u8ResourceLoader.shared.interruptPlay()
         NotificationCenter.default.removeObserver(self)
         realeasePlayer()
     }
@@ -115,28 +119,37 @@ public class PlayerView: UIView {
         } else if keyPath == "loadedTimeRanges" {
             updateLoadingProgress(avItem: avItem)
         } else if keyPath == "playbackBufferEmpty" {   // 监听播放器正在缓冲数据
-            playerStatu = PlayerStatus.Buffering
+            playerStatu = .Buffering
             delegate?.loadingPlayResource()
         } else if keyPath == "playbackLikelyToKeepUp" {  //监听视频缓冲达到可以播放的狀態
             delegate?.startPlay()
             updateTimeLableLayout(avItem: avItem)
         }
     }
-    
+    /// 暂停⏸️
     public func pause() {
         playerStatu = .Pause
     }
+    /// 播放
     public func play() {
         playerStatu = .Playing
     }
+    /// 重播
     public func replay() {
         avItem?.seek(to: CMTime.zero)
         coverView?.progressView.setProgress(0, animated: false)
         playerStatu = .Playing
     }
+    /// 停止播放
     public func stopPlaying() {
         player?.rate = 0
         realeasePlayer()
+    }
+    /// 设置播放速度： effective range [0.5 - 2.0]
+    public func resetRate(rate: Float) {
+        if rate < 0.5 || rate > 2.0 { return }
+        if player?.rate == rate { return }
+        player?.rate = rate
     }
     public func playerIsUserInteractionEnabled(_ enable: Bool) {
         coverView.isUserInteractionEnabled = enable
@@ -146,6 +159,13 @@ public class PlayerView: UIView {
         coverView.progressView.backgroundColor = enable ? progressBackgroundColor : .clear
         pauseImg.alpha = enable ? 1 : 0
     }
+    /**
+     播放统一调用 :
+     url:   视频链接 （m3u8支持本地缓存）
+     view:  播放器view的父视图
+     uri:   跟后端约定好的解密密钥 （可有可无，看项目需求）
+     cache: 是否边播边缓存
+     */
     public func startPlay(url: URL?, in view: UIView, uri: String? = nil, cache: Bool? = false) {
         delegate?.customActionsBeforePlay()
         realeasePlayer()
@@ -153,15 +173,22 @@ public class PlayerView: UIView {
             delegate?.playVideoFailed(url: url, player: self)
             return
         }
-        if view.subviews.contains(self) {
-            return
-        }
-       
-        playUrl = url
+        
+        if view.subviews.contains(self) { return }
+    
+        playUrl = trueUrl
+        cacheWhenPlaying = cache ?? false
         if coverView != nil {
             coverView.removeFromSuperview()
         }
-        avItem = M3u8ResourceLoader.shared.playerItem(with: trueUrl, uriKey: uri, cacheWhenPlaying: cache)
+        if trueUrl.absoluteString.contains(".m3u8") {
+            avItem = M3u8ResourceLoader.shared.playerItem(with: trueUrl, uriKey: uri, cacheWhenPlaying: cache)
+        } else {
+            /// 其他文件格式，这里处理
+            let urlAsset = AVURLAsset(url: trueUrl, options: nil)
+            avItem = AVPlayerItem(asset: urlAsset)
+        }
+        
         player = AVPlayer(playerItem: avItem!)
         playerLayer = AVPlayerLayer(player: player!)
         playerLayer?.frame = self.bounds
@@ -177,8 +204,8 @@ public class PlayerView: UIView {
         
         layoutPageSubviews()
         addPlayerObserver()
-        
-        player?.play()
+        playerStatu = .Playing
+       // player?.play()
         if !isPerView {
            coverView.startLoading()
         }
@@ -339,9 +366,9 @@ extension PlayerView: PlayerCoverDelegate {
    
     func singleTapCoverView() {
         if playerStatu != .Pause {
-            playerStatu = PlayerStatus.Pause
+            playerStatu = .Pause
         } else {
-            playerStatu = PlayerStatus.Playing
+            playerStatu = .Playing
         }
     }
     

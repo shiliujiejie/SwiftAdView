@@ -21,7 +21,17 @@ class M3u8ResourceLoader: NSObject, AVAssetResourceLoaderDelegate {
     private var URIKey: String?
     /// 是否播放时缓存
     private var cacheWhenPlaying: Bool = false
-    let tsManager = TSManager()
+    var tsManager: TSManager?
+    
+    /// 播放中断
+    public func interruptPlay() {
+        print("播放中断")
+        /// 这里先保存或者结束上一个视频的缓存进程 ，还没下完，被中断 记录中断位置
+        if tsManager != nil && !tsManager!.downloadSucceeded(tsManager!.directoryName) {
+            tsManager!.downlodInterrupt()
+            print("缓存中断")
+        }
+    }
     
     /// 生成AVPlayerItem
     public func playerItem(with url: URL, uriKey: String? = nil, cacheWhenPlaying: Bool? = false) -> AVPlayerItem {
@@ -29,13 +39,26 @@ class M3u8ResourceLoader: NSObject, AVAssetResourceLoaderDelegate {
         m3u8_url = url.absoluteString
        
         self.cacheWhenPlaying = cacheWhenPlaying ?? false
+        /// 这里先保存或者结束上一个视频的缓存进程 ，还没下完，被中断 记录中断位置
+        if tsManager != nil && !tsManager!.downloadSucceeded(tsManager!.directoryName) {
+            tsManager!.downlodInterrupt()
+        }
         if self.cacheWhenPlaying {
-            tsManager.m3u8URL = m3u8_url
-            tsManager.directoryName = m3u8_url.md5()
-            if URIKey != nil && !URIKey!.isEmpty {
-                tsManager.download(URIKey)
-            } else {
-                tsManager.download()
+            
+            tsManager = TSManager()
+            tsManager!.m3u8URL = m3u8_url
+            tsManager!.directoryName = m3u8_url.md5()
+            if !tsManager!.downloadSucceeded(m3u8_url.md5()) { // 未完成
+                if tsManager!.isInterruptTask(m3u8_url.md5()) { /// 是否中断下载
+                    //这里无需处理uri,因为"key.key"文件在第一个ts下载之前就会存在
+                    tsManager!.downloadFromLastInterruptedIndex()
+                } else {
+                    if URIKey != nil && !URIKey!.isEmpty {
+                        tsManager!.download(URIKey)
+                    } else {
+                        tsManager!.download()
+                    }
+                }
             }
         }
         var urlAsset: AVURLAsset
@@ -52,6 +75,7 @@ class M3u8ResourceLoader: NSObject, AVAssetResourceLoaderDelegate {
         }
         return item
     }
+    
     /// 拦截代理方法
     ///true代表意思：系统，你要等等，不能播放，需要等我通知，你才能继续（相当于系统进程被阻断，直到收到了某些消息，才能继续运行）
     /// false代表意思：系统，你不要等，直接播放

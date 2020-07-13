@@ -2,15 +2,14 @@
 import UIKit
 import SnapKit
 
-
-protocol NicooPlayerControlViewDelegate: class {
+protocol RXPlayerControlViewDelegate: class {
     
     func sliderTouchBegin(_ sender: UISlider)
     func sliderTouchEnd(_ sender: UISlider)
     func sliderValueChange(_ sender: UISlider)
 }
 
-class NicooPlayerControlView: UIView {
+class RXPlayerControlView: UIView {
     
     /// 顶部控制栏
     lazy var topControlBarView: UIView = {
@@ -30,16 +29,14 @@ class NicooPlayerControlView: UIView {
     }()
     lazy var closeButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(NicooImgManager.foundImage(imageName: ""), for: .normal)
-        button.setImage(NicooImgManager.foundImage(imageName: "back"), for: .selected)
-        button.setImage(NicooImgManager.foundImage(imageName: "back_hight"), for: .highlighted)
+        button.setImage(nil, for: .normal)
+        button.setImage(RXImgManager.foundImage(imageName: "back"), for: .selected)
         button.addTarget(self, action: #selector(closeButtonClick(_:)), for: .touchUpInside)
         return button
     }()
     lazy var munesButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(NicooImgManager.foundImage(imageName: "share"), for: .normal)
-        button.setImage(NicooImgManager.foundImage(imageName: "share_hight"), for: .highlighted)
+        button.setImage(RXImgManager.foundImage(imageName: "share"), for: .normal)
         button.addTarget(self, action: #selector(munesButtonClick(_:)), for: .touchUpInside)
         button.isHidden = true   // 默认隐藏
         return button
@@ -68,9 +65,8 @@ class NicooPlayerControlView: UIView {
     }()
     lazy var replayButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(NicooImgManager.foundImage(imageName: "replay"), for: .normal)
-        button.setImage(NicooImgManager.foundImage(imageName: "replay_hight"), for: .highlighted)
-        button.addTarget(self, action: #selector(NicooPlayerControlView.replayButtonClick(_:)), for: .touchUpInside)
+        button.setImage(RXImgManager.foundImage(imageName: "replay"), for: .normal)
+        button.addTarget(self, action: #selector(RXPlayerControlView.replayButtonClick(_:)), for: .touchUpInside)
         return button
     }()
     lazy var replayLable: UILabel = {
@@ -100,7 +96,7 @@ class NicooPlayerControlView: UIView {
         let progressView = UIProgressView()
         progressView.progress = 0
         progressView.progressTintColor = UIColor.lightGray
-        progressView.trackTintColor = UIColor(white: 0.2, alpha: 0.5)
+        progressView.trackTintColor = UIColor(white: 0.4, alpha: 0.5)
         progressView.backgroundColor = UIColor.clear
         progressView.contentMode = ContentMode.scaleAspectFit
         progressView.tintColor = UIColor.clear
@@ -114,13 +110,13 @@ class NicooPlayerControlView: UIView {
         slider.contentMode = ContentMode.scaleAspectFit
         slider.minimumTrackTintColor = UIColor.white
         slider.maximumTrackTintColor = UIColor.clear
-        slider.setThumbImage(NicooImgManager.foundImage(imageName: "sliderflash"), for: .normal)
-        slider.setThumbImage(NicooImgManager.foundImage(imageName: "sliderHightLight"), for: .highlighted)
-        slider.addTarget(self, action: #selector(NicooPlayerControlView.sliderValueChange(_:)),for:.valueChanged)
-        slider.addTarget(self, action: #selector(NicooPlayerControlView.sliderAllTouchBegin(_:)), for: .touchDown)
-        slider.addTarget(self, action: #selector(NicooPlayerControlView.sliderAllTouchEnd(_:)), for: .touchCancel)
-        slider.addTarget(self, action: #selector(NicooPlayerControlView.sliderAllTouchEnd(_:)), for: .touchUpInside)
-        slider.addTarget(self, action: #selector(NicooPlayerControlView.sliderAllTouchEnd(_:)), for: .touchUpOutside)
+        slider.setThumbImage(RXImgManager.foundImage(imageName: "sliderflash"), for: .normal)
+        slider.setThumbImage(RXImgManager.foundImage(imageName: "sliderHightLight"), for: .highlighted)
+        slider.addTarget(self, action: #selector(RXPlayerControlView.sliderValueChange(_:)),for:.valueChanged)
+        slider.addTarget(self, action: #selector(RXPlayerControlView.sliderAllTouchBegin(_:)), for: .touchDown)
+        slider.addTarget(self, action: #selector(RXPlayerControlView.sliderAllTouchEnd(_:)), for: .touchCancel)
+        slider.addTarget(self, action: #selector(RXPlayerControlView.sliderAllTouchEnd(_:)), for: .touchUpInside)
+        slider.addTarget(self, action: #selector(RXPlayerControlView.sliderAllTouchEnd(_:)), for: .touchUpOutside)
         return slider
     }()
     lazy var positionTimeLab: UILabel = {
@@ -134,31 +130,31 @@ class NicooPlayerControlView: UIView {
     lazy var durationTimeLab: UILabel = {
         let durationLab = UILabel()
         durationLab.textAlignment = .right
-        durationLab.text = barType == PlayerBottomBarType.PlayerBottomBarTimeBothSides ? "00:00" : "00:00/00:00"
+        durationLab.text = "00:00"
         durationLab.font = UIFont.systemFont(ofSize: 13)
         durationLab.textColor = .white
         return durationLab
     }()
     lazy var playOrPauseBtn: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(NicooImgManager.foundImage(imageName: "pause"), for: .normal)
-        button.setImage(NicooImgManager.foundImage(imageName: "Player_pause"), for: .selected)
-        button.addTarget(self, action: #selector(NicooPlayerControlView.playOrPauseBtnClick(_:)), for: .touchUpInside)
+        button.setImage(RXImgManager.foundImage(imageName: "pause"), for: .normal)
+        button.setImage(RXImgManager.foundImage(imageName: "R_pause"), for: .selected)
+        button.addTarget(self, action: #selector(RXPlayerControlView.playOrPauseBtnClick(_:)), for: .touchUpInside)
         return button
     }()
     lazy var screenLockButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(NicooImgManager.foundImage(imageName: "unlock"), for: .normal)
-        button.setImage(NicooImgManager.foundImage(imageName: "lockscreen"), for: .selected)
-        button.addTarget(self, action: #selector(NicooPlayerControlView.screenLockButtonClick(_:)), for: .touchUpInside)
+        button.setImage(RXImgManager.foundImage(imageName: "unlock"), for: .normal)
+        button.setImage(RXImgManager.foundImage(imageName: "lockscreen"), for: .selected)
+        button.addTarget(self, action: #selector(RXPlayerControlView.screenLockButtonClick(_:)), for: .touchUpInside)
         button.isHidden = true
         return button
     }()
     lazy var fullScreenBtn: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(NicooImgManager.foundImage(imageName: "NicooPlayer_fullscreen"), for: .normal)
-        button.setImage(NicooImgManager.foundImage(imageName: "shrinkScreen"), for: .selected)
-        button.addTarget(self, action: #selector(NicooPlayerControlView.fullScreenBtnClick(_:)), for: .touchUpInside)
+        button.setImage(RXImgManager.foundImage(imageName: "R_fullscreen"), for: .normal)
+        button.setImage(RXImgManager.foundImage(imageName: "shrinkScreen"), for: .selected)
+        button.addTarget(self, action: #selector(RXPlayerControlView.fullScreenBtnClick(_:)), for: .touchUpInside)
         return button
     }()
     /// 手势
@@ -207,11 +203,12 @@ class NicooPlayerControlView: UIView {
     ///  是否为全屏状态
     var fullScreen: Bool? = false {
         didSet {
-            self.screenLockButton.isHidden = !fullScreen!     // 只有全屏能锁定屏幕
-            self.munesButton.isHidden = !fullScreen!          // 只有全屏显示分享按钮
+            screenLockButton.isHidden = !fullScreen!     // 只有全屏能锁定屏幕
+            fullScreenBtn.isSelected = fullScreen!
+            munesButton.isHidden = !fullScreen!          // 只有全屏显示分享按钮
             if !screenLockButton.isHidden {
                 NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(autoHideScreenLockButton), object: nil)
-                self.perform(#selector(autoHideScreenLockButton), with: nil, afterDelay: 5)
+                perform(#selector(autoHideScreenLockButton), with: nil, afterDelay: 5)
             }
             updateTopBarWith(fullScreen: fullScreen!)
             updateBottomBarWith(fullScreen: fullScreen!)
@@ -224,23 +221,21 @@ class NicooPlayerControlView: UIView {
                 screenLockButton.isSelected = true
                 doubleTapGesture.isEnabled = false
                 panGesture.isEnabled = false
-                orientationSupport = PlayerOrietation.orientationLeftAndRight
+                orientationSupport = RXPlayerOrietation.orientationLeftAndRight
             }else {
                 screenLockButton.isSelected = false
                 doubleTapGesture.isEnabled = true
                 panGesture.isEnabled = true
                 /// 全屏播放本地时，只支持左右，非直接全屏播放支持上左右
-                orientationSupport = playLocalFile! ? PlayerOrietation.orientationLeftAndRight : PlayerOrietation.orientationAll
+                orientationSupport = playLocalFile! ? RXPlayerOrietation.orientationLeftAndRight : RXPlayerOrietation.orientationAll
             }
         }
     }
     /// 是否是  播放本地文件
     var playLocalFile: Bool? = false
-    /// 默认时间显示在右侧
-    var barType: PlayerBottomBarType = PlayerBottomBarType.PlayerBottomBarTimeRight
     
     // MARK: - Delegate
-    weak var delegate: NicooPlayerControlViewDelegate?
+    weak var delegate: RXPlayerControlViewDelegate?
     
     // MARK: - CallBackBlock
     var fullScreenButtonClickBlock: ((_ sender: UIButton) -> ())?
@@ -253,9 +248,8 @@ class NicooPlayerControlView: UIView {
     
     // MARK: - LifeCycle
     
-    init(frame: CGRect, fullScreen: Bool, _ bottomBarType: PlayerBottomBarType) {
+    override init(frame: CGRect) {
         super.init(frame: frame)
-        barType = bottomBarType
         addSubview(topControlBarView)
         addSubview(bottomControlBarView)
         addSubview(replayContainerView)
@@ -264,9 +258,7 @@ class NicooPlayerControlView: UIView {
         topControlBarView.addSubview(munesButton)
         
         bottomControlBarView.addSubview(playOrPauseBtn)
-        if bottomBarType == PlayerBottomBarType.PlayerBottomBarTimeBothSides {
-            bottomControlBarView.addSubview(positionTimeLab)
-        }
+        bottomControlBarView.addSubview(positionTimeLab)
         bottomControlBarView.addSubview(loadedProgressView)
         bottomControlBarView.addSubview(timeSlider)
         bottomControlBarView.addSubview(durationTimeLab)
@@ -299,7 +291,7 @@ class NicooPlayerControlView: UIView {
 
 // MARK: - User -Actions {
 
-extension NicooPlayerControlView {
+extension RXPlayerControlView {
     
    // MARK: - GestureRecognizers - Action
     @objc func singleTapGestureRecognizers(_ sender: UITapGestureRecognizer) {
@@ -395,7 +387,7 @@ extension NicooPlayerControlView {
 
 // MARK: - UIGestureRecognizerDelegate
 
-extension NicooPlayerControlView: UIGestureRecognizerDelegate {
+extension RXPlayerControlView: UIGestureRecognizerDelegate {
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         if touch.view is UISlider {
@@ -407,7 +399,7 @@ extension NicooPlayerControlView: UIGestureRecognizerDelegate {
 
 // MARK: - Private - Funcs
 
-extension NicooPlayerControlView {
+extension RXPlayerControlView {
     
     // MARK: - add - GestureRecognizers
     private func addGestureAllRecognizers() {
@@ -432,7 +424,7 @@ extension NicooPlayerControlView {
             make.height.equalTo(0)
         }
         bottomControlBarView.snp.updateConstraints { (make) in
-            make.height.equalTo(fullScreen! ? 10 : 80)
+            make.height.equalTo(fullScreen! ? 10 : 90)
         }
         
         UIView.animate(withDuration: 0.1, animations: {
@@ -463,7 +455,7 @@ extension NicooPlayerControlView {
 
 // MARK : - Layout All Subviews
 
-extension NicooPlayerControlView {
+extension RXPlayerControlView {
     
     private func layoutAllPageViews() {
         layoutTopControlBarView()
@@ -472,10 +464,7 @@ extension NicooPlayerControlView {
         layoutVideoNameLable()
         layoutBottomControlBarView()
        
-        if barType == PlayerBottomBarType.PlayerBottomBarTimeBothSides {
-            layoutPositionTimeLab()
-        }
-
+        layoutPositionTimeLab()
         layoutDurationTimeLab()
         layoutLoadedProgressView()
         layoutTimeSlider()
@@ -609,10 +598,10 @@ extension NicooPlayerControlView {
     }
     private func updateTopBarWith(fullScreen: Bool) {
         topControlBarView.snp.updateConstraints { (make) in
-            make.height.equalTo(fullScreen ? 60 : 40)
+            make.height.equalTo(fullScreen ? 50 : 40)
         }
         closeButton.snp.updateConstraints { (make) in
-            make.top.equalTo(fullScreen ? 20 : 0)
+            make.top.equalTo(fullScreen ? 10 : 0)
             make.width.equalTo(fullScreen ? 30 : 0)
             if fullScreen {
                 make.leading.equalTo((UIDevice.current.isiPhoneXSeriesDevices() || UIDevice.current.isSimulator()) ? 50 : 0)
@@ -621,10 +610,10 @@ extension NicooPlayerControlView {
             }
         }
         videoNameLable.snp.updateConstraints { (make) in
-            make.top.equalTo(fullScreen ? 20 : 0)
+            make.top.equalTo(fullScreen ? 10 : 0)
         }
         munesButton.snp.updateConstraints { (make) in
-            make.top.equalTo(fullScreen ? 20 : 0)
+            make.top.equalTo(fullScreen ? 10 : 0)
         }
     }
     private func updateBottomBarWith(fullScreen: Bool) {

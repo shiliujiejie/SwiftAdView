@@ -1,14 +1,8 @@
-//
-//  NicooLoadedFailedView.swift
-//  NicooPlayer
-//
-//  Created by 小星星 on 2018/6/19.
-//
 
 import UIKit
 import SnapKit
 
-class NicooLoadedFailedView: UIView {
+class RXLoadedFailedView: UIView {
     
     fileprivate var loadFailedTitle: UILabel = {
         let lable = UILabel()

@@ -5,6 +5,10 @@ import GCDWebServer
 /// 模拟播放已下载好的本地视频
 class DownLoadedVideoPlayerVC: UIViewController {
     
+    override var prefersHomeIndicatorAutoHidden: Bool {
+        return true
+    }
+    
     private var port: UInt = 8095
     var identifer: String = ""
     let server = GCDWebServer()
@@ -18,8 +22,8 @@ class DownLoadedVideoPlayerVC: UIViewController {
         return .default
     }
     
-    fileprivate lazy var videoPlayer: NicooPlayerView = {
-        let player = NicooPlayerView(frame: self.view.frame, bothSidesTimelable: true)
+    fileprivate lazy var videoPlayer: RXPlayerView = {
+        let player = RXPlayerView(frame: self.view.frame, bothSidesTimelable: true)
         player.delegate = self
         return player
     }()
@@ -27,6 +31,9 @@ class DownLoadedVideoPlayerVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.white
+        if server.isRunning {
+            server.stop()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -59,7 +66,7 @@ class DownLoadedVideoPlayerVC: UIViewController {
         
         let videoLocalUrl = "\(server.serverURL!.absoluteString)\(identifer).m3u8"
         print("videoLocalUrl == \(videoLocalUrl)")
-        videoPlayer.playLocalVideoInFullscreen(videoLocalUrl, "localFile", view)
+        videoPlayer.playVideoInFullscreen(videoLocalUrl, "\(identifer).m3u8", view)
         videoPlayer.playLocalFileVideoCloseCallBack = { [weak self] (playValue) in
             // 退出时，关闭本地服务器
             self?.server.stop()
@@ -75,10 +82,10 @@ class DownLoadedVideoPlayerVC: UIViewController {
     }
 }
 
-// MARK: - NicooPlayerDelegate
-extension DownLoadedVideoPlayerVC: NicooPlayerDelegate {
+// MARK: - RXPlayerDelegate
+extension DownLoadedVideoPlayerVC: RXPlayerDelegate {
     
-    func retryToPlayVideo(_ player: NicooPlayerView, _ videoModel: NicooVideoModel?, _ fatherView: UIView?) {
+    func retryToPlayVideo(_ player: RXPlayerView, _ videoModel: RXVideoModel?, _ fatherView: UIView?) {
         
     }
 }
