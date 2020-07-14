@@ -529,7 +529,7 @@ extension RXPlayerControlView {
     }
     private func layoutScreenLockButton() {
         screenLockButton.snp.makeConstraints { (make) in
-            make.leading.equalTo(UIDevice.current.isiPhoneXSeriesDevices() ? 50 : 10)
+            make.leading.equalTo((RXDeviceModel.isiPhoneXSeries() || RXDeviceModel.isSimulator()) ? 50 : 10)
             make.centerY.equalToSuperview()
             make.height.equalTo(45)
             make.width.equalTo(45)
@@ -600,7 +600,7 @@ extension RXPlayerControlView {
             make.top.equalTo(fullScreen ? 10 : 0)
             make.width.equalTo(fullScreen ? 30 : 0)
             if fullScreen {
-                make.leading.equalTo(UIDevice.current.isiPhoneXSeriesDevices() ? 50 : 0)
+                make.leading.equalTo((RXDeviceModel.isiPhoneXSeries() || RXDeviceModel.isSimulator()) ? 50 : 0)
             } else {
                 make.leading.equalTo(0)
             }
@@ -615,14 +615,14 @@ extension RXPlayerControlView {
     private func updateBottomBarWith(fullScreen: Bool) {
         positionTimeLab.snp.updateConstraints { (make) in
             if fullScreen {
-                make.leading.equalTo(UIDevice.current.isiPhoneXSeriesDevices() ? 50 : 10)
+                make.leading.equalTo((RXDeviceModel.isiPhoneXSeries() || RXDeviceModel.isSimulator()) ? 50 : 10)
             } else {
                 make.leading.equalTo(10)
             }
         }
         durationTimeLab.snp.updateConstraints { (make) in
             if fullScreen {
-                 make.trailing.equalTo(UIDevice.current.isiPhoneXSeriesDevices() ? -50 : -10)
+                 make.trailing.equalTo((RXDeviceModel.isiPhoneXSeries() || RXDeviceModel.isSimulator()) ? -50 : -10)
             } else {
                  make.trailing.equalTo(-10)
             }

@@ -29,8 +29,9 @@
 		047A6BFA24BC1B8A008CE41E /* R_PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047A6BF924BC1B8A008CE41E /* R_PlayerView.swift */; };
 		047A6BFD24BC632F008CE41E /* back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 047A6BFB24BC632E008CE41E /* back@2x.png */; };
 		047A6BFE24BC632F008CE41E /* back@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 047A6BFC24BC632F008CE41E /* back@3x.png */; };
-		047A6C0024BCA125008CE41E /* sliderHightLight.png in Resources */ = {isa = PBXBuildFile; fileRef = 047A6BFF24BCA125008CE41E /* sliderHightLight.png */; };
 		047A6C0224BDC13D008CE41E /* R_PlayerViewConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047A6C0124BDC13D008CE41E /* R_PlayerViewConfig.swift */; };
+		047A6C0824BDDF30008CE41E /* sliderHightLight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 047A6C0624BDDF30008CE41E /* sliderHightLight@2x.png */; };
+		047A6C0924BDDF30008CE41E /* sliderHightLight@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 047A6C0724BDDF30008CE41E /* sliderHightLight@3x.png */; };
 		0493192122C204EC000B805F /* WebKitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0493192022C204EC000B805F /* WebKitController.swift */; };
 		0493192322C20C1F000B805F /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0493192222C20C1F000B805F /* RootViewController.swift */; };
 		049BF6472417D19400F3611A /* ShortPlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049BF6462417D19400F3611A /* ShortPlayController.swift */; };
@@ -83,7 +84,6 @@
 		04DD09EE24AC917000DCC901 /* shrinkScreen@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09BB24AC917000DCC901 /* shrinkScreen@2x.png */; };
 		04DD09EF24AC917000DCC901 /* R_fullscreen@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09BC24AC917000DCC901 /* R_fullscreen@2x.png */; };
 		04DD09F124AC917000DCC901 /* sliderflash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09BE24AC917000DCC901 /* sliderflash@2x.png */; };
-		04DD09F424AC917000DCC901 /* sliderflash.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09C124AC917000DCC901 /* sliderflash.png */; };
 		04DD09F524AC917000DCC901 /* player_brightness.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09C224AC917000DCC901 /* player_brightness.png */; };
 		04DD09F724AC945000DCC901 /* TablePlayNativeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04DD09F624AC945000DCC901 /* TablePlayNativeController.swift */; };
 		19E6992F279053C4A5F2A89E /* Pods_SwiftAdView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 325DA2BE3B0AC373EF94A5B8 /* Pods_SwiftAdView.framework */; };
@@ -114,8 +114,9 @@
 		047A6BF924BC1B8A008CE41E /* R_PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = R_PlayerView.swift; sourceTree = "<group>"; };
 		047A6BFB24BC632E008CE41E /* back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back@2x.png"; sourceTree = "<group>"; };
 		047A6BFC24BC632F008CE41E /* back@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back@3x.png"; sourceTree = "<group>"; };
-		047A6BFF24BCA125008CE41E /* sliderHightLight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sliderHightLight.png; sourceTree = "<group>"; };
 		047A6C0124BDC13D008CE41E /* R_PlayerViewConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = R_PlayerViewConfig.swift; sourceTree = "<group>"; };
+		047A6C0624BDDF30008CE41E /* sliderHightLight@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sliderHightLight@2x.png"; sourceTree = "<group>"; };
+		047A6C0724BDDF30008CE41E /* sliderHightLight@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sliderHightLight@3x.png"; sourceTree = "<group>"; };
 		0493192022C204EC000B805F /* WebKitController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebKitController.swift; sourceTree = "<group>"; };
 		0493192222C20C1F000B805F /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		049BF6462417D19400F3611A /* ShortPlayController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShortPlayController.swift; sourceTree = "<group>"; };
@@ -168,7 +169,6 @@
 		04DD09BB24AC917000DCC901 /* shrinkScreen@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shrinkScreen@2x.png"; sourceTree = "<group>"; };
 		04DD09BC24AC917000DCC901 /* R_fullscreen@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "R_fullscreen@2x.png"; sourceTree = "<group>"; };
 		04DD09BE24AC917000DCC901 /* sliderflash@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sliderflash@2x.png"; sourceTree = "<group>"; };
-		04DD09C124AC917000DCC901 /* sliderflash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sliderflash.png; sourceTree = "<group>"; };
 		04DD09C224AC917000DCC901 /* player_brightness.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = player_brightness.png; sourceTree = "<group>"; };
 		04DD09F624AC945000DCC901 /* TablePlayNativeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TablePlayNativeController.swift; sourceTree = "<group>"; };
 		325DA2BE3B0AC373EF94A5B8 /* Pods_SwiftAdView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SwiftAdView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -346,6 +346,8 @@
 		04DD099824AC917000DCC901 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				047A6C0624BDDF30008CE41E /* sliderHightLight@2x.png */,
+				047A6C0724BDDF30008CE41E /* sliderHightLight@3x.png */,
 				047A6BFB24BC632E008CE41E /* back@2x.png */,
 				047A6BFC24BC632F008CE41E /* back@3x.png */,
 				04DD099D24AC917000DCC901 /* sliderNormal@2x.png */,
@@ -372,10 +374,8 @@
 				04DD09B024AC917000DCC901 /* replay@3x.png */,
 				04DD09B224AC917000DCC901 /* unlock@2x.png */,
 				04DD09AF24AC917000DCC901 /* unlock@3x.png */,
-				04DD09C124AC917000DCC901 /* sliderflash.png */,
 				04DD09BE24AC917000DCC901 /* sliderflash@2x.png */,
 				04DD09B724AC917000DCC901 /* sliderflash@3x.png */,
-				047A6BFF24BCA125008CE41E /* sliderHightLight.png */,
 				04DD09C224AC917000DCC901 /* player_brightness.png */,
 			);
 			path = Assets;
@@ -462,7 +462,6 @@
 				04DD09E324AC917000DCC901 /* replay@3x.png in Resources */,
 				047A6BFE24BC632F008CE41E /* back@3x.png in Resources */,
 				04DD09ED24AC917000DCC901 /* shrinkScreen@3x.png in Resources */,
-				047A6C0024BCA125008CE41E /* sliderHightLight.png in Resources */,
 				0422895522BC9BAF00EE9B93 /* LaunchScreen.storyboard in Resources */,
 				04DD09DE24AC917000DCC901 /* forward@3x.png in Resources */,
 				04DD09DC24AC917000DCC901 /* backward@2x.png in Resources */,
@@ -473,11 +472,11 @@
 				04C9DA08246AF0C500B0BA35 /* ChannelRecommendReusableView.xib in Resources */,
 				0422896A22BCE15A00EE9B93 /* guide02.png in Resources */,
 				04C9DA11246AF24C00B0BA35 /* AddCategoryCell.xib in Resources */,
-				04DD09F424AC917000DCC901 /* sliderflash.png in Resources */,
 				04DD09D624AC917000DCC901 /* play@2x.png in Resources */,
 				04DD09DA24AC917000DCC901 /* share@2x.png in Resources */,
 				04C9DA07246AF0C500B0BA35 /* ChannelRecommendCell.xib in Resources */,
 				04DD09EA24AC917000DCC901 /* sliderflash@3x.png in Resources */,
+				047A6C0924BDDF30008CE41E /* sliderHightLight@3x.png in Resources */,
 				04DD09EE24AC917000DCC901 /* shrinkScreen@2x.png in Resources */,
 				04DD09CD24AC917000DCC901 /* pause@2x.png in Resources */,
 				04DD09CF24AC917000DCC901 /* play@3x.png in Resources */,
@@ -494,6 +493,7 @@
 				04DD09D124AC917000DCC901 /* lockscreen@3x.png in Resources */,
 				0422895022BC9BAE00EE9B93 /* Main.storyboard in Resources */,
 				04DD09E224AC917000DCC901 /* unlock@3x.png in Resources */,
+				047A6C0824BDDF30008CE41E /* sliderHightLight@2x.png in Resources */,
 				04DD09D024AC917000DCC901 /* sliderNormal@2x.png in Resources */,
 				04DD09D924AC917000DCC901 /* pause@3x.png in Resources */,
 				04C9DA05246AF0C500B0BA35 /* MyChannelReusableView.xib in Resources */,
