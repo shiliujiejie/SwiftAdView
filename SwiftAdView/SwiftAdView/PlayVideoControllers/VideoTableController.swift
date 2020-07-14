@@ -278,14 +278,14 @@ private extension VideoTableController {
     func layoutLeftBackButton() {
         leftBackButton.snp.makeConstraints { (make) in
             make.leading.equalTo(16)
-            make.top.equalTo(screenHeight >= 812 ? 40 : 20)
+            make.top.equalTo(screenHeight >= 812 ? 49 : 23)
             make.width.height.equalTo(35)
         }
     }
     func layoutRightBackButton() {
         rightBackButton.snp.makeConstraints { (make) in
             make.trailing.equalTo(-16)
-            make.top.equalTo(screenHeight >= 812 ? 40 : 20)
+            make.top.equalTo(screenHeight >= 812 ? 49 : 23)
             make.width.height.equalTo(35)
         }
     }
