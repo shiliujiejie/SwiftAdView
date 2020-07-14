@@ -192,6 +192,7 @@ public class PlayerView: UIView {
             /// 其他文件格式，这里处理
             let urlAsset = AVURLAsset(url: trueUrl, options: nil)
             avItem = AVPlayerItem(asset: urlAsset)
+            M3u8ResourceLoader.shared.interruptPlay()
         }
         
         player = AVPlayer(playerItem: avItem!)

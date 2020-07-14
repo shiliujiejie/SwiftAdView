@@ -561,6 +561,7 @@ private extension RXPlayerView {
             avItem = M3u8ResourceLoader.shared.playerItem(with: videoUrl, uriKey: uriKey, cacheWhenPlaying: cacheWhenPlayinng) //AVPlayerItem(asset: AVURLAsset(url: videoUrl, options: nil))
         } else {
             isM3U8 = false
+            M3u8ResourceLoader.shared.interruptPlay()
             avItem = AVPlayerItem(asset: AVURLAsset(url: videoUrl, options: nil))
             //                resouerLoader = RXAssetResourceLoader()
             //                resouerLoader!.delegate = self
