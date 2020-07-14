@@ -36,8 +36,8 @@ class ShortPlayController: UIViewController {
         button.addTarget(self, action: #selector(rightButtonClick), for: .touchUpInside)
         return button
     }()
-    lazy var playerView: PlayerView = {
-        let player = PlayerView(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight))
+    lazy var playerView: X_PlayerView = {
+        let player = X_PlayerView(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight))
         player.controlViewBottomInset = safeAreaBottomHeight + 49
         player.delegate = self
         return player
@@ -112,7 +112,7 @@ class ShortPlayController: UIViewController {
 //        playerView.resetRate(rate: 1.5)
 //        return
         if playerView.player != nil {
-             let fullPlayer = FullScreenPlayController()
+             let fullPlayer = X_FullScreenPlayController()
             fullPlayer.player = playerView.player!
             fullPlayer.modalPresentationStyle = .fullScreen
             present(fullPlayer, animated: false, completion: nil)
@@ -141,11 +141,11 @@ class ShortPlayController: UIViewController {
     
 }
 
-// MARK: - PlayerViewDelegate
-extension ShortPlayController: PlayerViewDelegate {
+// MARK: - X_PlayerViewDelegate
+extension ShortPlayController: X_PlayerViewDelegate {
 
     func playerProgress(progress: Float, currentPlayTime: Float) {
-        print("progress  --- \(progress) currentPlayTime = \(currentPlayTime) currentTimeString = \(PlayerView.formatTimPosition(position: Int(currentPlayTime), duration: Int(playerView.videoDuration))) videoTime_length = \(PlayerView.formatTimDuration(duration: Int(playerView.videoDuration)))")
+        print("progress  --- \(progress) currentPlayTime = \(currentPlayTime) currentTimeString = \(X_PlayerView.formatTimPosition(position: Int(currentPlayTime), duration: Int(playerView.videoDuration))) videoTime_length = \(X_PlayerView.formatTimDuration(duration: Int(playerView.videoDuration)))")
     }
     func customActionsBeforePlay() {
         print("customActionsBeforePlay ---- Exp: remove Failed Shower View")
@@ -159,11 +159,11 @@ extension ShortPlayController: PlayerViewDelegate {
     func startPlay() {
         print("startPlay")
     }
-    func currentUrlPlayToEnd(url: URL?, player: PlayerView) {
+    func currentUrlPlayToEnd(url: URL?, player: X_PlayerView) {
            print("currentUrlPlayToEnd = url: \(url!.absoluteString)")
            player.replay()
        }
-    func playVideoFailed(url: URL?, player: PlayerView) {
+    func playVideoFailed(url: URL?, player: X_PlayerView) {
         print("playVideoFailed")
     }
     func doubleTapGestureAt(point: CGPoint) {

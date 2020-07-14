@@ -54,8 +54,8 @@ open class RXNetWorkAlert: UIView {
 public extension RXNetWorkAlert {
     
     /// 展示
-    public func showInWindow() {
-        orientationSupport = RXPlayerOrietation.orientationPortrait     ///这里展示无网操作时。将屏幕支持改为竖屏
+    func showInWindow() {
+        orientationSupport = R_PlayerOrietation.orientationPortrait     ///这里展示无网操作时。将屏幕支持改为竖屏
         if let window = UIApplication.shared.keyWindow {
             if !window.subviews.contains(self) {
                 window.addSubview(self)
@@ -68,7 +68,7 @@ public extension RXNetWorkAlert {
     
     /// 隐藏
     
-    public func hideFromWindow() {
+    func hideFromWindow() {
         if self.superview != nil {
             self.removeFromSuperview()
         }

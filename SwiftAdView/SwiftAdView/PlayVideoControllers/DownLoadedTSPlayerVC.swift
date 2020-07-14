@@ -22,8 +22,8 @@ class DownLoadedVideoPlayerVC: UIViewController {
         return .default
     }
     
-    fileprivate lazy var videoPlayer: RXPlayerView = {
-        let player = RXPlayerView(frame: self.view.frame, bothSidesTimelable: true)
+    fileprivate lazy var videoPlayer: R_PlayerView = {
+        let player = R_PlayerView(frame: self.view.frame, bothSidesTimelable: true)
         player.delegate = self
         return player
     }()
@@ -84,10 +84,10 @@ class DownLoadedVideoPlayerVC: UIViewController {
     }
 }
 
-// MARK: - RXPlayerDelegate
-extension DownLoadedVideoPlayerVC: RXPlayerDelegate {
+// MARK: - R_PlayerDelegate
+extension DownLoadedVideoPlayerVC: R_PlayerDelegate {
     
-    func retryToPlayVideo(_ player: RXPlayerView, _ videoModel: RXVideoModel?, _ fatherView: UIView?) {
+    func retryToPlayVideo(_ player: R_PlayerView, _ videoModel: RXVideoModel?, _ fatherView: UIView?) {
         
     }
 }

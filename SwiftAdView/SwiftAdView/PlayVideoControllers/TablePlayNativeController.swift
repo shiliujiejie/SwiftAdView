@@ -14,8 +14,8 @@ class TablePlayNativeController: UIViewController {
     override var prefersHomeIndicatorAutoHidden: Bool {
         return true
     }
-    
-    private var port: UInt = 8095
+    ///端口
+    private var port: UInt = 8099
     let server = GCDWebServer()
     
     lazy var leftBackButton: UIButton = {
@@ -55,8 +55,8 @@ class TablePlayNativeController: UIViewController {
         label.layer.masksToBounds = true
         return label
     }()
-    lazy var playerView: RXPlayerView = {
-        let player = RXPlayerView.init(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenWidth*9/16), bothSidesTimelable: true)
+    lazy var playerView: R_PlayerView = {
+        let player = R_PlayerView.init(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenWidth*9/16), bothSidesTimelable: true)
         player.videoNameShowOnlyFullScreen = true
         player.delegate = self
         return player
@@ -167,8 +167,8 @@ extension TablePlayNativeController: UITableViewDelegate, UITableViewDataSource 
     
 }
 
-extension TablePlayNativeController: RXPlayerDelegate {
-    func retryToPlayVideo(_ player: RXPlayerView, _ videoModel: RXVideoModel?, _ fatherView: UIView?) {
+extension TablePlayNativeController: R_PlayerDelegate {
+    func retryToPlayVideo(_ player: R_PlayerView, _ videoModel: RXVideoModel?, _ fatherView: UIView?) {
         
     }
 }

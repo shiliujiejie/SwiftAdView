@@ -2,15 +2,14 @@
 import UIKit
 import AVKit
 
-class FullScreenPlayController: AVPlayerViewController {
-
+class X_FullScreenPlayController: AVPlayerViewController {
 
     override var shouldAutorotate: Bool  {
         return true
     }
     
     deinit {
-        print("FullScreenPlayController - deinit")
+        print("X_FullScreenPlayController - deinit")
     }
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -2,17 +2,10 @@
 import UIKit
 import SnapKit
 
-extension UINavigationController { // 用于状态栏的显示，样式
-    override open var preferredStatusBarStyle: UIStatusBarStyle {
-        guard let vc = self.viewControllers.last else { return UIStatusBarStyle.default }
-        return vc.preferredStatusBarStyle
-    }
-}
-
-class RXBrightnessView: UIView {
+class R_BrightnessView: UIView {
     
     lazy var brightnessImage: UIImageView = {
-        let imageV = UIImageView(image: RXImgManager.foundImage(imageName: "playeRXbrightness"))
+        let imageV = UIImageView(image: RXImgManager.foundImage(imageName: "player_brightness"))
         return imageV
     }()
     lazy var titleLab: UILabel = {

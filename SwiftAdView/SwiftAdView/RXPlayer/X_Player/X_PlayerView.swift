@@ -3,15 +3,7 @@ import UIKit
 import Foundation
 import AVFoundation
 
-public class PlayerView: UIView {
-    
-    enum PlayerStatus {
-        case Failed
-        case ReadyToPlay
-        case Buffering
-        case Playing
-        case Pause
-    }
+public class X_PlayerView: UIView {
     
     private var playerStatu: PlayerStatus? {
         didSet {
@@ -28,14 +20,14 @@ public class PlayerView: UIView {
     }
     /// 暂停按钮
     private let pauseImg: UIImageView = {
-        let image = UIImageView(image: UIImage(named: "pause"))
+        let image =  UIImageView(image: RXImgManager.foundImage(imageName: "pause"))
         image.isUserInteractionEnabled = true
         image.contentMode = .scaleAspectFit
         image.isHidden = true
         return image
     }()
     /// 播放控制View
-    private var coverView: PlayerCoverView!
+    private var coverView: X_PlayerCoverView!
    
     /// 播放速率
     private var rate: Float = 1.0
@@ -53,7 +45,7 @@ public class PlayerView: UIView {
     /// 视频总时长
     public var videoDuration: Float = 0
     
-    public weak var delegate: PlayerViewDelegate?
+    public weak var delegate: X_PlayerViewDelegate?
     
     /// 播放链接
     public var playUrl: URL?
@@ -86,7 +78,7 @@ public class PlayerView: UIView {
     
     deinit {
         print("播放器释放")
-        M3u8ResourceLoader.shared.interruptPlay()
+        RXM3u8ResourceLoader.shared.interruptPlay()
         NotificationCenter.default.removeObserver(self)
         realeasePlayer()
     }
@@ -187,12 +179,12 @@ public class PlayerView: UIView {
             coverView.removeFromSuperview()
         }
         if trueUrl.absoluteString.contains(".m3u8") {
-            avItem = M3u8ResourceLoader.shared.playerItem(with: trueUrl, uriKey: uri, cacheWhenPlaying: cache)
+            avItem = RXM3u8ResourceLoader.shared.playerItem(with: trueUrl, uriKey: uri, cacheWhenPlaying: cache)
         } else {
             /// 其他文件格式，这里处理
             let urlAsset = AVURLAsset(url: trueUrl, options: nil)
             avItem = AVPlayerItem(asset: urlAsset)
-            M3u8ResourceLoader.shared.interruptPlay()
+            RXM3u8ResourceLoader.shared.interruptPlay()
         }
         
         player = AVPlayer(playerItem: avItem!)
@@ -201,7 +193,7 @@ public class PlayerView: UIView {
         playerLayer?.videoGravity = .resizeAspect
         self.layer.addSublayer(playerLayer!)
 
-        coverView = PlayerCoverView(config: loadConfig())
+        coverView = X_PlayerCoverView(config: loadConfig())
         coverView?.delegate = self
         
         view.addSubview(self)
@@ -219,8 +211,8 @@ public class PlayerView: UIView {
         listenTothePlayer()
     }
     
-    private func loadConfig() -> PlayerViewConfig {
-        let config = PlayerViewConfig()
+    private func loadConfig() -> X_PlayerViewConfig {
+        let config = X_PlayerViewConfig()
         config.controlBarBottomInset = controlViewBottomInset
         config.controlViewColor = controlViewColor
         config.loadingBarColor = loadingBarColor
@@ -305,7 +297,7 @@ public class PlayerView: UIView {
 }
 
 // MARK: - Listen To the Player (监听播放狀態)
-extension PlayerView {
+extension X_PlayerView {
     
     @objc func playToEnd(_ sender: Notification) {
         delegate?.currentUrlPlayToEnd(url: playUrl, player: self)
@@ -350,12 +342,12 @@ extension PlayerView {
 }
 
 // MARK: - PlayerCoverDelegate
-extension PlayerView: PlayerCoverDelegate {
+extension X_PlayerView: PlayerCoverDelegate {
     
     func progressDraging(progress: Double) {
         let currenTime = Int(Double(videoDuration) * progress)
-        let allTimeString = PlayerView.formatTimDuration(duration: Int(videoDuration))
-        let draggedTimeString = PlayerView.formatTimPosition(position: currenTime, duration: Int(videoDuration))
+        let allTimeString = X_PlayerView.formatTimDuration(duration: Int(videoDuration))
+        let draggedTimeString = X_PlayerView.formatTimPosition(position: currenTime, duration: Int(videoDuration))
         coverView.draggedTimeLable.text = String(format: " %@ | %@ ", draggedTimeString, allTimeString)
         delegate?.dragingProgress(isDraging: true, to: Float(progress))
     }
@@ -385,7 +377,7 @@ extension PlayerView: PlayerCoverDelegate {
 }
 
 // MARK: - Layout
-private extension PlayerView {
+private extension X_PlayerView {
     func layoutPageSubviews() {
         layoutSelf()
         layoutCoverView()
@@ -409,7 +401,7 @@ private extension PlayerView {
     }
 }
 
-extension PlayerView {
+extension X_PlayerView {
     
     /// 当前时间转换为时间字符串
     public class func formatTimPosition(position: Int, duration:Int) -> String {

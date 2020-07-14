@@ -5,66 +5,8 @@ import AVKit
 import SnapKit
 import MediaPlayer
 
-public protocol RXCustomMuneDelegate: class {
-    /// 自定义右上角按钮点击操作
-    func showCustomMuneView() -> UIView?
-    
-    func customTopBarActions() -> [UIButton]?
-}
-
-public extension RXCustomMuneDelegate {
-    
-    func showCustomMuneView() -> UIView? {
-        return nil
-    }
-    func customTopBarActions() -> [UIButton]? {
-        return nil
-    }
-}
-
-public protocol RXPlayerDelegate: class {
-    
-    /// 代理在外部处理网络问题
-    func retryToPlayVideo(_ player: RXPlayerView, _ videoModel: RXVideoModel?, _ fatherView: UIView?)
-    
-    /// 当前播放的视频播放完成时调用
-    ///
-    /// - Parameters:
-    ///   - videoModel: 当前播放完的本地视频的Model
-    ///   - isPlayingDownLoadFile: 是否是播放的已下载视频
-    func currentVideoPlayToEnd(_ videoModel: RXVideoModel?, _ isPlayingDownLoadFile: Bool)
-}
-
-public extension RXPlayerDelegate {
-    func currentVideoPlayToEnd(_ videoModel: RXVideoModel?, _ isPlayingDownLoadFile: Bool) {
-    }
-}
-
-/// 播放状态枚举
-///
-/// - Failed: 失败
-/// - ReadyToPlay: 将要播放
-/// - Unknown: 未知
-/// - Buffering: 正在缓冲
-/// - Playing: 播放
-/// - Pause: 暂停
-public enum PlayerStatus {
-    case Failed
-    case ReadyToPlay
-    case Unknown
-    case Buffering
-    case Playing
-    case Pause
-}
-
-/// 滑动手势的方向
-enum PanDirection: Int {
-    case PanDirectionHorizontal     //水平
-    case PanDirectionVertical       //上下
-}
-
 /// 播放器View
-open class RXPlayerView: UIView {
+open class R_PlayerView: UIView {
     
     static let kCustomViewTag = 6666
     
@@ -112,7 +54,7 @@ open class RXPlayerView: UIView {
 //            }
             if !isFullScreen! {
                 /// 非全屏状态下，移除自定义视图
-                if let customView = self.viewWithTag(RXPlayerView.kCustomViewTag) {
+                if let customView = self.viewWithTag(R_PlayerView.kCustomViewTag) {
                     customView.removeFromSuperview()
                 }
                 playControlView.munesButton.isHidden = true
@@ -145,8 +87,8 @@ open class RXPlayerView: UIView {
     public var videoLayerGravity: AVLayerVideoGravity = .resizeAspect
     /// 是否只在全屏时显示视频名称
     public var videoNameShowOnlyFullScreen: Bool = false
-    public weak var delegate: RXPlayerDelegate?
-    public weak var customViewDelegate: RXCustomMuneDelegate?
+    public weak var delegate: R_PlayerDelegate?
+    public weak var customViewDelegate: R_CustomMuneDelegate?
     
     /// 本地视频播放时回调视频播放进度
     public var playLocalFileVideoCloseCallBack:((_ playValue: Float) -> Void)?
@@ -253,8 +195,8 @@ open class RXPlayerView: UIView {
         }
     }
     /// 亮度显示
-    private var brightnessSlider: RXBrightnessView = {
-        let brightView = RXBrightnessView(frame: CGRect(x: 0, y: 0, width: 155, height: 155))
+    private var brightnessSlider: R_BrightnessView = {
+        let brightView = R_BrightnessView(frame: CGRect(x: 0, y: 0, width: 155, height: 155))
         return brightView
     }()
     private lazy var volumeView: MPVolumeView = {
@@ -295,7 +237,6 @@ open class RXPlayerView: UIView {
     private var player: AVPlayer?
     private var avItem: AVPlayerItem?
     private var playerTimerObserver: NSObject?
-    private var resouerLoader: RXAssetResourceLoader?
     /// 音量显示
     private var volumeSlider: UISlider?
     /// 缓存
@@ -320,8 +261,8 @@ open class RXPlayerView: UIView {
         super.init(frame: frame)
         self.backgroundColor = .black
         // 注册APP被挂起 + 进入前台通知
-        NotificationCenter.default.addObserver(self, selector: #selector(RXPlayerView.applicationResignActivity(_:)), name: UIApplication.willResignActiveNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(RXPlayerView.applicationBecomeActivity(_:)), name: UIApplication.didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(R_PlayerView.applicationResignActivity(_:)), name: UIApplication.willResignActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(R_PlayerView.applicationBecomeActivity(_:)), name: UIApplication.didBecomeActiveNotification, object: nil)
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -331,8 +272,7 @@ open class RXPlayerView: UIView {
 }
 
 // MARK: - Open Func (api)
-
-extension RXPlayerView {
+extension R_PlayerView {
     /**
      播放统一调用 :
      url:   视频链接 （m3u8支持本地缓存）
@@ -408,10 +348,6 @@ extension RXPlayerView {
         player?.rate = rate
         self.rate = rate
     }
-    /// 取消视频缓存加载
-    open func cancle() {
-        resouerLoader?.cancel()
-    }
     
     open func destroyPlayer() {
         releasePlayer()
@@ -436,14 +372,14 @@ extension RXPlayerView {
     
     /// 注册屏幕旋转监听通知
     open func enableDeviceOrientationChange() {
-        NotificationCenter.default.addObserver(self, selector: #selector(RXPlayerView.orientChange(_:)), name: UIDevice.orientationDidChangeNotification, object: UIDevice.current)
+        NotificationCenter.default.addObserver(self, selector: #selector(R_PlayerView.orientChange(_:)), name: UIDevice.orientationDidChangeNotification, object: UIDevice.current)
     }
     
 }
 
 // MARK: - Private Funcs (私有方法)
 
-private extension RXPlayerView {
+private extension R_PlayerView {
     
     private func playVideoWith(url: URL?, videoName: String?, containView: UIView?) {
         // 👇三个属性的设置顺序很重要
@@ -558,16 +494,11 @@ private extension RXPlayerView {
         
         if videoUrl.absoluteString.contains(".m3u8") {
             isM3U8 = true
-            avItem = M3u8ResourceLoader.shared.playerItem(with: videoUrl, uriKey: uriKey, cacheWhenPlaying: cacheWhenPlayinng) //AVPlayerItem(asset: AVURLAsset(url: videoUrl, options: nil))
+            avItem = RXM3u8ResourceLoader.shared.playerItem(with: videoUrl, uriKey: uriKey, cacheWhenPlaying: cacheWhenPlayinng) //AVPlayerItem(asset: AVURLAsset(url: videoUrl, options: nil))
         } else {
             isM3U8 = false
-            M3u8ResourceLoader.shared.interruptPlay()
+            RXM3u8ResourceLoader.shared.interruptPlay()
             avItem = AVPlayerItem(asset: AVURLAsset(url: videoUrl, options: nil))
-            //                resouerLoader = RXAssetResourceLoader()
-            //                resouerLoader!.delegate = self
-            //                let playUrl = resouerLoader!.getURL(url: videoUrl)
-            //                avAsset = AVURLAsset(url: playUrl ?? videoUrl, options: nil)
-            //                avAsset?.resourceLoader.setDelegate(resouerLoader, queue: DispatchQueue.main)
         }
         player = AVPlayer(playerItem: self.avItem!)
         playerLayer = AVPlayerLayer(player: self.player!)
@@ -582,10 +513,10 @@ private extension RXPlayerView {
         playControlView.panGesture.isEnabled = true //!isM3U8
         autoHideBar()
         if playControlView.playLocalFile! {       // 播放本地视频时只支持左右
-            orientationSupport = RXPlayerOrietation.orientationLeftAndRight
+            orientationSupport = R_PlayerOrietation.orientationLeftAndRight
         } else {
             showLoadingHud()      /// 网络视频才显示菊花
-            orientationSupport = RXPlayerOrietation.orientationAll
+            orientationSupport = R_PlayerOrietation.orientationAll
         }
     }
     
@@ -655,7 +586,7 @@ private extension RXPlayerView {
         UIDevice.current.beginGeneratingDeviceOrientationNotifications()
         // 注册屏幕旋转通知
         NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: UIDevice.current)
-        NotificationCenter.default.addObserver(self, selector: #selector(RXPlayerView.orientChange(_:)), name: UIDevice.orientationDidChangeNotification, object: UIDevice.current)
+        NotificationCenter.default.addObserver(self, selector: #selector(R_PlayerView.orientChange(_:)), name: UIDevice.orientationDidChangeNotification, object: UIDevice.current)
     }
     
     // MARK: - 返回，关闭，全屏，播放，暂停,重播,音量，亮度，进度拖动 - UserAction
@@ -672,7 +603,7 @@ private extension RXPlayerView {
                 if strongSelf.playControlView.playLocalFile! {   // 直接全屏播放本地视频
                     strongSelf.removeFromSuperview()
                     strongSelf.cancleAutoHideBar()
-                    orientationSupport = RXPlayerOrietation.orientationPortrait
+                    orientationSupport = R_PlayerOrietation.orientationPortrait
                     strongSelf.playLocalFileVideoCloseCallBack?(self?.playedValue ?? 0.0)
                     strongSelf.interfaceOrientation(UIInterfaceOrientation.landscapeRight)
                     strongSelf.interfaceOrientation(UIInterfaceOrientation.portrait)
@@ -709,12 +640,12 @@ private extension RXPlayerView {
         playControlView.screenLockButtonClickBlock = { [weak self] (sender) in
             guard let strongSelf = self else { return }
             if sender.isSelected {
-                orientationSupport = RXPlayerOrietation.orientationLeftAndRight
+                orientationSupport = R_PlayerOrietation.orientationLeftAndRight
             }else {
                 if strongSelf.playControlView.playLocalFile! {
-                    orientationSupport = RXPlayerOrietation.orientationLeftAndRight
+                    orientationSupport = R_PlayerOrietation.orientationLeftAndRight
                 } else {
-                    orientationSupport = RXPlayerOrietation.orientationAll
+                    orientationSupport = R_PlayerOrietation.orientationAll
                 }
             }
         }
@@ -734,7 +665,7 @@ private extension RXPlayerView {
             /// 通过代理回调设置自定义覆盖操作视图
             if let customMuneView = strongSelf.customViewDelegate?.showCustomMuneView() {
                 
-                customMuneView.tag = RXPlayerView.kCustomViewTag /// 给外来视图打标签，便于移除
+                customMuneView.tag = R_PlayerView.kCustomViewTag /// 给外来视图打标签，便于移除
                 
                 if !strongSelf.subviews.contains(customMuneView) {
                     strongSelf.addSubview(customMuneView)
@@ -1028,7 +959,7 @@ private extension RXPlayerView {
 }
 
 // MARK: - RXPlayerControlViewDelegate
-extension RXPlayerView: RXPlayerControlViewDelegate {
+extension R_PlayerView: RXPlayerControlViewDelegate {
     
     func sliderTouchBegin(_ sender: UISlider) {
         guard let avItem = self.avItem else { return }
@@ -1076,28 +1007,8 @@ extension RXPlayerView: RXPlayerControlViewDelegate {
     }
 }
 
-// MARK: - RXLoaderUrlConnectionDelegate
-
-extension RXPlayerView: RXLoaderUrlConnectionDelegate {
-    
-    public func didFinishLoadingWithTask(task: RXVideoRequestTask) {
-        print("didFinishLoadingWithTask--------\(task.downLoadingOffset)")
-        
-    }
-    
-    public func didFailLoadingWithTask(task: RXVideoRequestTask, errorCode: Int) {
-        print("didFailLoadingWithTask -------- \(errorCode)")
-        playerStatu = PlayerStatus.Failed
-        hideLoadingHud()
-        showLoadedFailedView()
-    }
-    
-    
-}
-
 // MARK: - Listen To the Player (监听播放状态)
-
-extension RXPlayerView {
+extension R_PlayerView {
     
     /// 监听PlayerItem对象
     fileprivate func listenTothePlayer() {
@@ -1206,7 +1117,7 @@ extension RXPlayerView {
 
 // MARK: - LayoutPageSubviews (UI布局)
 
-extension RXPlayerView {
+extension R_PlayerView {
     
     private func layoutLocalPlayView(_ localView: UIView) {
         self.snp.makeConstraints { (make) in
@@ -1272,7 +1183,7 @@ extension RXPlayerView {
 
 // MARK: - 时间转换格式
 
-extension RXPlayerView {
+extension R_PlayerView {
     
     fileprivate func formatTimPosition(position: Int, duration:Int) -> String {
         guard position != 0 && duration != 0 else{

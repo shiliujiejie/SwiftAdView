@@ -221,13 +221,13 @@ class RXPlayerControlView: UIView {
                 screenLockButton.isSelected = true
                 doubleTapGesture.isEnabled = false
                 panGesture.isEnabled = false
-                orientationSupport = RXPlayerOrietation.orientationLeftAndRight
+                orientationSupport = R_PlayerOrietation.orientationLeftAndRight
             }else {
                 screenLockButton.isSelected = false
                 doubleTapGesture.isEnabled = true
                 panGesture.isEnabled = true
                 /// 全屏播放本地时，只支持左右，非直接全屏播放支持上左右
-                orientationSupport = playLocalFile! ? RXPlayerOrietation.orientationLeftAndRight : RXPlayerOrietation.orientationAll
+                orientationSupport = playLocalFile! ? R_PlayerOrietation.orientationLeftAndRight : R_PlayerOrietation.orientationAll
             }
         }
     }
@@ -529,7 +529,7 @@ extension RXPlayerControlView {
     }
     private func layoutScreenLockButton() {
         screenLockButton.snp.makeConstraints { (make) in
-            make.leading.equalTo((UIDevice.current.isiPhoneXSeriesDevices() || UIDevice.current.isSimulator()) ? 50 : 10)
+            make.leading.equalTo(UIDevice.current.isiPhoneXSeriesDevices() ? 50 : 10)
             make.centerY.equalToSuperview()
             make.height.equalTo(45)
             make.width.equalTo(45)
@@ -544,11 +544,7 @@ extension RXPlayerControlView {
     private func layoutTopControlBarView() {
         topControlBarView.snp.makeConstraints { (make) in
             make.leading.top.trailing.equalTo(0)
-            if UIDevice.current.isPad() {             //兼容iPad
-                make.height.equalTo(80)
-            } else {
-                make.height.equalTo(40)
-            }
+            make.height.equalTo(40)
         }
     }
     private func layoutPositionTimeLab() {
@@ -604,7 +600,7 @@ extension RXPlayerControlView {
             make.top.equalTo(fullScreen ? 10 : 0)
             make.width.equalTo(fullScreen ? 30 : 0)
             if fullScreen {
-                make.leading.equalTo((UIDevice.current.isiPhoneXSeriesDevices() || UIDevice.current.isSimulator()) ? 50 : 0)
+                make.leading.equalTo(UIDevice.current.isiPhoneXSeriesDevices() ? 50 : 0)
             } else {
                 make.leading.equalTo(0)
             }
@@ -619,14 +615,14 @@ extension RXPlayerControlView {
     private func updateBottomBarWith(fullScreen: Bool) {
         positionTimeLab.snp.updateConstraints { (make) in
             if fullScreen {
-                make.leading.equalTo((UIDevice.current.isiPhoneXSeriesDevices() || UIDevice.current.isSimulator()) ? 50 : 10)
+                make.leading.equalTo(UIDevice.current.isiPhoneXSeriesDevices() ? 50 : 10)
             } else {
                 make.leading.equalTo(10)
             }
         }
         durationTimeLab.snp.updateConstraints { (make) in
             if fullScreen {
-                 make.trailing.equalTo((UIDevice.current.isiPhoneXSeriesDevices() || UIDevice.current.isSimulator()) ? -50 : -10)
+                 make.trailing.equalTo(UIDevice.current.isiPhoneXSeriesDevices() ? -50 : -10)
             } else {
                  make.trailing.equalTo(-10)
             }

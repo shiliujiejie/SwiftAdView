@@ -5,8 +5,8 @@ import GCDWebServer
 
 class VideoTableController: UIViewController {
    
-    override var prefersStatusBarHidden: Bool {
-        return true
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
     }
     private var port: UInt = 8095
     let server = GCDWebServer()
@@ -43,7 +43,7 @@ class VideoTableController: UIViewController {
         return table
     }()
     let tableHeader: UIView = {
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenWidth*9/16))
+        let view = UIView(frame: CGRect(x: 0, y: statusBarHeight, width: screenWidth, height: screenWidth*9/16))
         view.backgroundColor = UIColor.darkText
         return view
     }()
@@ -58,8 +58,8 @@ class VideoTableController: UIViewController {
         return label
     }()
     
-    lazy var playerView: PlayerView = {
-        let player = PlayerView(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenWidth*9/16))
+    lazy var playerView: X_PlayerView = {
+        let player = X_PlayerView(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenWidth*9/16))
         player.controlViewBottomInset = 0
         player.progressHeight = 1.5
         player.controlViewHeight = 50
@@ -68,11 +68,6 @@ class VideoTableController: UIViewController {
         player.progreesStrackTintColor = UIColor(white: 0.89, alpha: 1.0)
         player.loadingBarHeight = 3.0
         player.minTimeForDragProgress = 120   /// 进度条 可以拖动的视频 最短要求 180秒
-        player.delegate = self
-        return player
-    }()
-    lazy var playerView1: RXPlayerView = {
-        let player = RXPlayerView.init(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenWidth*9/16), bothSidesTimelable: true)
         player.delegate = self
         return player
     }()
@@ -134,7 +129,7 @@ class VideoTableController: UIViewController {
         playerView.resetRate(rate: 1.5)
         return
         if playerView.player != nil {
-            let fullPlayer = FullScreenPlayController()
+            let fullPlayer = X_FullScreenPlayController()
             fullPlayer.player = playerView.player!
             fullPlayer.modalPresentationStyle = .fullScreen
             present(fullPlayer, animated: false, completion: nil)
@@ -210,13 +205,13 @@ extension VideoTableController: UITableViewDelegate, UITableViewDataSource {
     
 }
 
-// MARK: - PlayerViewDelegate
-extension VideoTableController: PlayerViewDelegate {
+// MARK: - X_PlayerViewDelegate
+extension VideoTableController: X_PlayerViewDelegate {
 
     func playerProgress(progress: Float, currentPlayTime: Float) {
         //print("progress  --- \(progress) currentPlayTime = \(currentPlayTime) currentTimeString = \(playerView.formatTimPosition(position: Int(currentPlayTime), duration: Int(playerView.videoDuration))) videoTime_length = \(playerView.formatTimDuration(duration: Int(playerView.videoDuration)))")
-        let currentTimestr = PlayerView.formatTimPosition(position: Int(currentPlayTime), duration: Int(playerView.videoDuration))
-        let durationStr = PlayerView.formatTimDuration(duration: Int(playerView.videoDuration))
+        let currentTimestr = X_PlayerView.formatTimPosition(position: Int(currentPlayTime), duration: Int(playerView.videoDuration))
+        let durationStr = X_PlayerView.formatTimDuration(duration: Int(playerView.videoDuration))
         timelabel.isHidden = false
         timelabel.text = "\(currentTimestr) | \(durationStr)"
     }
@@ -242,11 +237,11 @@ extension VideoTableController: PlayerViewDelegate {
         print("startPlay")
         tableHeader.bringSubviewToFront(timelabel)
     }
-    func currentUrlPlayToEnd(url: URL?, player: PlayerView) {
+    func currentUrlPlayToEnd(url: URL?, player: X_PlayerView) {
            print("currentUrlPlayToEnd = url: \(url!.absoluteString)")
            player.replay()
        }
-    func playVideoFailed(url: URL?, player: PlayerView) {
+    func playVideoFailed(url: URL?, player: X_PlayerView) {
         print("playVideoFailed")
         timelabel.isHidden = true
     }
@@ -258,8 +253,8 @@ extension VideoTableController: PlayerViewDelegate {
     }
 }
 
-extension VideoTableController: RXPlayerDelegate {
-    func retryToPlayVideo(_ player: RXPlayerView, _ videoModel: RXVideoModel?, _ fatherView: UIView?) {
+extension VideoTableController: R_PlayerDelegate {
+    func retryToPlayVideo(_ player: R_PlayerView, _ videoModel: RXVideoModel?, _ fatherView: UIView?) {
         
     }
 }

@@ -3,12 +3,12 @@
 import UIKit
 import AVKit
 
-class M3u8ResourceLoader: NSObject, AVAssetResourceLoaderDelegate {
+class RXM3u8ResourceLoader: NSObject, AVAssetResourceLoaderDelegate {
     
     /// 单例
-    fileprivate static let instance = M3u8ResourceLoader()
+    fileprivate static let instance = RXM3u8ResourceLoader()
     /// 获取单例
-    public static var shared: M3u8ResourceLoader {
+    public static var shared: RXM3u8ResourceLoader {
         get {
             return instance
         }

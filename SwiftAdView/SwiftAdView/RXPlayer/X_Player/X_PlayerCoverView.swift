@@ -1,10 +1,3 @@
-//
-//  PlayerCoverView.swift
-//  SwiftAdView
-//
-//  Created by mac on 2020-03-11.
-//  Copyright © 2020 mac. All rights reserved.
-//
 
 import UIKit
 
@@ -15,7 +8,7 @@ protocol PlayerCoverDelegate: class {
     func doubleTapCoverViewAt(point: CGPoint)
 }
 
-class PlayerCoverView: UIView {
+class X_PlayerCoverView: UIView {
     /// 底部控制栏
     lazy var controlView: UIView = {
         let view = UIView()
@@ -88,11 +81,11 @@ class PlayerCoverView: UIView {
     }
 
     /// 试图配置
-    var configModel: PlayerViewConfig!
+    var configModel: X_PlayerViewConfig!
     
     weak var delegate: PlayerCoverDelegate?
     
-    convenience init(config: PlayerViewConfig) {
+    convenience init(config: X_PlayerViewConfig) {
         self.init()
         configModel = config
         addSubview(controlView)
@@ -129,7 +122,7 @@ class PlayerCoverView: UIView {
     
 }
  // MARK: - GestureRecognizers - Action
-extension  PlayerCoverView {
+extension  X_PlayerCoverView {
 
     @objc func panGestureRecognizers(_ sender: UIPanGestureRecognizer) {
         draging = true
@@ -174,7 +167,7 @@ extension  PlayerCoverView {
 }
 
 //MARK: - LoadingAnimation
-extension PlayerCoverView {
+extension X_PlayerCoverView {
     func startLoading(_ isStart: Bool = true) {
         loadingBar.isHidden = false
         progressView.isHidden = true
@@ -221,7 +214,7 @@ extension PlayerCoverView {
 }
 
 //MARK: - Layout
-private extension PlayerCoverView {
+private extension X_PlayerCoverView {
     func layoutPageSubviews() {
         layoutControlView()
         layoutProgressView()
