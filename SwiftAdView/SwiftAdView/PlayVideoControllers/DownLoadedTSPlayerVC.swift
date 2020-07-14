@@ -66,11 +66,13 @@ class DownLoadedVideoPlayerVC: UIViewController {
         
         let videoLocalUrl = "\(server.serverURL!.absoluteString)\(identifer).m3u8"
         print("videoLocalUrl == \(videoLocalUrl)")
-        videoPlayer.playVideoInFullscreen(videoLocalUrl, "\(identifer).m3u8", view)
-        videoPlayer.playLocalFileVideoCloseCallBack = { [weak self] (playValue) in
-            // 退出时，关闭本地服务器
-            self?.server.stop()
-            self?.navigationController?.popViewController(animated: false)
+        if let urlLocal = URL(string: videoLocalUrl) {
+            videoPlayer.playVideoInFullscreen(url: urlLocal, in: view, title: pathq)
+            videoPlayer.playLocalFileVideoCloseCallBack = { [weak self] (playValue) in
+                // 退出时，关闭本地服务器
+                self?.server.stop()
+                self?.navigationController?.popViewController(animated: false)
+            }
         }
     }
     

@@ -61,7 +61,7 @@ class TablePlayCell: UITableViewCell {
     let nameLabel: UILabel = {
         let v = UILabel()
         v.textColor = .white
-        v.numberOfLines = 2
+        v.numberOfLines = 3
         v.font = UIFont.systemFont(ofSize: 14)
         return v
     }()
@@ -149,7 +149,7 @@ private extension TablePlayCell {
     func layoutNamelabel() {
         nameLabel.snp.makeConstraints { (make) in
             make.leading.trailing.equalTo(bgImage)
-            make.top.equalTo(8)
+            make.top.equalTo(bgImage).offset(8)
         }
     }
   

@@ -73,9 +73,9 @@ open class RXPlayerView: UIView {
     public var playerStatu: PlayerStatus? {
         didSet {
             if playerStatu == PlayerStatus.Playing {
-                playControllViewEmbed.playOrPauseBtn.isSelected = true
+                playControlView.playOrPauseBtn.isSelected = true
                 player?.play()
-                player?.rate = 1.0
+                player?.rate = rate
                 if self.subviews.contains(pauseButton) {
                     pauseButton.isHidden = true
                     pauseButton.removeFromSuperview()
@@ -84,9 +84,9 @@ open class RXPlayerView: UIView {
                 player?.pause()
                 player?.rate = 0
                 hideLoadingHud()
-                playControllViewEmbed.playOrPauseBtn.isSelected = false
+                playControlView.playOrPauseBtn.isSelected = false
                 if !self.subviews.contains(pauseButton) {
-                    self.insertSubview(pauseButton, aboveSubview: playControllViewEmbed)
+                    self.insertSubview(pauseButton, aboveSubview: playControlView)
                     pauseButton.isHidden = false
                     layoutPauseButton()
                 }
@@ -96,14 +96,14 @@ open class RXPlayerView: UIView {
     /// 是否是全屏
     public var isFullScreen: Bool? = false {
         didSet {  // 监听全屏切换， 改变返回按钮，全屏按钮的状态和图片
-            playControllViewEmbed.closeButton.isSelected = isFullScreen!
-            playControllViewEmbed.fullScreen = isFullScreen!
+            playControlView.closeButton.isSelected = isFullScreen!
+            playControlView.fullScreen = isFullScreen!
             
 //            if let view = UIApplication.shared.value(forKey: "statusBar") as? UIView {  // 状态栏变化
 //                if !isFullScreen! {
 //                    view.alpha = 1.0
 //                } else {  // 全频
-//                    if playControllViewEmbed.barIsHidden! { // 状态栏
+//                    if playControlView.barIsHidden! { // 状态栏
 //                        view.alpha = 0
 //                    } else {
 //                        view.alpha = 1.0
@@ -115,28 +115,28 @@ open class RXPlayerView: UIView {
                 if let customView = self.viewWithTag(RXPlayerView.kCustomViewTag) {
                     customView.removeFromSuperview()
                 }
-                playControllViewEmbed.munesButton.isHidden = true
-                playControllViewEmbed.closeButton.snp.updateConstraints { (make) in
+                playControlView.munesButton.isHidden = true
+                playControlView.closeButton.snp.updateConstraints { (make) in
                     make.width.equalTo(5)
                 }
-                playControllViewEmbed.closeButton.isEnabled = false
+                playControlView.closeButton.isEnabled = false
             }else {
-                playControllViewEmbed.closeButton.snp.updateConstraints { (make) in
+                playControlView.closeButton.snp.updateConstraints { (make) in
                     make.width.equalTo(40)
                 }
-                playControllViewEmbed.closeButton.isEnabled = true
+                playControlView.closeButton.isEnabled = true
                 if customViewDelegate != nil {
                     if let actions = customViewDelegate!.customTopBarActions(), actions.count > 0 {  // 自定义了右上角操作按钮
-                        playControllViewEmbed.munesButton.isHidden = true
+                        playControlView.munesButton.isHidden = true
                     } else {   // 没有自定义按钮，检查是否自定义覆盖层
                         if customViewDelegate!.showCustomMuneView() != nil { // 自定义覆盖层
-                            playControllViewEmbed.munesButton.isHidden = false
+                            playControlView.munesButton.isHidden = false
                         } else {
-                            playControllViewEmbed.munesButton.isHidden = true
+                            playControlView.munesButton.isHidden = true
                         }
                     }
                 } else {
-                    playControllViewEmbed.munesButton.isHidden = true
+                    playControlView.munesButton.isHidden = true
                 }
             }
         }
@@ -160,16 +160,21 @@ open class RXPlayerView: UIView {
     private var currentOrientation: UIInterfaceOrientation?
     /// 保存传入的播放时间起点
     private var playTimeSince: Float = 0
+    /// 播放速度
+    private var rate: Float = 1.0
     /// 当前播放进度
     private var playedValue: Float = 0 {  // 播放进度
         didSet {
             if oldValue < playedValue {  // 表示在播放中
-                if !playControllViewEmbed.panGesture.isEnabled && !playControllViewEmbed.screenIsLock! {
-                    playControllViewEmbed.panGesture.isEnabled = true
+                if !playControlView.panGesture.isEnabled && !playControlView.screenIsLock! {
+                    playControlView.panGesture.isEnabled = true
                 }
                 self.hideLoadingHud()
-                if self.subviews.contains(loadedFailedView) {
-                    self.loadedFailedView.removeFromSuperview()
+                if subviews.contains(loadedFailedView) {
+                    loadedFailedView.removeFromSuperview()
+                }
+                if !playControlView.replayView.isHidden {
+                    playControlView.replayView.isHidden = true
                 }
             }
         }
@@ -183,7 +188,7 @@ open class RXPlayerView: UIView {
         }
     }
     /// 嵌入式播放控制View
-    private lazy var playControllViewEmbed: RXPlayerControlView = {
+    private lazy var playControlView: RXPlayerControlView = {
         let playControllView = RXPlayerControlView(frame: self.bounds)
         playControllView.delegate = self
         return playControllView
@@ -243,7 +248,7 @@ open class RXPlayerView: UIView {
     private var videoName: String? {
         didSet {
             if videoName != nil {
-                playControllViewEmbed.videoNameLable.text = String(format: "%@", videoName!)
+                playControlView.videoNameLable.text = String(format: "%@", videoName!)
             }
         }
     }
@@ -293,17 +298,16 @@ open class RXPlayerView: UIView {
     private var resouerLoader: RXAssetResourceLoader?
     /// 音量显示
     private var volumeSlider: UISlider?
+    /// 缓存
+    private var cacheWhenPlayinng: Bool = false
+    private var uriKey: String?
     
     // MARK: - Life - Cycle
     
     deinit {
         print("播放器释放")
         NotificationCenter.default.removeObserver(self)
-        avItem?.removeObserver(self, forKeyPath: "status")
-        avItem?.removeObserver(self, forKeyPath: "loadedTimeRanges")
-        avItem?.removeObserver(self, forKeyPath: "playbackBufferEmpty")
-        avItem?.removeObserver(self, forKeyPath: "playbackLikelyToKeepUp")
-        orientationSupport = RXPlayerOrietation.orientationPortrait
+        orientationSupport = .orientationPortrait
         destructPlayerResource()
     }
     
@@ -329,16 +333,18 @@ open class RXPlayerView: UIView {
 // MARK: - Open Func (api)
 
 extension RXPlayerView {
-    
-    /// 播放视频
-    ///
-    /// - Parameters:
-    ///   - videoUrl: 视频链接
-    ///   - videoName: 视频名称（非必传）
-    ///   - containerView: 视频父视图
-    open func playVideo(_ videoUrl: URL?, _ videoName: String? = nil, _ containerView: UIView?) {
-        // 这里有个视频解密过程
-        playVideoWith(videoUrl, videoName: videoName, containView: containerView)
+    /**
+     播放统一调用 :
+     url:   视频链接 （m3u8支持本地缓存）
+     view:  播放器view的父视图
+     uri:   跟后端约定好的解密密钥 （可有可无，看项目需求）
+     title: 视频名称（非必传）
+     cache: 是否边播边缓存
+     */
+    public func startPlay(url: URL, in view: UIView, title: String? = nil, uri: String? = nil, cache: Bool? = false) {
+        cacheWhenPlayinng = cache ?? false
+        uriKey = uri
+        playVideoWith(url: url, videoName: title, containView: view)
     }
     
     ///   从某个时间点开始播放视频
@@ -348,8 +354,8 @@ extension RXPlayerView {
     ///   - videoTitle: 视屏名称
     ///   - containerView: 视频父视图
     ///   - lastPlayTime: 上次播放的时间点
-    open func replayVideo(_ videoUrl: URL?, _ videoTitle: String? = nil, _ containerView: UIView?, _ lastPlayTime: Float) {
-        self.playVideo(videoUrl, videoTitle, containerView)
+    open func replayVideo(url: URL, in view: UIView, lastPlayTime: Float, title: String? = nil, uri: String? = nil, cache: Bool? = false) {
+        startPlay(url: url, in: view, title: title, uri: uri, cache: cache)
         guard let avItem = self.avItem else { return }
         self.playTimeSince = lastPlayTime              // 保存播放起点，在网络断开时，点击重试，可以找到起点
         hideLoadingHud()
@@ -366,8 +372,10 @@ extension RXPlayerView {
     ///   - videoTitle: 视屏名称
     ///   - containerView: 父视图
     ///   - sinceTime: 从某个时间点开始播放
-    open func playVideoInFullscreen(_ url: String?, _ videoTitle: String? = nil, _ containerView: UIView?, sinceTime: Float? = nil) {
-        playDownFileWith(url, videoTitle, containerView, sinceTime: sinceTime)
+    open func playVideoInFullscreen(url: URL, in view: UIView?, title: String?, sinceTime: Float? = nil) {
+        cacheWhenPlayinng = false
+        uriKey = nil
+        playDownFileWith(url, title, in: view, sinceTime: sinceTime)
     }
     
     /// 改变播放器的父视图
@@ -396,8 +404,9 @@ extension RXPlayerView {
     /// 设置播放速度： effective range [0.5 - 2.0]
     open func resetRate(rate: Float) {
         if rate < 0.5 || rate > 2.0 { return }
-        if player?.rate == rate { return }
+        if self.rate == rate { return }
         player?.rate = rate
+        self.rate = rate
     }
     /// 取消视频缓存加载
     open func cancle() {
@@ -436,11 +445,11 @@ extension RXPlayerView {
 
 private extension RXPlayerView {
     
-    private func playVideoWith(_ url: URL?, videoName: String?, containView: UIView?) {
+    private func playVideoWith(url: URL?, videoName: String?, containView: UIView?) {
         // 👇三个属性的设置顺序很重要
         self.playUrl = url   // 判断视频链接是否更改，更改了就重置播放器
         self.videoName = videoName      // 视频名称
-        self.playControllViewEmbed.videoNameLable.isHidden = videoNameShowOnlyFullScreen
+        self.playControlView.videoNameLable.isHidden = videoNameShowOnlyFullScreen
         
         if !isFullScreen! {
             fatherView = containView // 更换父视图时
@@ -464,31 +473,21 @@ private extension RXPlayerView {
     ///   - containerView: 父视图
     ///   - sinceTime: 从某个时间开始播放
     
-    private func playDownFileWith(_ filePathUrl: String?, _ videoTitle: String?, _ containerView: UIView?, sinceTime: Float? = nil) {
-        guard let localUrl = filePathUrl else { return }
-        playControllViewEmbed.playLocalFile = true  // 声明直接就进入全屏播放               ------------------   1
-        fileUrlString = localUrl              // 保存本地文件URL
-        /// 重置播放源
-        /// 这里这样写，是为了兼容，ts流 本地服务器播放， m3u8视频 文件 ts 下载后，需要搭建本地服务器播放，走的也是网络播放，只是资源在本地，通过
-        var url: URL!
-        if localUrl.hasPrefix("http") {
-            url = URL(string: localUrl)
-        } else {
-            url = URL(fileURLWithPath: localUrl)
-        }
+    private func playDownFileWith(_ url: URL, _ title: String?, in view: UIView?, sinceTime: Float? = nil) {
+        playControlView.playLocalFile = true  // 声明直接就进入全屏播放               ------------------   1
+        fileUrlString = url.absoluteString    //   存本地文件URL
         // 👇三个属性的设置顺序很重要X
         self.playUrl = url                // 判断视频链接是否更改，更改了就重置播放器        // ------------------------- 2  + 3
-        self.videoName = videoTitle      // 视频名称
+        self.videoName = title      // 视频名称
         if !isFullScreen! {
-            fatherView = containerView // 更换父视图时
+            fatherView = view // 更换父视图时
         }
-        playControllViewEmbed.loadedProgressView.setProgress(1, animated: false)
-        self.playControllViewEmbed.fullScreenBtn.isHidden = true                      // --------------------------- 4
+        playControlView.fullScreenBtn.isHidden = true                      // --------------------------- 4
         layoutAllPageSubviews()
         addNotificationAndObserver()
         addUserActionBlock()
-        playControllViewEmbed.closeButton.setImage(RXImgManager.foundImage(imageName: "back"), for: .normal)
-        playControllViewEmbed.closeButton.snp.updateConstraints({ (make) in
+        playControlView.closeButton.setImage(RXImgManager.foundImage(imageName: "back"), for: .normal)
+        playControlView.closeButton.snp.updateConstraints({ (make) in
             make.width.equalTo(40)
         })
         interfaceOrientation(UIInterfaceOrientation.portrait)           // 为了避免在横屏状态下点击播放，强制横屏不走，先强制竖屏，在强制横屏
@@ -511,14 +510,14 @@ private extension RXPlayerView {
     }
     
     private func showLoadingHud() {
-        if !playControllViewEmbed.loadingView.isAnimating {
-            playControllViewEmbed.loadingView.startAnimating()
+        if !playControlView.loadingView.isAnimating {
+            playControlView.loadingView.startAnimating()
         }
     }
     
     private func hideLoadingHud() {
-        if playControllViewEmbed.loadingView.isAnimating {
-            playControllViewEmbed.loadingView.stopAnimating()
+        if playControlView.loadingView.isAnimating {
+            playControlView.loadingView.stopAnimating()
         }
     }
     
@@ -526,10 +525,10 @@ private extension RXPlayerView {
         let count = actions.count > 4 ? 4 : actions.count
         for  i in 0 ..< count {
             let button = actions[i]
-            playControllViewEmbed.topControlBarView.addSubview(button)
+            playControlView.topControlBarView.addSubview(button)
             button.snp.makeConstraints { (make) in
-                make.top.equalTo(playControllViewEmbed.videoNameLable).offset(5)
-                make.bottom.equalTo(playControllViewEmbed.videoNameLable)
+                make.top.equalTo(playControlView.videoNameLable).offset(5)
+                make.bottom.equalTo(playControlView.videoNameLable)
                 make.trailing.equalTo(-(20 + i*55))
                 make.width.equalTo(40)
             }
@@ -559,7 +558,7 @@ private extension RXPlayerView {
         
         if videoUrl.absoluteString.contains(".m3u8") {
             isM3U8 = true
-            avItem = AVPlayerItem(asset: AVURLAsset(url: videoUrl, options: nil))
+            avItem = M3u8ResourceLoader.shared.playerItem(with: videoUrl, uriKey: uriKey, cacheWhenPlaying: cacheWhenPlayinng) //AVPlayerItem(asset: AVURLAsset(url: videoUrl, options: nil))
         } else {
             isM3U8 = false
             avItem = AVPlayerItem(asset: AVURLAsset(url: videoUrl, options: nil))
@@ -573,15 +572,15 @@ private extension RXPlayerView {
         playerLayer = AVPlayerLayer(player: self.player!)
         playerLayer?.videoGravity = videoLayerGravity
         self.layer.addSublayer(playerLayer!)
-        self.addSubview(playControllViewEmbed)
+        self.addSubview(playControlView)
         
-        playControllViewEmbed.timeSlider.value = 0
-        playControllViewEmbed.loadedProgressView.setProgress(0, animated: false)
-        playControllViewEmbed.timeSlider.isEnabled = true //!isM3U8
-        playControllViewEmbed.doubleTapGesture.isEnabled = true
-        playControllViewEmbed.panGesture.isEnabled = true //!isM3U8
+        playControlView.timeSlider.value = 0
+        playControlView.loadedProgressView.setProgress(0, animated: false)
+        playControlView.timeSlider.isEnabled = true //!isM3U8
+        playControlView.doubleTapGesture.isEnabled = true
+        playControlView.panGesture.isEnabled = true //!isM3U8
         autoHideBar()
-        if playControllViewEmbed.playLocalFile! {       // 播放本地视频时只支持左右
+        if playControlView.playLocalFile! {       // 播放本地视频时只支持左右
             orientationSupport = RXPlayerOrietation.orientationLeftAndRight
         } else {
             showLoadingHud()      /// 网络视频才显示菊花
@@ -593,15 +592,17 @@ private extension RXPlayerView {
     ///
     /// - Parameter videoUrl: 视频链接
     private func resetPlayerResource(_ videoUrl: URL) {
-        
         releasePlayer()  // 先释放播放源
         startReadyToPlay()
-        
         setUpPlayerResource(videoUrl)
     }
     
     /// 销毁播放器源
     private func destructPlayerResource() {
+        avItem?.removeObserver(self, forKeyPath: "status")
+        avItem?.removeObserver(self, forKeyPath: "loadedTimeRanges")
+        avItem?.removeObserver(self, forKeyPath: "playbackBufferEmpty")
+        avItem?.removeObserver(self, forKeyPath: "playbackLikelyToKeepUp")
         self.avItem = nil
         self.player?.replaceCurrentItem(with: nil)
         self.player = nil
@@ -664,10 +665,10 @@ private extension RXPlayerView {
     // MARK: - User Action - Block
     private func addUserActionBlock() {
         // MARK: - 返回，关闭
-        playControllViewEmbed.closeButtonClickBlock = { [weak self] (sender) in
+        playControlView.closeButtonClickBlock = { [weak self] (sender) in
             guard let strongSelf = self else {return}
             if strongSelf.isFullScreen! {
-                if strongSelf.playControllViewEmbed.playLocalFile! {   // 直接全屏播放本地视频
+                if strongSelf.playControlView.playLocalFile! {   // 直接全屏播放本地视频
                     strongSelf.removeFromSuperview()
                     strongSelf.cancleAutoHideBar()
                     orientationSupport = RXPlayerOrietation.orientationPortrait
@@ -683,7 +684,7 @@ private extension RXPlayerView {
             }
         }
         // MARK: - 全屏
-        playControllViewEmbed.fullScreenButtonClickBlock = { [weak self] (sender) in
+        playControlView.fullScreenButtonClickBlock = { [weak self] (sender) in
             guard let strongSelf = self else {
                 return
             }
@@ -694,7 +695,7 @@ private extension RXPlayerView {
             }
         }
         // MARK: - 播放暂停
-        playControllViewEmbed.playOrPauseButtonClickBlock = { [weak self] (sender) in
+        playControlView.playOrPauseButtonClickBlock = { [weak self] (sender) in
             if self?.playerStatu == PlayerStatus.Playing || self?.playerStatu == PlayerStatus.Buffering || self?.playerStatu == PlayerStatus.ReadyToPlay {
                 NLog("playerStatu = \(String(describing: self?.playerStatu))")
                 self?.hideLoadingHud()
@@ -704,12 +705,12 @@ private extension RXPlayerView {
             }
         }
         // MARK: - 锁屏
-        playControllViewEmbed.screenLockButtonClickBlock = { [weak self] (sender) in
+        playControlView.screenLockButtonClickBlock = { [weak self] (sender) in
             guard let strongSelf = self else { return }
             if sender.isSelected {
                 orientationSupport = RXPlayerOrietation.orientationLeftAndRight
             }else {
-                if strongSelf.playControllViewEmbed.playLocalFile! {
+                if strongSelf.playControlView.playLocalFile! {
                     orientationSupport = RXPlayerOrietation.orientationLeftAndRight
                 } else {
                     orientationSupport = RXPlayerOrietation.orientationAll
@@ -717,15 +718,15 @@ private extension RXPlayerView {
             }
         }
         // MARK: - 重播
-        playControllViewEmbed.replayButtonClickBlock = { [weak self] (_) in
+        playControlView.replayButtonClickBlock = { [weak self] (_) in
             self?.avItem?.seek(to: .zero)
-            self?.playControllViewEmbed.timeSlider.value = 0
-            self?.playControllViewEmbed.screenIsLock = false
+            self?.playControlView.timeSlider.value = 0
+            self?.playControlView.screenIsLock = false
             self?.startReadyToPlay()
             self?.playerStatu = PlayerStatus.Playing
         }
         // MARK: - 分享按钮点击
-        playControllViewEmbed.muneButtonClickBlock = { [weak self] (_) in
+        playControlView.muneButtonClickBlock = { [weak self] (_) in
             guard let strongSelf = self else {
                 return
             }
@@ -746,17 +747,17 @@ private extension RXPlayerView {
         // MARK: - 音量，亮度，进度拖动
         self.configureSystemVolume()             // 获取系统音量控件   可以选择自定义，效果会比系统的好
         
-        playControllViewEmbed.pangeustureAction = { [weak self] (sender) in
+        playControlView.pangeustureAction = { [weak self] (sender) in
             guard let avItem = self?.avItem  else {return}                     // 如果 avItem 不存在，手势无响应
             guard let strongSelf = self else {return}
-            let locationPoint = sender.location(in: strongSelf.playControllViewEmbed)
+            let locationPoint = sender.location(in: strongSelf.playControlView)
             /// 根据上次和本次移动的位置，算出一个速率的point
-            let veloctyPoint = sender.velocity(in: strongSelf.playControllViewEmbed)
+            let veloctyPoint = sender.velocity(in: strongSelf.playControlView)
             switch sender.state {
             case .began:
                 
                 strongSelf.cancleAutoHideBar()
-                strongSelf.playControllViewEmbed.barIsHidden = false
+                strongSelf.playControlView.barIsHidden = false
                 strongSelf.isDragging = true
                 // 使用绝对值来判断移动的方向
                 let x = abs(veloctyPoint.x)
@@ -764,9 +765,9 @@ private extension RXPlayerView {
                 
                 if x > y {                       //水平滑动
                     
-                    if !strongSelf.playControllViewEmbed.replayContainerView.isHidden {  // 锁屏状态下播放完成,解锁后，滑动
+                    if !strongSelf.playControlView.replayView.isHidden {  // 锁屏状态下播放完成,解锁后，滑动
                         strongSelf.startReadyToPlay()
-                        strongSelf.playControllViewEmbed.screenIsLock = false
+                        strongSelf.playControlView.screenIsLock = false
                     }
                     strongSelf.panDirection = PanDirection.PanDirectionHorizontal
                     // strongSelf.beforeSliderChangePlayStatu = strongSelf.playerStatu  // 拖动开始时，记录下拖动前的状态
@@ -781,7 +782,7 @@ private extension RXPlayerView {
                 }else if x < y {
                     strongSelf.panDirection = PanDirection.PanDirectionVertical
                     
-                    if locationPoint.x > strongSelf.playControllViewEmbed.bounds.size.width/2 && locationPoint.y < strongSelf.playControllViewEmbed.bounds.size.height - 40 {  // 触摸点在视图右边，控制音量
+                    if locationPoint.x > strongSelf.playControlView.bounds.size.width/2 && locationPoint.y < strongSelf.playControlView.bounds.size.height - 40 {  // 触摸点在视图右边，控制音量
                         // 如果需要自定义 音量控制显示，在这里添加自定义VIEW
                         if !strongSelf.subviews.contains(strongSelf.volumeView) {
                             strongSelf.addSubview(strongSelf.volumeView)
@@ -793,7 +794,7 @@ private extension RXPlayerView {
                         }
                         
                         
-                    }else if locationPoint.x < strongSelf.playControllViewEmbed.bounds.size.width/2 && locationPoint.y < strongSelf.playControllViewEmbed.bounds.size.height - 40 {
+                    }else if locationPoint.x < strongSelf.playControlView.bounds.size.width/2 && locationPoint.y < strongSelf.playControlView.bounds.size.height - 40 {
                         if !strongSelf.subviews.contains(strongSelf.brightnessSlider) {
                             strongSelf.addSubview(strongSelf.brightnessSlider)
                             strongSelf.brightnessSlider.snp.makeConstraints({ (make) in
@@ -812,9 +813,9 @@ private extension RXPlayerView {
                     let _ = strongSelf.horizontalMoved(veloctyPoint.x)
                     
                 case .PanDirectionVertical:
-                    if locationPoint.x > strongSelf.playControllViewEmbed.bounds.size.width/2 && locationPoint.y < strongSelf.playControllViewEmbed.bounds.size.height - 40 {
+                    if locationPoint.x > strongSelf.playControlView.bounds.size.width/2 && locationPoint.y < strongSelf.playControlView.bounds.size.height - 40 {
                         strongSelf.veloctyMoved(veloctyPoint.y, true)
-                    }else if locationPoint.x < strongSelf.playControllViewEmbed.bounds.size.width/2 && locationPoint.y < strongSelf.playControllViewEmbed.bounds.size.height - 40 {
+                    }else if locationPoint.x < strongSelf.playControlView.bounds.size.width/2 && locationPoint.y < strongSelf.playControlView.bounds.size.height - 40 {
                         strongSelf.veloctyMoved(veloctyPoint.y, false)
                     }
                     break
@@ -844,7 +845,7 @@ private extension RXPlayerView {
                 case .PanDirectionVertical:
                     //进度拖拽完成，5庙后自动隐藏操作栏
                     strongSelf.autoHideBar()
-                    if locationPoint.x < strongSelf.playControllViewEmbed.bounds.size.width/2 {    // 触摸点在视图左边 隐藏屏幕亮度
+                    if locationPoint.x < strongSelf.playControlView.bounds.size.width/2 {    // 触摸点在视图左边 隐藏屏幕亮度
                         strongSelf.brightnessSlider.removeFromSuperview()
                     } else {
                         strongSelf.volumeView.removeFromSuperview()
@@ -888,10 +889,10 @@ private extension RXPlayerView {
         let allTimeString =  formatTimDuration(position: Int(sumValue), duration: Int(totalMoveDuration))
         let draggedTimeString = formatTimPosition(position: Int(sumValue), duration: Int(totalMoveDuration))
         draggedTimeLable.text = String(format: "%@|%@", draggedTimeString, allTimeString)
-        playControllViewEmbed.positionTimeLab.text = self.formatTimPosition(position: Int(sumValue), duration: Int(totalMoveDuration))
+        playControlView.positionTimeLab.text = self.formatTimPosition(position: Int(sumValue), duration: Int(totalMoveDuration))
         draggedStatusButton.isSelected = moveValue < 0
         if !isDragging {
-            playControllViewEmbed.timeSlider.value = Float(dragValue)
+            playControlView.timeSlider.value = Float(dragValue)
         }
         sumTime = sumValue
         return dragValue
@@ -918,31 +919,31 @@ private extension RXPlayerView {
         self.playerStatu = PlayerStatus.Pause //同时为暂停状态
         self.pauseButton.isHidden = true
         cancleAutoHideBar()               // 取消自动隐藏操作栏
-        playControllViewEmbed.screenIsLock = false
-        playControllViewEmbed.replayContainerView.isHidden = false
-        playControllViewEmbed.barIsHidden = true
-        playControllViewEmbed.singleTapGesture.isEnabled = true
-        playControllViewEmbed.doubleTapGesture.isEnabled = false
-        playControllViewEmbed.panGesture.isEnabled = false
-        playControllViewEmbed.screenLockButton.isHidden = true
-        playControllViewEmbed.loadedProgressView.setProgress(0, animated: false)
+        playControlView.screenIsLock = false
+        playControlView.replayView.isHidden = false
+        playControlView.barIsHidden = true
+        playControlView.singleTapGesture.isEnabled = true
+        playControlView.doubleTapGesture.isEnabled = false
+        playControlView.panGesture.isEnabled = false
+        playControlView.screenLockButton.isHidden = true
+        playControlView.loadedProgressView.setProgress(0, animated: false)
         hideLoadingHud()
         
         if let item = sender.object as? AVPlayerItem {   /// 这里要区分结束的视频是哪一个
             if let asset = item.asset as? AVURLAsset {
                 let model = RXVideoModel(videoName: self.videoName, videoUrl: asset.url.absoluteString, videoPlaySinceTime: self.playTimeSince)
-                delegate?.currentVideoPlayToEnd(model, playControllViewEmbed.playLocalFile!)
+                delegate?.currentVideoPlayToEnd(model, playControlView.playLocalFile!)
             }
         }
     }
     
     // MARK: - 开始播放准备
     private func startReadyToPlay() {
-        playControllViewEmbed.barIsHidden = false
-        playControllViewEmbed.replayContainerView.isHidden = true
-        playControllViewEmbed.singleTapGesture.isEnabled = true
-        playControllViewEmbed.positionTimeLab.text = "00:00"
-        playControllViewEmbed.durationTimeLab.text = "00:00"
+        playControlView.barIsHidden = false
+        playControlView.replayView.isHidden = true
+        playControlView.singleTapGesture.isEnabled = true
+        playControlView.positionTimeLab.text = "00:00"
+        playControlView.durationTimeLab.text = "00:00"
         loadedFailedView.removeFromSuperview()
     }
     
@@ -962,14 +963,14 @@ private extension RXPlayerView {
     
     // MARK: - 取消自动隐藏操作栏
     private func cancleAutoHideBar() {
-        NSObject.cancelPreviousPerformRequests(withTarget: playControllViewEmbed, selector: #selector(RXPlayerControlView.autoHideTopBottomBar), object: nil)    // 取消5秒自动消失控制栏
+        NSObject.cancelPreviousPerformRequests(withTarget: playControlView, selector: #selector(RXPlayerControlView.autoHideTopBottomBar), object: nil)    // 取消5秒自动消失控制栏
     }
     
     // MARK: - 添加操作栏5秒自动隐藏
     private func autoHideBar() {
         // 取消5秒自动消失控制栏
-        NSObject.cancelPreviousPerformRequests(withTarget: playControllViewEmbed, selector: #selector(RXPlayerControlView.autoHideTopBottomBar), object: nil)
-        playControllViewEmbed.perform(#selector(RXPlayerControlView.autoHideTopBottomBar), with: nil, afterDelay: 5)
+        NSObject.cancelPreviousPerformRequests(withTarget: playControlView, selector: #selector(RXPlayerControlView.autoHideTopBottomBar), object: nil)
+        playControlView.perform(#selector(RXPlayerControlView.autoHideTopBottomBar), with: nil, afterDelay: 5)
     }
     
     // MARK: - InterfaceOrientation - Change (屏幕方向改变)
@@ -984,12 +985,12 @@ private extension RXPlayerView {
                     make.edges.equalTo(UIApplication.shared.keyWindow!)
                 })
                 self.layoutIfNeeded()
-                self.playControllViewEmbed.layoutIfNeeded()
-                self.playControllViewEmbed.videoNameLable.isHidden = false
+                self.playControlView.layoutIfNeeded()
+                self.playControlView.videoNameLable.isHidden = false
             }, completion: nil)
             
         } else if orirntation == UIInterfaceOrientation.portrait {
-            if !self.playControllViewEmbed.screenIsLock! { // 非锁品状态下
+            if !self.playControlView.screenIsLock! { // 非锁品状态下
                 isFullScreen = false
                 self.removeFromSuperview()
                 if let containerView = self.fatherView {
@@ -999,8 +1000,8 @@ private extension RXPlayerView {
                             make.edges.equalTo(containerView)
                         })
                         self.layoutIfNeeded()
-                        self.playControllViewEmbed.layoutIfNeeded()
-                        self.playControllViewEmbed.videoNameLable.isHidden = self.videoNameShowOnlyFullScreen
+                        self.playControlView.layoutIfNeeded()
+                        self.playControlView.videoNameLable.isHidden = self.videoNameShowOnlyFullScreen
                     }, completion: nil)
                 }
             }
@@ -1033,7 +1034,7 @@ extension RXPlayerView: RXPlayerControlViewDelegate {
         //beforeSliderChangePlayStatu = playerStatu、
         playerStatu = PlayerStatus.Pause
         isDragging = true
-        playControllViewEmbed.replayContainerView.isHidden = true
+        playControlView.replayView.isHidden = true
         pauseButton.isHidden = true
         let duration = Float64 ((avItem.asset.duration.value)/Int64(avItem.asset.duration.timescale))
         sliderTouchBeginValue = Float64(duration) * Float64(sender.value)
@@ -1070,7 +1071,7 @@ extension RXPlayerView: RXPlayerControlViewDelegate {
         let allTimeString =  self.formatTimDuration(position: Int(dragValue), duration: Int(duration))
         let draggedTimeString = self.formatTimPosition(position: Int(dragValue), duration: Int(duration))
         self.draggedTimeLable.text = String(format: "%@|%@", draggedTimeString, allTimeString)
-        self.playControllViewEmbed.positionTimeLab.text = draggedTimeString
+        self.playControlView.positionTimeLab.text = draggedTimeString
     }
 }
 
@@ -1099,13 +1100,11 @@ extension RXPlayerView {
     
     /// 监听PlayerItem对象
     fileprivate func listenTothePlayer() {
-        
         guard let avItem = self.avItem else {return}
         playerTimerObserver = player?.addPeriodicTimeObserver(forInterval: CMTimeMake(value: Int64(1.0), timescale: Int32(1.0)), queue: nil, using: { [weak self] (time) in
             guard let strongSelf = self else { return }
             // 刷新时间UI
             strongSelf.updateTimeSliderValue(avItem: avItem)
-            
         }) as? NSObject
         
     }
@@ -1117,9 +1116,9 @@ extension RXPlayerView {
         }
         if keyPath == "status" {
             if avItem.status == AVPlayerItem.Status.readyToPlay {
-                print("Status.readyToPlay")
+                NLog("Status.readyToPlay")
                 playerStatu = .ReadyToPlay // 初始状态为播放
-                playControllViewEmbed.playOrPauseBtn.isSelected = true
+                playControlView.playOrPauseBtn.isSelected = true
                 updateTimeLableLayout(avItem: avItem)
                 
             }else if avItem.status == AVPlayerItem.Status.unknown {
@@ -1131,7 +1130,7 @@ extension RXPlayerView {
                 playerStatu = .Failed
                 // 代理出去，在外部处理网络问题
                 hideLoadingHud()
-                if !playControllViewEmbed.playLocalFile! {  /// 非本地文件播放才显示网络失败
+                if !playControlView.playLocalFile! {  /// 非本地文件播放才显示网络失败
                     showLoadedFailedView()
                 }
             }
@@ -1163,10 +1162,10 @@ extension RXPlayerView {
             let playValue = Float(value)/Float(duration)
             let stringDuration = formatTimDuration(position: Int(value), duration:Int(duration))
             let stringValue = formatTimPosition(position: Int(value), duration: Int(duration))
-            playControllViewEmbed.positionTimeLab.text = stringValue
-            playControllViewEmbed.durationTimeLab.text = stringDuration
+            playControlView.positionTimeLab.text = stringValue
+            playControlView.durationTimeLab.text = stringDuration
             if !isDragging {
-                playControllViewEmbed.timeSlider.value = playValue
+                playControlView.timeSlider.value = playValue
                 playedValue = Float(value)                                      // 保存播放进度
             }
             
@@ -1198,7 +1197,7 @@ extension RXPlayerView {
             let timeInterval = startSeconds + durationSeconds                    // 计算总进度
             let totalDuration = CMTimeGetSeconds(avItem.asset.duration)
             self.loadedValue = Float(timeInterval)                               // 保存缓存进度
-            self.playControllViewEmbed.loadedProgressView.setProgress(Float(timeInterval/totalDuration), animated: true)
+            self.playControlView.loadedProgressView.setProgress(Float(timeInterval/totalDuration), animated: true)
         }
     }
     
@@ -1230,7 +1229,7 @@ extension RXPlayerView {
         }
     }
     private func layoutPlayControllView() {
-        playControllViewEmbed.snp.makeConstraints { (make) in
+        playControlView.snp.makeConstraints { (make) in
             make.edges.equalToSuperview()
         }
     }

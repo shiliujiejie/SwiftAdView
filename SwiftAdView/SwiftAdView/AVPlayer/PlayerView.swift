@@ -17,9 +17,11 @@ public class PlayerView: UIView {
         didSet {
             if playerStatu == .Playing {
                 player?.play()
+                player?.rate = rate
                 pauseImg.isHidden = true
             }else if playerStatu == .Pause {
                 player?.pause()
+                player?.rate = 0.0
                 pauseImg.isHidden = false
             }
         }
@@ -35,6 +37,8 @@ public class PlayerView: UIView {
     /// 播放控制View
     private var coverView: PlayerCoverView!
    
+    /// 播放速率
+    private var rate: Float = 1.0
     /// 加载进度
     private var loadedValue: Float = 0
     private var avItem: AVPlayerItem?
@@ -148,8 +152,9 @@ public class PlayerView: UIView {
     /// 设置播放速度： effective range [0.5 - 2.0]
     public func resetRate(rate: Float) {
         if rate < 0.5 || rate > 2.0 { return }
-        if player?.rate == rate { return }
+        if self.rate == rate { return }
         player?.rate = rate
+        self.rate = rate
     }
     public func playerIsUserInteractionEnabled(_ enable: Bool) {
         coverView.isUserInteractionEnabled = enable

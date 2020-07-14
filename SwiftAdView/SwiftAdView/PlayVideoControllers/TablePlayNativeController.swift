@@ -1,6 +1,7 @@
 
 import UIKit
 import AVKit
+import GCDWebServer
 
 class TablePlayNativeController: UIViewController {
    
@@ -13,6 +14,10 @@ class TablePlayNativeController: UIViewController {
     override var prefersHomeIndicatorAutoHidden: Bool {
         return true
     }
+    
+    private var port: UInt = 8095
+    let server = GCDWebServer()
+    
     lazy var leftBackButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(named: "navBackWhite"), for: .normal)
@@ -56,12 +61,15 @@ class TablePlayNativeController: UIViewController {
         player.delegate = self
         return player
     }()
-     var videos = ["https://youku.cdn3-okzy.com/20200510/8835_8aff0fe8/index.m3u8","https://youku.cdn3-okzy.com/20200612/9795_f0b54684/index.m3u8","http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8","http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8","http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4c0c9e59031868222924048327/f0.mp4","https://github.com/shiliujiejie/adResource/raw/master/2.mp4", "https://github.com/shiliujiejie/adResource/raw/master/1.mp4", "https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
+     var videos = ["https://youku.cdn3-okzy.com/20200517/9011_95211c33/index.m3u8","https://txxs.mahua-yongjiu.com/20191229/9311_030d73ac/1000k/hls/index.m3u8","https://youku.cdn3-okzy.com/20200510/8835_8aff0fe8/index.m3u8","https://youku.cdn3-okzy.com/20200612/9795_f0b54684/index.m3u8","http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8","http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8","http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4c0c9e59031868222924048327/f0.mp4","https://github.com/shiliujiejie/adResource/raw/master/2.mp4", "https://github.com/shiliujiejie/adResource/raw/master/1.mp4", "https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
     var currentIndex: Int = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.white
+        if server.isRunning {
+            server.stop()
+        }
         if #available(iOS 11.0, *) {
             tableView.contentInsetAdjustmentBehavior = .never
         } else {
@@ -78,13 +86,17 @@ class TablePlayNativeController: UIViewController {
         if !first.hasPrefix("http") {
             url = URL(fileURLWithPath: first)
         }
-        playerView.playVideo(url, first, tableHeader)
+        playVideo(url!, in: tableHeader)
+       
         view.addSubview(leftBackButton)
         layoutPageSubviews()
     }
     override func viewWillDisappear(_ animated: Bool) {
         super.viewDidAppear(animated)
         playerView.playerStatu = .Pause
+        if server.isRunning {
+            server.stop()
+        }
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -99,10 +111,34 @@ class TablePlayNativeController: UIViewController {
     
     func playNextVideo(_ index: Int) {
         if currentIndex != index {
-            playerView.playVideo(URL(string: videos[index]), videos[index], tableHeader)
+            if let url = URL(string: videos[index]) {
+                playVideo(url, in: tableHeader)
+            }
             currentIndex = index
         }
+        /// 设置播放速度
+        //playerView.resetRate(rate: 1.5)
     }
+    func playVideo(_ url: URL,in view: UIView) {
+           let identifer = url.absoluteString.md5()
+           if server.isRunning {
+               server.stop()
+           }
+           if DownLoadHelper.filesIsAllExist(identifer) { /// 已缓存
+               let pathq = DownLoadHelper.getDocumentsDirectory().appendingPathComponent(DownLoadHelper.downloadFile).appendingPathComponent(identifer).path
+               server.addGETHandler(forBasePath: "/", directoryPath: pathq, indexFilename: "\(identifer).m3u8", cacheAge: 3600, allowRangeRequests: true)
+               
+               server.start(withPort: port, bonjourName: nil)
+               
+               if server.serverURL != nil {
+                   let videoLocalUrl = "\(server.serverURL!.absoluteString)\(identifer).m3u8"
+                   print("videoLocalServerUrl == \(videoLocalUrl)")
+                   playerView.startPlay(url: URL(string: videoLocalUrl)!, in: view)
+               }
+           } else {
+              playerView.startPlay(url: url, in: view, title: url.absoluteString, uri: nil, cache: true)
+           }
+       }
 }
 
 extension TablePlayNativeController: UITableViewDelegate, UITableViewDataSource {

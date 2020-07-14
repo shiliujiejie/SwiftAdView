@@ -55,7 +55,7 @@ class RXPlayerControlView: UIView {
         return loadActivityView
     }()
     /// 重播按钮
-    lazy var replayContainerView: UIView = {
+    lazy var replayView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 6
         view.backgroundColor = UIColor(white: 0.2, alpha: 0.05)
@@ -252,7 +252,7 @@ class RXPlayerControlView: UIView {
         super.init(frame: frame)
         addSubview(topControlBarView)
         addSubview(bottomControlBarView)
-        addSubview(replayContainerView)
+        addSubview(replayView)
         topControlBarView.addSubview(closeButton)
         topControlBarView.addSubview(videoNameLable)
         topControlBarView.addSubview(munesButton)
@@ -263,8 +263,8 @@ class RXPlayerControlView: UIView {
         bottomControlBarView.addSubview(timeSlider)
         bottomControlBarView.addSubview(durationTimeLab)
         bottomControlBarView.addSubview(fullScreenBtn)
-        replayContainerView.addSubview(replayButton)
-        replayContainerView.addSubview(replayLable)
+        replayView.addSubview(replayButton)
+        replayView.addSubview(replayLable)
        
         addSubview(loadingView)
         addSubview(screenLockButton)
@@ -471,7 +471,7 @@ extension RXPlayerControlView {
         layoutPlayOrPauseBtn()
         layoutFullScreenBtn()
         layoutLoadingActivityView()
-        layoutReplayContainerView()
+        layoutreplayView()
         layoutReplayButton()
         layoutReplayLable()
         layoutScreenLockButton()
@@ -512,8 +512,8 @@ extension RXPlayerControlView {
             make.height.equalTo(40)
         }
     }
-    private func layoutReplayContainerView() {
-        replayContainerView.snp.makeConstraints { (make) in
+    private func layoutreplayView() {
+        replayView.snp.makeConstraints { (make) in
             make.center.equalToSuperview()
             make.width.equalTo(70)
             make.height.equalTo(70)

@@ -76,7 +76,7 @@ class VideoTableController: UIViewController {
         player.delegate = self
         return player
     }()
-     var videos = ["https://youku.cdn3-okzy.com/20200510/8835_8aff0fe8/index.m3u8","http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8","http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8","http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4c0c9e59031868222924048327/f0.mp4","https://github.com/shiliujiejie/adResource/raw/master/2.mp4", "https://github.com/shiliujiejie/adResource/raw/master/1.mp4","https://video.kkyun-iqiyi.com/20180301/WNvThg3j/index.m3u8", "https://vs1.baduziyuan.com/20180106/5hykgzke/800kb/hls/index.m3u8", "https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
+     var videos = ["https://youku.cdn3-okzy.com/20200517/9011_95211c33/index.m3u8","https://txxs.mahua-yongjiu.com/20191229/9311_030d73ac/1000k/hls/index.m3u8","https://youku.cdn3-okzy.com/20200510/8835_8aff0fe8/index.m3u8","http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8","http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8","http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4c0c9e59031868222924048327/f0.mp4","https://github.com/shiliujiejie/adResource/raw/master/2.mp4", "https://github.com/shiliujiejie/adResource/raw/master/1.mp4","https://video.kkyun-iqiyi.com/20180301/WNvThg3j/index.m3u8", "https://vs1.baduziyuan.com/20180106/5hykgzke/800kb/hls/index.m3u8", "https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
     var currentIndex: Int = 0
     
     /// 在头部播放 或在cell中播放
@@ -107,6 +107,7 @@ class VideoTableController: UIViewController {
         //playerView.encryptParams = [PlayerView.kKeyURL: "fwfrfh4rontq3bfn"]
         
         playVideo(url!, in: tableHeader)
+       
         
         view.addSubview(leftBackButton)
         view.addSubview(rightBackButton)
@@ -130,6 +131,8 @@ class VideoTableController: UIViewController {
         self.navigationController?.popViewController(animated: true)
     }
     @objc func rightButtonClick() {
+        playerView.resetRate(rate: 1.5)
+        return
         if playerView.player != nil {
             let fullPlayer = FullScreenPlayController()
             fullPlayer.player = playerView.player!
