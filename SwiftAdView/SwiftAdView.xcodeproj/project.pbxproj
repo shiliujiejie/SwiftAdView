@@ -264,8 +264,8 @@
 		045E77D2243D906A00EE2A69 /* X_Player */ = {
 			isa = PBXGroup;
 			children = (
-				045E77D3243D906A00EE2A69 /* X_PlayerCoverView.swift */,
 				045E77D6243D906A00EE2A69 /* X_PlayerView.swift */,
+				045E77D3243D906A00EE2A69 /* X_PlayerCoverView.swift */,
 				045E77D5243D906A00EE2A69 /* X_PlayerViewConfig.swift */,
 				045E77D7243D906A00EE2A69 /* X_FullScreenPlayController.swift */,
 			);
