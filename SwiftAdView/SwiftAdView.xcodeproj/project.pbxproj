@@ -203,11 +203,11 @@
 		0422894922BC9BAE00EE9B93 /* SwiftAdView */ = {
 			isa = PBXGroup;
 			children = (
+				0422895C22BC9BCC00EE9B93 /* SwiftAdView */,
 				04DD098D24AC917000DCC901 /* RXPlayer */,
 				04C9DA12246C080500B0BA35 /* BluetoothDemo */,
 				04C9D9FD246AF09A00B0BA35 /* CateAddDemo */,
 				042DA813241C0EE80067FA38 /* PlayVideoControllers */,
-				0422895C22BC9BCC00EE9B93 /* SwiftAdView */,
 				0422897222BE295300EE9B93 /* LocalRersource */,
 				0422894A22BC9BAE00EE9B93 /* AppDelegate.swift */,
 				0422894C22BC9BAE00EE9B93 /* ViewController.swift */,

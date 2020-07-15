@@ -62,7 +62,7 @@ class TablePlayNativeController: UIViewController {
         player.customViewDelegate = self
         return player
     }()
-     var videos = ["https://txxs.mahua-yongjiu.com/20191128/5576_5014e489/index.m3u8","https://dapian.video-yongjiu.com/20190912/11634_b1fcc590/1000k/hls/index.m3u8","https://ifeng.com-v-ifeng.com/20180716/21984_b1d9151f/index.m3u8","https://youku.cdn7-okzy.com/20200320/17981_b5d8baf6/index.m3u8","https://vip.okokbo.com/20171213/wExbLQbT/index.m3u8","https://youku.cdn3-okzy.com/20200517/9011_95211c33/index.m3u8","https://txxs.mahua-yongjiu.com/20191229/9311_030d73ac/1000k/hls/index.m3u8","https://youku.cdn3-okzy.com/20200510/8835_8aff0fe8/index.m3u8","https://youku.cdn3-okzy.com/20200612/9795_f0b54684/index.m3u8","http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8","http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8","http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4c0c9e59031868222924048327/f0.mp4","https://github.com/shiliujiejie/adResource/raw/master/2.mp4", "https://github.com/shiliujiejie/adResource/raw/master/1.mp4", "https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
+     var videos = ["https://yj.yongjiu6.com/20190522/6BAN12VF/index.m3u8","https://txxs.mahua-yongjiu.com/20191128/5576_5014e489/index.m3u8","https://dapian.video-yongjiu.com/20190912/11634_b1fcc590/1000k/hls/index.m3u8","https://ifeng.com-v-ifeng.com/20180716/21984_b1d9151f/index.m3u8","https://youku.cdn7-okzy.com/20200320/17981_b5d8baf6/index.m3u8","https://vip.okokbo.com/20171213/wExbLQbT/index.m3u8","https://youku.cdn3-okzy.com/20200517/9011_95211c33/index.m3u8","https://txxs.mahua-yongjiu.com/20191229/9311_030d73ac/1000k/hls/index.m3u8","https://youku.cdn3-okzy.com/20200510/8835_8aff0fe8/index.m3u8","https://youku.cdn3-okzy.com/20200612/9795_f0b54684/index.m3u8","http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8","http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8","http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4c0c9e59031868222924048327/f0.mp4","https://github.com/shiliujiejie/adResource/raw/master/2.mp4", "https://github.com/shiliujiejie/adResource/raw/master/1.mp4", "https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
     var currentIndex: Int = 0
     
     override func viewDidLoad() {
@@ -137,7 +137,7 @@ class TablePlayNativeController: UIViewController {
                    playerView.startPlay(url: URL(string: videoLocalUrl)!, in: view)
                }
            } else {
-              playerView.startPlay(url: url, in: view, title: url.absoluteString, uri: nil, cache: false)
+              playerView.startPlay(url: url, in: view, title: url.absoluteString, uri: nil, cache: true)
            }
        }
 }
