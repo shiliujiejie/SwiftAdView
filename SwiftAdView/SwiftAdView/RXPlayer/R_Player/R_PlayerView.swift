@@ -138,23 +138,15 @@ open class R_PlayerView: UIView {
     /// 显示拖动进度的显示
     private lazy var draggedProgressView: UIView = {
         let view = UIView()
-        view.backgroundColor =  UIColor.clear
-        view.addSubview(self.draggedStatusButton)
+        view.backgroundColor = UIColor(white: 0, alpha: 0.5)
         view.addSubview(self.draggedTimeLable)
-        view.layer.cornerRadius = 3
+        view.layer.cornerRadius = 5
         return view
-    }()
-    private let draggedStatusButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.setImage(RXImgManager.foundImage(imageName: "forward"), for: .normal)
-        button.setImage(RXImgManager.foundImage(imageName: "backward"), for: .selected)
-        button.isUserInteractionEnabled = false
-        return button
     }()
     private let draggedTimeLable: UILabel = {
         let lable = UILabel()
         lable.textColor = UIColor.white
-        lable.font = UIFont.boldSystemFont(ofSize: 13)
+        lable.font = UIFont.boldSystemFont(ofSize: 15)
         lable.textAlignment = .center
         return lable
     }()
@@ -162,7 +154,7 @@ open class R_PlayerView: UIView {
     private lazy var pauseButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(RXImgManager.foundImage(imageName: "pause"), for: .normal)
-        button.backgroundColor = UIColor(white: 0.0, alpha: 0.5)
+        button.backgroundColor = UIColor(white: 0.1, alpha: 0.5)
         button.imageEdgeInsets.left = 5
         button.layer.cornerRadius = 27.5
         button.layer.masksToBounds = true
@@ -172,7 +164,7 @@ open class R_PlayerView: UIView {
     /// 网络不好时提示
     private lazy var loadedFailedView: RXLoadedFailedView = {
         let failedView = RXLoadedFailedView(frame: self.bounds)
-        failedView.backgroundColor = UIColor(white: 0.2, alpha: 0.5)
+        failedView.backgroundColor = UIColor(white: 0.0, alpha: 0.6)
         return failedView
     }()
     
@@ -806,7 +798,6 @@ private extension R_PlayerView {
         let draggedTimeString = formatTimPosition(position: Int(sumValue), duration: Int(totalMoveDuration))
         draggedTimeLable.text = String(format: "%@ | %@", draggedTimeString, allTimeString)
         playControlView.positionTimeLab.text = self.formatTimPosition(position: Int(sumValue), duration: Int(totalMoveDuration))
-        draggedStatusButton.isSelected = moveValue < 0
         if !isDragging {
             playControlView.timeSlider.value = Float(dragValue)
         }
@@ -818,11 +809,11 @@ private extension R_PlayerView {
     func veloctyMoved(_ movedValue: CGFloat, _ isVolume: Bool) {
         
         if isVolume {
-            volumeSlider?.value  -= Float(movedValue/10000)
+            volumeSlider?.value -= Float(movedValue/10000)
             
         }else {
             UIScreen.main.brightness  -= movedValue/10000
-            self.brightnessSlider.updateBrightness(UIScreen.main.brightness)
+            brightnessSlider.updateBrightness(UIScreen.main.brightness)
         }
     }
     
@@ -966,11 +957,10 @@ extension R_PlayerView: RXPlayerControlViewDelegate {
         }
         let duration = Float64 ((avItem.asset.duration.value)/Int64(avItem.asset.duration.timescale))
         let dragValue = Float64(duration) * Float64(sender.value)
-        draggedStatusButton.isSelected = dragValue < sliderTouchBeginValue!
         // 拖动时间展示
         let allTimeString =  self.formatTimDuration(position: Int(dragValue), duration: Int(duration))
         let draggedTimeString = self.formatTimPosition(position: Int(dragValue), duration: Int(duration))
-        self.draggedTimeLable.text = String(format: "%@|%@", draggedTimeString, allTimeString)
+        self.draggedTimeLable.text = String(format: "%@ | %@", draggedTimeString, allTimeString)
         self.playControlView.positionTimeLab.text = draggedTimeString
     }
 }
@@ -1099,7 +1089,6 @@ extension R_PlayerView {
     }
     private func layoutDraggedContainers() {
         layoutDraggedProgressView()
-        layoutDraggedStatusButton()
         layoutDraggedTimeLable()
     }
     private func layoutSelf() {
@@ -1116,23 +1105,14 @@ extension R_PlayerView {
         draggedProgressView.snp.makeConstraints { (make) in
             make.center.equalToSuperview()
             make.height.equalTo(70)
-            make.width.equalTo(150)
-        }
-    }
-    private func layoutDraggedStatusButton() {
-        draggedStatusButton.snp.makeConstraints { (make) in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(8)
-            make.height.equalTo(30)
-            make.width.equalTo(40)
+            make.width.equalTo(200)
         }
     }
     private func layoutDraggedTimeLable() {
         draggedTimeLable.snp.makeConstraints { (make) in
             make.leading.equalTo(8)
             make.trailing.equalTo(-8)
-            make.bottom.equalToSuperview()
-            make.top.equalTo(draggedStatusButton.snp.bottom)
+            make.center.equalToSuperview()
         }
     }
     private func layoutPauseButton() {

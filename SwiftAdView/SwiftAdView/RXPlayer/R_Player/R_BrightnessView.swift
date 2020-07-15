@@ -65,10 +65,8 @@ class R_BrightnessView: UIView {
                 make.height.equalTo(tipHight)
             }
         }
-        self.updateBrightness(UIScreen.main.brightness)
-        
+        updateBrightness(UIScreen.main.brightness)
     }
-    
     
     func updateBrightness(_ value: CGFloat) {
         let stage = 1.0/15.0
