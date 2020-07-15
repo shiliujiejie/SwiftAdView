@@ -222,17 +222,17 @@ class RXPlayerControlView: UIView {
                 doubleTapGesture.isEnabled = false
                 panGesture.isEnabled = false
                 orientationSupport = R_PlayerOrietation.orientationLeftAndRight
-            }else {
+            } else {
                 screenLockButton.isSelected = false
                 doubleTapGesture.isEnabled = true
                 panGesture.isEnabled = true
                 /// 全屏播放本地时，只支持左右，非直接全屏播放支持上左右
-                orientationSupport = playLocalFile! ? R_PlayerOrietation.orientationLeftAndRight : R_PlayerOrietation.orientationAll
+                orientationSupport = playLocalFile ? R_PlayerOrietation.orientationLeftAndRight : R_PlayerOrietation.orientationAll
             }
         }
     }
     /// 是否是  播放本地文件
-    var playLocalFile: Bool? = false
+    var playLocalFile: Bool = false
     
     // MARK: - Delegate
     weak var delegate: RXPlayerControlViewDelegate?
@@ -493,8 +493,8 @@ extension RXPlayerControlView {
     private func layoutMunesButton() {
         munesButton.snp.makeConstraints { (make) in
             make.top.equalTo(0)
-            make.trailing.bottom.equalToSuperview()
-            make.width.equalTo(60)
+            make.trailing.equalToSuperview()
+            make.width.height.equalTo(40)
         }
     }
     private func layoutVideoNameLable() {
@@ -523,8 +523,8 @@ extension RXPlayerControlView {
         replayButton.snp.makeConstraints { (make) in
             make.centerX.equalToSuperview()
             make.top.equalTo(5)
-            make.height.equalTo(40)
-            make.width.equalTo(40)
+            make.height.equalTo(35)
+            make.width.equalTo(35)
         }
     }
     private func layoutScreenLockButton() {
@@ -571,7 +571,7 @@ extension RXPlayerControlView {
     }
     private func layoutTimeSlider() {
         timeSlider.snp.makeConstraints { (make) in
-            make.centerY.equalTo(loadedProgressView.snp.centerY).offset(-1)  // 调整一下进度条和 加载进度条的位置
+            make.centerY.equalTo(loadedProgressView.snp.centerY).offset(-0.5)  // 调整一下进度条和 加载进度条的位置
             make.leading.equalTo(loadedProgressView.snp.leading)
             make.trailing.equalTo(loadedProgressView.snp.trailing)
             make.height.equalTo(30)
@@ -588,8 +588,7 @@ extension RXPlayerControlView {
         fullScreenBtn.snp.makeConstraints { (make) in
             make.top.equalTo(timeSlider.snp.bottom)
             make.trailing.equalTo(timeSlider)
-            make.height.equalTo(30)
-            make.width.equalTo(30)
+            make.height.width.equalTo(30)
         }
     }
     private func updateTopBarWith(fullScreen: Bool) {
@@ -600,7 +599,7 @@ extension RXPlayerControlView {
             make.top.equalTo(fullScreen ? 10 : 0)
             make.width.equalTo(fullScreen ? 30 : 0)
             if fullScreen {
-                make.leading.equalTo((RXDeviceModel.isiPhoneXSeries() || RXDeviceModel.isSimulator()) ? 50 : 0)
+                make.leading.equalTo((RXDeviceModel.isiPhoneXSeries() || RXDeviceModel.isSimulator()) ? 50 : 10)
             } else {
                 make.leading.equalTo(0)
             }
@@ -610,6 +609,11 @@ extension RXPlayerControlView {
         }
         munesButton.snp.updateConstraints { (make) in
             make.top.equalTo(fullScreen ? 10 : 0)
+            if fullScreen {
+                make.trailing.equalTo((RXDeviceModel.isiPhoneXSeries() || RXDeviceModel.isSimulator()) ? -50 : -10)
+            } else {
+                make.trailing.equalTo(-10)
+            }
         }
     }
     private func updateBottomBarWith(fullScreen: Bool) {

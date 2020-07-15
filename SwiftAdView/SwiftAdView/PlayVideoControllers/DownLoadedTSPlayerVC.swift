@@ -40,22 +40,6 @@ class DownLoadedVideoPlayerVC: UIViewController {
         playLocal_2_func()
     }
     
-    //MARK: - 本地服务器搭建 方法一： pod "GCDWebServer"  +  本方法
-    private func playLocal_1_func() {
-        let pathq = DownLoadHelper.getDocumentsDirectory().appendingPathComponent(DownLoadHelper.downloadFile).appendingPathComponent(identifer).path
-        server.addGETHandler(forBasePath: "/", directoryPath: pathq, indexFilename: "\(identifer).m3u8", cacheAge: 3600, allowRangeRequests: true)
-        
-        server.start(withPort: port, bonjourName: nil)
-        
-        if server.serverURL != nil {
-            let videoLocalUrl = "\(server.serverURL!.absoluteString)\(identifer).m3u8"
-            print("videoLocalUrl == \(videoLocalUrl), \(server.serverURL!.absoluteString)")
-            let vc = VideoTableController()
-            vc.videos = [videoLocalUrl]
-            self.present(vc, animated: true, completion: nil)
-        }
-    }
-    
     //MARK: - 本地服务器搭建
     private func playLocal_2_func() {
         let pathq = DownLoadHelper.getDocumentsDirectory().appendingPathComponent(DownLoadHelper.downloadFile).appendingPathComponent(identifer).path
@@ -87,7 +71,16 @@ class DownLoadedVideoPlayerVC: UIViewController {
 // MARK: - R_PlayerDelegate
 extension DownLoadedVideoPlayerVC: R_PlayerDelegate {
     
-    func retryToPlayVideo(_ player: R_PlayerView, _ videoModel: RXVideoModel?, _ fatherView: UIView?) {
+    func startPlay() {
+         
+    }
+    func retryToPlayVideo(url: URL?) {
+        
+    }
+    func playerProgress(progress: Float, currentPlayTime: Float) {
+        
+    }
+    func currentVideoPlayToEnd(url: URL??, isPlayingloaclFile: Bool) {
         
     }
 }

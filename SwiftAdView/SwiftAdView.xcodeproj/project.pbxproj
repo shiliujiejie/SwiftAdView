@@ -32,6 +32,7 @@
 		047A6C0224BDC13D008CE41E /* R_PlayerViewConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047A6C0124BDC13D008CE41E /* R_PlayerViewConfig.swift */; };
 		047A6C0824BDDF30008CE41E /* sliderHightLight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 047A6C0624BDDF30008CE41E /* sliderHightLight@2x.png */; };
 		047A6C0924BDDF30008CE41E /* sliderHightLight@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 047A6C0724BDDF30008CE41E /* sliderHightLight@3x.png */; };
+		047A6C0B24BEF7EA008CE41E /* CustomActionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047A6C0A24BEF7EA008CE41E /* CustomActionsView.swift */; };
 		0493192122C204EC000B805F /* WebKitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0493192022C204EC000B805F /* WebKitController.swift */; };
 		0493192322C20C1F000B805F /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0493192222C20C1F000B805F /* RootViewController.swift */; };
 		049BF6472417D19400F3611A /* ShortPlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049BF6462417D19400F3611A /* ShortPlayController.swift */; };
@@ -117,6 +118,7 @@
 		047A6C0124BDC13D008CE41E /* R_PlayerViewConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = R_PlayerViewConfig.swift; sourceTree = "<group>"; };
 		047A6C0624BDDF30008CE41E /* sliderHightLight@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sliderHightLight@2x.png"; sourceTree = "<group>"; };
 		047A6C0724BDDF30008CE41E /* sliderHightLight@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sliderHightLight@3x.png"; sourceTree = "<group>"; };
+		047A6C0A24BEF7EA008CE41E /* CustomActionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomActionsView.swift; sourceTree = "<group>"; };
 		0493192022C204EC000B805F /* WebKitController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebKitController.swift; sourceTree = "<group>"; };
 		0493192222C20C1F000B805F /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		049BF6462417D19400F3611A /* ShortPlayController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShortPlayController.swift; sourceTree = "<group>"; };
@@ -257,6 +259,7 @@
 				049BF6462417D19400F3611A /* ShortPlayController.swift */,
 				042DA814241C0F3D0067FA38 /* VideoTableController.swift */,
 				04DD09F624AC945000DCC901 /* TablePlayNativeController.swift */,
+				047A6C0A24BEF7EA008CE41E /* CustomActionsView.swift */,
 			);
 			path = PlayVideoControllers;
 			sourceTree = "<group>";
@@ -553,6 +556,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0422895E22BC9BDC00EE9B93 /* UIImage+Gif.swift in Sources */,
+				047A6C0B24BEF7EA008CE41E /* CustomActionsView.swift in Sources */,
 				049BF6472417D19400F3611A /* ShortPlayController.swift in Sources */,
 				045E77DB243D906A00EE2A69 /* X_PlayerView.swift in Sources */,
 				0422894D22BC9BAE00EE9B93 /* ViewController.swift in Sources */,
@@ -736,7 +740,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = B88MNPK37X;
+				DEVELOPMENT_TEAM = Z8ZVF86K5S;
 				INFOPLIST_FILE = SwiftAdView/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -756,7 +760,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = B88MNPK37X;
+				DEVELOPMENT_TEAM = Z8ZVF86K5S;
 				INFOPLIST_FILE = SwiftAdView/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (

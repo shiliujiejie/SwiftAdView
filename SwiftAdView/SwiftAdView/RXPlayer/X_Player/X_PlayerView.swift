@@ -242,6 +242,7 @@ public class X_PlayerView: UIView {
         avItem?.removeObserver(self, forKeyPath: "playbackLikelyToKeepUp")
         player?.cancelPendingPrerolls()
         avItem = nil
+        rate = 1.0
         player?.replaceCurrentItem(with: nil)
         player = nil
         playerLayer?.removeFromSuperlayer()

@@ -58,7 +58,7 @@ public class DownLoadHelper: NSObject {
         if FileManager.default.fileExists(atPath: filePath.path) {
             let files = findFiles(path: filePath.path, filterTypes: ["m3u8"])
             if files.count > 0 { // 本地m3u8文件已经存在
-                print("文件已存在 -- filePath = \(filePath.path)")
+                NLog("File Exist 文件已存在 -- filePath = \(filePath.path)")
                 return true
             }
         }
@@ -70,7 +70,7 @@ public class DownLoadHelper: NSObject {
         if FileManager.default.fileExists(atPath: filePath) {
             try? FileManager.default.removeItem(atPath: filePath)
         } else {
-            print("File has already been deleted.")
+            NLog("File has already been deleted.")
         }
     }
     
@@ -82,7 +82,7 @@ public class DownLoadHelper: NSObject {
         if FileManager.default.fileExists(atPath: filePath) {
             try? FileManager.default.removeItem(atPath: filePath)
         } else {
-            print("Could not find directory with name: \(identifer)")
+            NLog("Could not find directory with name: \(identifer)")
         }
     }
     
@@ -115,7 +115,7 @@ public class DownLoadHelper: NSObject {
         let regex = try! NSRegularExpression(pattern: pattern, options:[])
         let matches = regex.matches(in: str, options: [], range: NSRange(str.startIndex...,in: str))
         if matches.count > 0 {
-            print("matches == \(matches)")
+            NLog("matches == \(matches)")
             let ss = str[Range(matches[0].range(at: 1), in: str)!]
             return String(ss)
         }
@@ -139,11 +139,11 @@ extension DownLoadHelper {
         let directoryPath = DownLoadHelper.getDocumentsDirectory()
             .appendingPathComponent(DownLoadHelper.downloadFile)
             .appendingPathComponent(tsListModel.identifier)
-        print("directoryPath == \(directoryPath)")
+        NLog("directoryPath == \(directoryPath)")
         let tsModel = tsListModel.tsModelArray[index]
         let destination: DownloadRequest.DownloadFileDestination = { _, _ in
             let fileUrl = directoryPath.appendingPathComponent("\(tsModel.index).ts")
-            print("tsFilePath ========== \(fileUrl)")
+            NLog("tsFilePath ========== \(fileUrl)")
             return (fileUrl, [.removePreviousFile, .createIntermediateDirectories])
         }
         downLoadRequest = Alamofire.download(resumingWith: resuData, to: destination)
@@ -158,22 +158,22 @@ extension DownLoadHelper {
                 guard let strongSelf = self else { return }
                 if let _ = response.result.value {
                     if index == strongSelf.tsListModel.tsModelArray.count - 1 { // 最后一个
-                        print("The last ts downloaded - create local .m3u8 文件")
+                        NLog("The last ts downloaded - create local .m3u8 文件")
                         strongSelf.createLocalM3U8file()
                         strongSelf.downloadSuccessHandler?()
                         return
                     }
-                    print("第\(index)个下载完成, 继续下载第 \(index + 1)个")
+                    NLog("第\(index)个下载完成, 继续下载第 \(index + 1)个ts")
                     strongSelf.downLoadedDuration += tsModel.duration
                     self?.downLoadIndex(index+1)
                 }
                 if let error = response.error {
                     if (error as NSError).code  == NSURLErrorCancelled {
-                        print("continue - cancel - download")
+                        NLog("continue - cancel - download")
                         strongSelf.resumeData = response.resumeData
                     } else
                     {
-                         print("continue - failed - download")
+                         NLog("continue - failed - download")
                         if strongSelf.retryTimes < 1 {  //重试下载
                             strongSelf.retryTimes += 1
                             strongSelf.downLoadIndex(index)
@@ -197,7 +197,7 @@ extension DownLoadHelper {
                          speedUpdateHandler: @escaping (String) -> ())
     {
         if tsLsModel.tsModelArray.count == 0 {
-            print("没有可供下载的 ts")
+            NLog("没有可供下载的 ts")
             return
         }
         if index >= tsLsModel.tsModelArray.count { return }
@@ -214,20 +214,20 @@ extension DownLoadHelper {
         let directoryPath = DownLoadHelper.getDocumentsDirectory()
             .appendingPathComponent(DownLoadHelper.downloadFile)
             .appendingPathComponent(tsListModel.identifier)
-        print("directoryPath == \(directoryPath)")
+        NLog("directoryPath == \(directoryPath)")
         let tsModel = tsListModel.tsModelArray[index]
         downloadIndex = index
         //下载文件的保存路径
         let destination: DownloadRequest.DownloadFileDestination = { _, _ in
             let fileUrl = directoryPath.appendingPathComponent("\(tsModel.index).ts")
-            print("tsFilePath ========== \(fileUrl)")
+            NLog("tsFilePath ========== \(fileUrl)")
             return (fileUrl, [.removePreviousFile, .createIntermediateDirectories])
         }
         let date = Date()
         downLoadRequest = Alamofire.download(tsModel.tsUrl, to: destination)
             .downloadProgress { [weak self] progress in
                 guard let strongSelf = self else { return }
-                print("currentDownLoadData = \(progress.totalUnitCount)")
+                NLog("currentDownLoadData = \(progress.totalUnitCount)")
                 strongSelf.tsDataByte = progress.totalUnitCount
                 let currentDownload = strongSelf.downLoadedDuration + tsModel.duration * Float(progress.fractionCompleted)
                 let prog = currentDownload/strongSelf.tsListModel.duration
@@ -238,14 +238,14 @@ extension DownLoadHelper {
             if let _ = response.result.value {
                 let dataEnd = Date().timeIntervalSince(date)
                 strongSelf.getCurrentTSDownloadTime(dataEnd)
-                print("dataEnd == \(dataEnd)")
+                NLog("dataEnd == \(dataEnd)")
                 if index == strongSelf.tsListModel.tsModelArray.count - 1 { // 最后一个
-                    print("The last ts downloaded - create local .m3u8 文件")
+                    NLog("The last ts downloaded - create local .m3u8 文件")
                     strongSelf.createLocalM3U8file()
                     strongSelf.downloadSuccessHandler?()
                     return
                 }
-                print("第\(index)个下载完成, 继续下载第 \(index + 1)个")
+                NLog("第\(index)个下载完成, 继续下载第 \(index + 1)个ts")
                 strongSelf.downLoadedDuration += tsModel.duration
                 self?.downLoadIndex(index+1)
             }
@@ -315,7 +315,7 @@ extension DownLoadHelper {
         
         header.append(content)
         header.append("#EXT-X-ENDLIST\n")
-        print("local m3u8 file str = \(header) ")
+        NLog("local m3u8 file str = \(header) ")
         let writeData: Data = header.data(using: .utf8)!
         try? writeData.write(to: filePath) 
     }
@@ -332,7 +332,7 @@ extension DownLoadHelper {
         } else {
             speedStr = String(format: "%dB/s", Int(speed))
         }
-        print("network speed = \(speed) speed str = \(speedStr)")
+        NLog("network speed = \(speed) speed str = \(speedStr)")
         networkSpeedUpdateHandler?(speedStr)
     }
 }

@@ -30,21 +30,21 @@ class TSManager: NSObject {
     /// 解析url
     open func parse(_ uriKey: String? = nil) {
         m3u8Parser.parseM3u8(url: m3u8URL, key: uriKey, succeedHandler: { [weak self] (tsList) in
-            print("tsList == \(tsList.tsModelArray)")
+            NLog("tsList == \(tsList.tsModelArray)")
             self?.delegate?.m3u8ParserSuccess()
         }) { [weak self] (errorMsg) in
-            print(" 解析失败描述 = \(errorMsg)")
+            NLog(" 解析失败描述 = \(errorMsg)")
             self?.delegate?.m3u8ParserFailed()
         }
     }
     /// 下载
     open func download(_ uriKey: String? = nil) {
         m3u8Parser.parseM3u8(url: m3u8URL, key: uriKey, succeedHandler: { [weak self] (tsList) in
-            print("tsModelLs == \(tsList.tsModelArray)")
+            NLog("tsModelLs == \(tsList.tsModelArray)")
             self?.delegate?.m3u8ParserSuccess()
             self?.downLoadTsModels(tsList)
         }) { [weak self] (errorMsg) in
-            print(" 解析失败描述 = \(errorMsg)")
+            NLog(" 解析失败描述 = \(errorMsg)")
             self?.delegate?.m3u8ParserFailed()
         }
     }
@@ -60,7 +60,7 @@ class TSManager: NSObject {
             self?.downLoader.downLoadedDuration = paramInterrupt[TSManager.kLocalTimes] as! Float
             self?.downLoadFromLastInterrupt(index: paramInterrupt[TSManager.kInterruptIndex] as! Int , tsListModel: tsList)
         }) { [weak self] (errorMsg) in
-            print(" 解析失败描述 = \(errorMsg)")
+            NLog(" 解析失败描述 = \(errorMsg)")
             self?.delegate?.m3u8ParserFailed()
         }
     }
@@ -90,7 +90,7 @@ class TSManager: NSObject {
     }
     /// 中断下载
     open func downlodInterrupt() {
-        print("中断下载")
+        NLog("中断下载")
         downLoader.pauseDownload()
         saveInterruptIndex()
     }
@@ -149,7 +149,7 @@ private extension TSManager {
             }
         }
        // UserDefaults.standard.set(paramKey, forKey: directoryName)
-        print("paramInterrupt --- save = \(paramKey)")
+        NLog("paramInterrupt --- save = \(paramKey)")
     }
     /// 删除中断下载的ts index
     func deleteInterruptIndex() {
@@ -170,13 +170,13 @@ private extension TSManager {
     func downLoadTsModels(_ tsListModel: TSListModel) {
         downLoader.m3u8Data = m3u8Parser.m3u8Data
         downLoader.downLoadTsFiles(index: 0,tsLsModel: tsListModel, succeedHandler: { [weak self] in
-            print(" all ts file download succeed")
+            NLog(" all ts file download succeed")
             self?.deleteInterruptIndex()
             DispatchQueue.main.async {
                 self?.delegate?.tsDownloadSucceeded()
             }
             }, failHandler: { [weak self] (error) in
-                print("error msg == \(error)")
+                NLog("error msg == \(error)")
                 DispatchQueue.main.async {
                     self?.delegate?.tsDownloadFailed()
                 }
@@ -195,13 +195,13 @@ private extension TSManager {
         if index >= tsListModel.tsModelArray.count { return }
         downLoader.m3u8Data = m3u8Parser.m3u8Data
         downLoader.downLoadTsFiles(index: index,tsLsModel: tsListModel, succeedHandler: { [weak self] in
-            print(" all ts file download succeed")
+            NLog(" all ts file download succeed")
             self?.deleteInterruptIndex()
             DispatchQueue.main.async {
                self?.delegate?.tsDownloadSucceeded()
             }
             }, failHandler: { [weak self] (error) in
-                print("error msg == \(error)")
+                NLog("error msg == \(error)")
                 DispatchQueue.main.async {
                     self?.delegate?.tsDownloadFailed()
                 }
@@ -227,14 +227,14 @@ extension TSManager {
     
     // MARK: - APP将要被挂起
     @objc func applicationResignActivity(_ sender: NSNotification) {
-        print("applicationResignActivity")
+        NLog("applicationResignActivity")
         pause()
         saveInterruptIndex()
     }
     
     // MARK: - APP进入前台，恢复播放状态
     @objc func applicationBecomeActivity(_ sender: NSNotification) {
-        print("applicationBecomeActivity")
+        NLog("applicationBecomeActivity")
         resume()
         deleteInterruptIndex()
     }

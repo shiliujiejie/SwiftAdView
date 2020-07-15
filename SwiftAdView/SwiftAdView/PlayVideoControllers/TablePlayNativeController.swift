@@ -59,9 +59,10 @@ class TablePlayNativeController: UIViewController {
         let player = R_PlayerView.init(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenWidth*9/16), bothSidesTimelable: true)
         player.videoNameShowOnlyFullScreen = true
         player.delegate = self
+        player.customViewDelegate = self
         return player
     }()
-     var videos = ["https://vip.okokbo.com/20171213/wExbLQbT/index.m3u8","https://youku.cdn3-okzy.com/20200517/9011_95211c33/index.m3u8","https://txxs.mahua-yongjiu.com/20191229/9311_030d73ac/1000k/hls/index.m3u8","https://youku.cdn3-okzy.com/20200510/8835_8aff0fe8/index.m3u8","https://youku.cdn3-okzy.com/20200612/9795_f0b54684/index.m3u8","http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8","http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8","http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4c0c9e59031868222924048327/f0.mp4","https://github.com/shiliujiejie/adResource/raw/master/2.mp4", "https://github.com/shiliujiejie/adResource/raw/master/1.mp4", "https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
+     var videos = ["https://txxs.mahua-yongjiu.com/20191128/5576_5014e489/index.m3u8","https://dapian.video-yongjiu.com/20190912/11634_b1fcc590/1000k/hls/index.m3u8","https://ifeng.com-v-ifeng.com/20180716/21984_b1d9151f/index.m3u8","https://youku.cdn7-okzy.com/20200320/17981_b5d8baf6/index.m3u8","https://vip.okokbo.com/20171213/wExbLQbT/index.m3u8","https://youku.cdn3-okzy.com/20200517/9011_95211c33/index.m3u8","https://txxs.mahua-yongjiu.com/20191229/9311_030d73ac/1000k/hls/index.m3u8","https://youku.cdn3-okzy.com/20200510/8835_8aff0fe8/index.m3u8","https://youku.cdn3-okzy.com/20200612/9795_f0b54684/index.m3u8","http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8","http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8","http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4c0c9e59031868222924048327/f0.mp4","https://github.com/shiliujiejie/adResource/raw/master/2.mp4", "https://github.com/shiliujiejie/adResource/raw/master/1.mp4", "https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
     var currentIndex: Int = 0
     
     override func viewDidLoad() {
@@ -168,8 +169,41 @@ extension TablePlayNativeController: UITableViewDelegate, UITableViewDataSource 
 }
 
 extension TablePlayNativeController: R_PlayerDelegate {
-    func retryToPlayVideo(_ player: R_PlayerView, _ videoModel: RXVideoModel?, _ fatherView: UIView?) {
+    func startPlay() {
+        print("startPlay")
+    }
+    func retryToPlayVideo(url: URL?) {
+        print("retryToPlayVideo = \(url?.absoluteString ?? "")")
+    }
+    func playVideoFailed(url: URL?, player: R_PlayerView) {
+        print("playVideoFailed")
+    }
+    func playerProgress(progress: Float, currentPlayTime: Float) {
+        print("playerProgress = \(progress) currentPlayTime = \(currentPlayTime)")
+    }
+    func currentVideoPlayToEnd(url: URL??, isPlayingloaclFile: Bool) {
+         print("playVideoFailed -- isPlayingloaclFile = \(isPlayingloaclFile)")
+    }
+}
+
+/// 自定义 附加操作视图(全屏状态下)
+extension TablePlayNativeController: R_CustomMenuDelegate {
+    
+    func showCustomMuneView() -> UIView? {
+        /// 谁持有，谁释放 （若 CustomActionsView 为当前控制器的全局变量，需要当前控制器释放）
+        let view1 = CustomActionsView(frame: self.view.bounds)
         
+        view1.itemClick = { [weak self] index in
+            print("itemClick ===== \(index)")
+            if index == 0 {
+                self?.playerView.resetRate(rate: 1.0)
+            } else if index == 1 {
+                self?.playerView.resetRate(rate: 1.2)
+            } else if index == 2 {
+                self?.playerView.resetRate(rate: 1.5)
+            }
+        }
+        return view1
     }
 }
 

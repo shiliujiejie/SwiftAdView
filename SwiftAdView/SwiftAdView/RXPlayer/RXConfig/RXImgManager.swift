@@ -1,6 +1,23 @@
 
 import UIKit
 
+/// 播放状态枚举
+///
+/// - Failed: 失败
+/// - ReadyToPlay: 将要播放
+/// - Unknown: 未知
+/// - Buffering: 正在缓冲
+/// - Playing: 播放
+/// - Pause: 暂停
+public enum PlayerStatus {
+    case Failed
+    case ReadyToPlay
+    case Unknown
+    case Buffering
+    case Playing
+    case Pause
+}
+
 class RXImgManager: UIView {
     class func foundImage(imageName:String) -> UIImage? {
 //        let bundleB  = Bundle(for: self.classForCoder()) //先找到最外层Bundle
@@ -9,15 +26,9 @@ class RXImgManager: UIView {
 //        return UIImage(named: imageName, in: bundle , compatibleWith: nil) //在自己的Bundle中找图片
         return UIImage(named: imageName)
     }
-    
 }
-public struct RXVideoModel {
-    public var videoName: String?
-    public var videoUrl: String?
-    public var videoPlaySinceTime: Float = 0
-}
-
-public class RXDeviceModel {
+ 
+class RXDeviceModel {
     /// 判断是否为X系列
     ///
     /// - Returns: 兼容X系列手機

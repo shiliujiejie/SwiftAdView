@@ -41,17 +41,17 @@ open class R_PlayerView: UIView {
             playControlView.closeButton.isSelected = isFullScreen!
             playControlView.fullScreen = isFullScreen!
             
-//            if let view = UIApplication.shared.value(forKey: "statusBar") as? UIView {  // 状态栏变化
-//                if !isFullScreen! {
-//                    view.alpha = 1.0
-//                } else {  // 全频
-//                    if playControlView.barIsHidden! { // 状态栏
-//                        view.alpha = 0
-//                    } else {
-//                        view.alpha = 1.0
-//                    }
-//                }
-//            }
+            //            if let view = UIApplication.shared.value(forKey: "statusBar") as? UIView {  // 状态栏变化
+            //                if !isFullScreen! {
+            //                    view.alpha = 1.0
+            //                } else {  // 全频
+            //                    if playControlView.barIsHidden! { // 状态栏
+            //                        view.alpha = 0
+            //                    } else {
+            //                        view.alpha = 1.0
+            //                    }
+            //                }
+            //            }
             if !isFullScreen! {
                 /// 非全屏状态下，移除自定义视图
                 if let customView = self.viewWithTag(R_PlayerView.kCustomViewTag) {
@@ -62,20 +62,17 @@ open class R_PlayerView: UIView {
                     make.width.equalTo(5)
                 }
                 playControlView.closeButton.isEnabled = false
-            }else {
+            } else {
                 playControlView.closeButton.snp.updateConstraints { (make) in
                     make.width.equalTo(40)
                 }
                 playControlView.closeButton.isEnabled = true
                 if customViewDelegate != nil {
-                    if let actions = customViewDelegate!.customTopBarActions(), actions.count > 0 {  // 自定义了右上角操作按钮
+                    // 没有自定义按钮，检查是否自定义覆盖层
+                    if customViewDelegate!.showCustomMuneView() != nil { // 自定义覆盖层
+                        playControlView.munesButton.isHidden = false
+                    } else {
                         playControlView.munesButton.isHidden = true
-                    } else {   // 没有自定义按钮，检查是否自定义覆盖层
-                        if customViewDelegate!.showCustomMuneView() != nil { // 自定义覆盖层
-                            playControlView.munesButton.isHidden = false
-                        } else {
-                            playControlView.munesButton.isHidden = true
-                        }
                     }
                 } else {
                     playControlView.munesButton.isHidden = true
@@ -88,7 +85,7 @@ open class R_PlayerView: UIView {
     /// 是否只在全屏时显示视频名称
     public var videoNameShowOnlyFullScreen: Bool = false
     public weak var delegate: R_PlayerDelegate?
-    public weak var customViewDelegate: R_CustomMuneDelegate?
+    public weak var customViewDelegate: R_CustomMenuDelegate?
     
     /// 本地视频播放时回调视频播放进度
     public var playLocalFileVideoCloseCallBack:((_ playValue: Float) -> Void)?
@@ -111,9 +108,12 @@ open class R_PlayerView: UIView {
                 if !playControlView.panGesture.isEnabled && !playControlView.screenIsLock! {
                     playControlView.panGesture.isEnabled = true
                 }
-                self.hideLoadingHud()
+                hideLoadingHud()
                 if subviews.contains(loadedFailedView) {
                     loadedFailedView.removeFromSuperview()
+                }
+                if subviews.contains(brightnessSlider) {
+                    brightnessSlider.removeFromSuperview()
                 }
                 if !playControlView.replayView.isHidden {
                     playControlView.replayView.isHidden = true
@@ -154,7 +154,7 @@ open class R_PlayerView: UIView {
     private let draggedTimeLable: UILabel = {
         let lable = UILabel()
         lable.textColor = UIColor.white
-        lable.font = UIFont.systemFont(ofSize: 13)
+        lable.font = UIFont.boldSystemFont(ofSize: 13)
         lable.textAlignment = .center
         return lable
     }()
@@ -304,7 +304,7 @@ extension R_PlayerView {
             self.playSinceTime(lastPositionValue)
         }
     }
-   
+    
     /// 直接全屏播放，思路就是：直接将播放器添加到父视图上，：1.播放视频，2：屏幕强制旋转到右侧，3.隐藏全屏切换按钮 ，4.更换返回按钮事件为移除播放器
     ///
     /// - Parameters:
@@ -332,14 +332,14 @@ extension R_PlayerView {
     ///
     /// - Returns: 返回当前视频播放的时间,和视频总时长 （单位: 秒）
     open func getNowPlayPositionTimeAndVideoDuration() -> [Float] {
-        return [self.playedValue, self.videoDuration]
+        return [playedValue, videoDuration]
     }
     
     /// 获取当前已缓存的时间点
     ///
     /// - Returns: 返回当前已缓存的时间 （单位: 秒）
     open func getLoadingPositionTime() -> Float {
-        return self.loadedValue
+        return loadedValue
     }
     /// 设置播放速度： effective range [0.5 - 2.0]
     open func resetRate(rate: Float) {
@@ -381,7 +381,7 @@ extension R_PlayerView {
 
 private extension R_PlayerView {
     
-    private func playVideoWith(url: URL?, videoName: String?, containView: UIView?) {
+    func playVideoWith(url: URL?, videoName: String?, containView: UIView?) {
         // 👇三个属性的设置顺序很重要
         self.playUrl = url   // 判断视频链接是否更改，更改了就重置播放器
         self.videoName = videoName      // 视频名称
@@ -394,11 +394,6 @@ private extension R_PlayerView {
         
         addNotificationAndObserver()
         addUserActionBlock()
-        if customViewDelegate != nil {
-            if let actions = customViewDelegate!.customTopBarActions(), actions.count > 0 {  // 自定义了右上角操作按钮
-                showCustomTopBarActions(actions: actions)
-            }
-        }
     }
     
     /// 播放本地视频文件 : 1.标注为播放本地文件。 2.初始化播放器，播放视频）。 3.根据标记改变屏幕支持方向。4.隐藏全屏按钮 5.强制横屏
@@ -409,7 +404,7 @@ private extension R_PlayerView {
     ///   - containerView: 父视图
     ///   - sinceTime: 从某个时间开始播放
     
-    private func playDownFileWith(_ url: URL, _ title: String?, in view: UIView?, sinceTime: Float? = nil) {
+    func playDownFileWith(_ url: URL, _ title: String?, in view: UIView?, sinceTime: Float? = nil) {
         playControlView.playLocalFile = true  // 声明直接就进入全屏播放               ------------------   1
         fileUrlString = url.absoluteString    //   存本地文件URL
         // 👇三个属性的设置顺序很重要X
@@ -437,42 +432,35 @@ private extension R_PlayerView {
                 self.playSinceTime(lastPositionValue)
             }
         }
-        if customViewDelegate != nil {
-            if let actions = customViewDelegate!.customTopBarActions(), actions.count > 0 {  // 自定义了右上角操作按钮
-                showCustomTopBarActions(actions: actions)
-            }
-        }
-        
     }
     
-    private func showLoadingHud() {
+    func showLoadingHud() {
         if !playControlView.loadingView.isAnimating {
             playControlView.loadingView.startAnimating()
         }
     }
     
-    private func hideLoadingHud() {
+    func hideLoadingHud() {
         if playControlView.loadingView.isAnimating {
             playControlView.loadingView.stopAnimating()
         }
     }
-    
-    private func showCustomTopBarActions(actions: [UIButton]) {
-        let count = actions.count > 4 ? 4 : actions.count
-        for  i in 0 ..< count {
-            let button = actions[i]
-            playControlView.topControlBarView.addSubview(button)
-            button.snp.makeConstraints { (make) in
-                make.top.equalTo(playControlView.videoNameLable).offset(5)
-                make.bottom.equalTo(playControlView.videoNameLable)
-                make.trailing.equalTo(-(20 + i*55))
-                make.width.equalTo(40)
-            }
+    // MARK: - 网络提示显示
+    func showLoadedFailedView() {
+        delegate?.playVideoFailed(url: playUrl, player: self)
+        addSubview(loadedFailedView)
+        loadedFailedView.retryButtonClickBlock = { [weak self] (sender) in
+            guard let strongSelf = self else { return }
+            strongSelf.replayVideo(url: strongSelf.playUrl!, in: strongSelf.fatherView!, lastPlayTime: strongSelf.playedValue, title: strongSelf.videoName, uri: strongSelf.uriKey, cache: strongSelf.cacheWhenPlayinng)
+            strongSelf.delegate?.retryToPlayVideo(url: strongSelf.playUrl)
+        }
+        loadedFailedView.snp.makeConstraints { (make) in
+            make.edges.equalToSuperview()
         }
     }
     
     /// 释放播放源
-    private func releasePlayer() {
+    func releasePlayer() {
         avItem?.removeObserver(self, forKeyPath: "status")
         avItem?.removeObserver(self, forKeyPath: "loadedTimeRanges")
         avItem?.removeObserver(self, forKeyPath: "playbackBufferEmpty")
@@ -481,16 +469,17 @@ private extension R_PlayerView {
             player?.removeTimeObserver(playerTimerObserver!)
             playerTimerObserver = nil
         }
-        self.playerLayer?.removeFromSuperlayer()
+        playerLayer?.removeFromSuperlayer()
         self.layer.removeAllAnimations()
-        // player?.replaceCurrentItem(with: nil)
+        playedValue = 0.0
+        rate = 1.0
         avItem = nil
     }
     
     /// 初始化播放源
     ///
     /// - Parameter videoUrl: 视频链接
-    private func setUpPlayerResource(_ videoUrl: URL) {
+    func setUpPlayerResource(_ videoUrl: URL) {
         
         if videoUrl.absoluteString.contains(".m3u8") {
             isM3U8 = true
@@ -512,7 +501,7 @@ private extension R_PlayerView {
         playControlView.doubleTapGesture.isEnabled = true
         playControlView.panGesture.isEnabled = true //!isM3U8
         autoHideBar()
-        if playControlView.playLocalFile! {       // 播放本地视频时只支持左右
+        if playControlView.playLocalFile {       // 播放本地视频时只支持左右
             orientationSupport = R_PlayerOrietation.orientationLeftAndRight
         } else {
             showLoadingHud()      /// 网络视频才显示菊花
@@ -523,29 +512,31 @@ private extension R_PlayerView {
     /// 重置播放器
     ///
     /// - Parameter videoUrl: 视频链接
-    private func resetPlayerResource(_ videoUrl: URL) {
+    func resetPlayerResource(_ videoUrl: URL) {
         releasePlayer()  // 先释放播放源
         startReadyToPlay()
         setUpPlayerResource(videoUrl)
     }
     
     /// 销毁播放器源
-    private func destructPlayerResource() {
+    func destructPlayerResource() {
         avItem?.removeObserver(self, forKeyPath: "status")
         avItem?.removeObserver(self, forKeyPath: "loadedTimeRanges")
         avItem?.removeObserver(self, forKeyPath: "playbackBufferEmpty")
         avItem?.removeObserver(self, forKeyPath: "playbackLikelyToKeepUp")
-        self.avItem = nil
-        self.player?.replaceCurrentItem(with: nil)
-        self.player = nil
-        self.playerLayer?.removeFromSuperlayer()
-        self.layer.removeAllAnimations()
+        playedValue = 0.0
+        rate = 1.0
+        avItem = nil
+        player?.replaceCurrentItem(with: nil)
+        player = nil
+        playerLayer?.removeFromSuperlayer()
+        layer.removeAllAnimations()
     }
     
     /// 从某个点开始播放
     ///
     /// - Parameter time: 要从开始的播放起点
-    private func playSinceTime(_ time: CMTime) {
+    func playSinceTime(_ time: CMTime) {
         if CMTIME_IS_VALID(time) {
             avItem?.seek(to: time, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero, completionHandler: { [weak self] (finish) in
                 if finish {
@@ -559,7 +550,7 @@ private extension R_PlayerView {
     }
     
     /// 获取系统音量控件 及大小
-    private func configureSystemVolume() {
+    func configureSystemVolume() {
         let volumeView = MPVolumeView()
         self.volumeSlider = nil //每次获取要将之前的置为nil
         for view in volumeView.subviews {
@@ -574,7 +565,7 @@ private extension R_PlayerView {
     }
     
     // MARK: - addNotificationAndObserver
-    private func addNotificationAndObserver() {
+    func addNotificationAndObserver() {
         guard let avItem = self.avItem else {return}
         ///注册通知之前，需要先移除对应的通知，因为添加多此观察，方法会调用多次
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
@@ -595,12 +586,12 @@ private extension R_PlayerView {
     }
     
     // MARK: - User Action - Block
-    private func addUserActionBlock() {
+    func addUserActionBlock() {
         // MARK: - 返回，关闭
         playControlView.closeButtonClickBlock = { [weak self] (sender) in
             guard let strongSelf = self else {return}
             if strongSelf.isFullScreen! {
-                if strongSelf.playControlView.playLocalFile! {   // 直接全屏播放本地视频
+                if strongSelf.playControlView.playLocalFile {   // 直接全屏播放本地视频
                     strongSelf.removeFromSuperview()
                     strongSelf.cancleAutoHideBar()
                     orientationSupport = R_PlayerOrietation.orientationPortrait
@@ -642,7 +633,7 @@ private extension R_PlayerView {
             if sender.isSelected {
                 orientationSupport = R_PlayerOrietation.orientationLeftAndRight
             }else {
-                if strongSelf.playControlView.playLocalFile! {
+                if strongSelf.playControlView.playLocalFile {
                     orientationSupport = R_PlayerOrietation.orientationLeftAndRight
                 } else {
                     orientationSupport = R_PlayerOrietation.orientationAll
@@ -674,7 +665,6 @@ private extension R_PlayerView {
                     make.edges.equalToSuperview()
                 })
             }
-            
         }
         // MARK: - 音量，亮度，进度拖动
         self.configureSystemVolume()             // 获取系统音量控件   可以选择自定义，效果会比系统的好
@@ -711,7 +701,7 @@ private extension R_PlayerView {
                         strongSelf.layoutDraggedContainers()
                     }
                     
-                }else if x < y {
+                } else if x < y {
                     strongSelf.panDirection = PanDirection.PanDirectionVertical
                     
                     if locationPoint.x > strongSelf.playControlView.bounds.size.width/2 && locationPoint.y < strongSelf.playControlView.bounds.size.height - 40 {  // 触摸点在视图右边，控制音量
@@ -725,8 +715,7 @@ private extension R_PlayerView {
                             })
                         }
                         
-                        
-                    }else if locationPoint.x < strongSelf.playControlView.bounds.size.width/2 && locationPoint.y < strongSelf.playControlView.bounds.size.height - 40 {
+                    } else if locationPoint.x < strongSelf.playControlView.bounds.size.width/2 && locationPoint.y < strongSelf.playControlView.bounds.size.height - 40 {
                         if !strongSelf.subviews.contains(strongSelf.brightnessSlider) {
                             strongSelf.addSubview(strongSelf.brightnessSlider)
                             strongSelf.brightnessSlider.snp.makeConstraints({ (make) in
@@ -753,11 +742,10 @@ private extension R_PlayerView {
                     break
                 }
                 break
-            case .ended:
+            case .ended, .cancelled, .failed:
                 strongSelf.isDragging = false
                 switch strongSelf.panDirection! {
                 case .PanDirectionHorizontal:
-                    
                     let position = CGFloat(avItem.asset.duration.value)/CGFloat(avItem.asset.duration.timescale)
                     let sliderValue = strongSelf.sumTime!/position
                     let po = CMTimeMakeWithSeconds(Float64(position) * Float64(sliderValue), preferredTimescale: (avItem.asset.duration.timescale))
@@ -786,18 +774,14 @@ private extension R_PlayerView {
                 }
                 break
                 
-            case .possible:
-                break
-            case .failed:
-                break
-            case .cancelled:
+            default :
                 break
             }
         }
     }
     
     // MARK: - 水平拖动进度手势
-    private func horizontalMoved(_ moveValue: CGFloat) ->CGFloat {
+    func horizontalMoved(_ moveValue: CGFloat) ->CGFloat {
         guard var sumValue = self.sumTime else {
             return 0
         }
@@ -820,7 +804,7 @@ private extension R_PlayerView {
         // 拖动时间展示
         let allTimeString =  formatTimDuration(position: Int(sumValue), duration: Int(totalMoveDuration))
         let draggedTimeString = formatTimPosition(position: Int(sumValue), duration: Int(totalMoveDuration))
-        draggedTimeLable.text = String(format: "%@|%@", draggedTimeString, allTimeString)
+        draggedTimeLable.text = String(format: "%@ | %@", draggedTimeString, allTimeString)
         playControlView.positionTimeLab.text = self.formatTimPosition(position: Int(sumValue), duration: Int(totalMoveDuration))
         draggedStatusButton.isSelected = moveValue < 0
         if !isDragging {
@@ -828,11 +812,10 @@ private extension R_PlayerView {
         }
         sumTime = sumValue
         return dragValue
-        
     }
     
     // MARK: - 上下拖动手势
-    private func veloctyMoved(_ movedValue: CGFloat, _ isVolume: Bool) {
+    func veloctyMoved(_ movedValue: CGFloat, _ isVolume: Bool) {
         
         if isVolume {
             volumeSlider?.value  -= Float(movedValue/10000)
@@ -863,8 +846,7 @@ private extension R_PlayerView {
         
         if let item = sender.object as? AVPlayerItem {   /// 这里要区分结束的视频是哪一个
             if let asset = item.asset as? AVURLAsset {
-                let model = RXVideoModel(videoName: self.videoName, videoUrl: asset.url.absoluteString, videoPlaySinceTime: self.playTimeSince)
-                delegate?.currentVideoPlayToEnd(model, playControlView.playLocalFile!)
+                delegate?.currentVideoPlayToEnd(url: asset.url, isPlayingloaclFile: playControlView.playLocalFile)
             }
         }
     }
@@ -879,27 +861,13 @@ private extension R_PlayerView {
         loadedFailedView.removeFromSuperview()
     }
     
-    // MARK: - 网络提示显示
-    private func showLoadedFailedView() {
-        self.addSubview(loadedFailedView)
-        loadedFailedView.retryButtonClickBlock = { [weak self] (sender) in
-            guard let strongSelf = self else { return }
-            let model = RXVideoModel(videoName: strongSelf.videoName, videoUrl: strongSelf.playUrl?.absoluteString, videoPlaySinceTime: strongSelf.playTimeSince)
-            //strongSelf.delegate?.retryToPlayVideo(strongSelf, model, strongSelf.fatherView)
-            strongSelf.delegate?.retryToPlayVideo(strongSelf, model, strongSelf.fatherView)
-        }
-        loadedFailedView.snp.makeConstraints { (make) in
-            make.edges.equalToSuperview()
-        }
-    }
-    
     // MARK: - 取消自动隐藏操作栏
-    private func cancleAutoHideBar() {
+    func cancleAutoHideBar() {
         NSObject.cancelPreviousPerformRequests(withTarget: playControlView, selector: #selector(RXPlayerControlView.autoHideTopBottomBar), object: nil)    // 取消5秒自动消失控制栏
     }
     
     // MARK: - 添加操作栏5秒自动隐藏
-    private func autoHideBar() {
+    func autoHideBar() {
         // 取消5秒自动消失控制栏
         NSObject.cancelPreviousPerformRequests(withTarget: playControlView, selector: #selector(RXPlayerControlView.autoHideTopBottomBar), object: nil)
         playControlView.perform(#selector(RXPlayerControlView.autoHideTopBottomBar), with: nil, afterDelay: 5)
@@ -1033,16 +1001,15 @@ extension R_PlayerView {
                 playControlView.playOrPauseBtn.isSelected = true
                 updateTimeLableLayout(avItem: avItem)
                 
-            }else if avItem.status == AVPlayerItem.Status.unknown {
+            } else if avItem.status == AVPlayerItem.Status.unknown {
                 //视频加载失败，或者未知原因
                 playerStatu = .Unknown
                 hideLoadingHud()
             } else if avItem.status == AVPlayerItem.Status.failed {
                 NLog("Status.failed")
                 playerStatu = .Failed
-                // 代理出去，在外部处理网络问题
                 hideLoadingHud()
-                if !playControlView.playLocalFile! {  /// 非本地文件播放才显示网络失败
+                if !playControlView.playLocalFile {  /// 非本地文件播放才显示网络失败
                     showLoadedFailedView()
                 }
             }
@@ -1051,8 +1018,9 @@ extension R_PlayerView {
         } else if keyPath == "playbackBufferEmpty" {
             playerStatu = .Buffering                // 监听播放器正在缓冲数据
             NLog("Status.Buffering")
-        } else if keyPath == "playbackLikelyToKeepUp" {                   //监听视频缓冲达到可以播放的状态
+        } else if keyPath == "playbackLikelyToKeepUp" {    //监听视频缓冲达到可以播放的状态
             NLog("Status.Playing")
+            delegate?.startPlay()
             if !isDragging && playerStatu != .Pause {
                 showLoadingHud()
             }
@@ -1065,7 +1033,6 @@ extension R_PlayerView {
     /// - Parameter avItem: AVPlayerItem
     
     private func updateTimeSliderValue(avItem: AVPlayerItem) {
-        
         let timeScaleValue = Int64(avItem.currentTime().timescale) /// 当前时间
         let timeScaleDuration = Int64(avItem.asset.duration.timescale)   /// 总时间
         if avItem.asset.duration.value > 0 && avItem.currentTime().value > 0 {
@@ -1076,11 +1043,11 @@ extension R_PlayerView {
             let stringValue = formatTimPosition(position: Int(value), duration: Int(duration))
             playControlView.positionTimeLab.text = stringValue
             playControlView.durationTimeLab.text = stringDuration
+            delegate?.playerProgress(progress: playValue, currentPlayTime: Float(value))
             if !isDragging {
                 playControlView.timeSlider.value = playValue
                 playedValue = Float(value)                                      // 保存播放进度
             }
-            
         }
     }
     

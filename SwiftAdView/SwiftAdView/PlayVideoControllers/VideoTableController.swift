@@ -99,8 +99,6 @@ class VideoTableController: UIViewController {
             url = URL(fileURLWithPath: first)
         }
   
-        //playerView.encryptParams = [PlayerView.kKeyURL: "fwfrfh4rontq3bfn"]
-        
         playVideo(url!, in: tableHeader)
        
         
@@ -126,8 +124,8 @@ class VideoTableController: UIViewController {
         self.navigationController?.popViewController(animated: true)
     }
     @objc func rightButtonClick() {
-        playerView.resetRate(rate: 1.5)
-        return
+//        playerView.resetRate(rate: 1.5)
+//        return
         if playerView.player != nil {
             let fullPlayer = X_FullScreenPlayController()
             fullPlayer.player = playerView.player!
@@ -250,12 +248,6 @@ extension VideoTableController: X_PlayerViewDelegate {
     }
     func dragingProgress(isDraging: Bool, to progress: Float?) {
         print("isdraging = \(isDraging) dragingProgress = \(progress ?? 0)")
-    }
-}
-
-extension VideoTableController: R_PlayerDelegate {
-    func retryToPlayVideo(_ player: R_PlayerView, _ videoModel: RXVideoModel?, _ fatherView: UIView?) {
-        
     }
 }
 

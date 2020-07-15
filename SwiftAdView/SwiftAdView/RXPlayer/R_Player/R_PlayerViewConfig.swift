@@ -2,57 +2,41 @@
 import Foundation
 import UIKit
 
-/// 播放状态枚举
-///
-/// - Failed: 失败
-/// - ReadyToPlay: 将要播放
-/// - Unknown: 未知
-/// - Buffering: 正在缓冲
-/// - Playing: 播放
-/// - Pause: 暂停
-public enum PlayerStatus {
-    case Failed
-    case ReadyToPlay
-    case Unknown
-    case Buffering
-    case Playing
-    case Pause
-}
-
-
-public protocol R_CustomMuneDelegate: class {
+public protocol R_CustomMenuDelegate: class {
     /// 自定义右上角按钮点击操作
     func showCustomMuneView() -> UIView?
-    
-    func customTopBarActions() -> [UIButton]?
 }
 
-public extension R_CustomMuneDelegate {
-    
+public extension R_CustomMenuDelegate {
     func showCustomMuneView() -> UIView? {
-        return nil
-    }
-    func customTopBarActions() -> [UIButton]? {
         return nil
     }
 }
 
 public protocol R_PlayerDelegate: class {
-    
-    /// 代理在外部处理网络问题
-    func retryToPlayVideo(_ player: R_PlayerView, _ videoModel: RXVideoModel?, _ fatherView: UIView?)
-    
+    /// 开始播放
+    func startPlay()
+    /// 重试
+    func retryToPlayVideo(url: URL?)
+    /// 播放失败
+    func playVideoFailed(url: URL?, player: R_PlayerView)
+    /// 播放进度
+    func playerProgress(progress: Float, currentPlayTime: Float)
     /// 当前播放的视频播放完成时调用
-    ///
-    /// - Parameters:
-    ///   - videoModel: 当前播放完的本地视频的Model
-    ///   - isPlayingDownLoadFile: 是否是播放的已下载视频
-    func currentVideoPlayToEnd(_ videoModel: RXVideoModel?, _ isPlayingDownLoadFile: Bool)
+    func currentVideoPlayToEnd(url: URL??, isPlayingloaclFile: Bool)
 }
 
 public extension R_PlayerDelegate {
-    func currentVideoPlayToEnd(_ videoModel: RXVideoModel?, _ isPlayingDownLoadFile: Bool) {
-    }
+    /// 开始播放
+    func startPlay() {}
+    /// 重试播放
+    func retryToPlayVideo(url: URL?) { }
+    /// 播放失败
+    func playVideoFailed(url: URL?, player: R_PlayerView) {}
+    /// 播放进度
+    func playerProgress(progress: Float, currentPlayTime: Float) {}
+    /// 播放完成
+    func currentVideoPlayToEnd(url: URL??, isPlayingloaclFile: Bool) { }
 }
 
 /// 滑动手势的方向
