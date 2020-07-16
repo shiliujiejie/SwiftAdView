@@ -56,7 +56,6 @@
 		04CC2BD3245863B4009CDB9D /* DownLoadedTSPlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CC2BD2245863B4009CDB9D /* DownLoadedTSPlayerVC.swift */; };
 		04DD09C624AC917000DCC901 /* R_PlayerControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04DD099224AC917000DCC901 /* R_PlayerControlView.swift */; };
 		04DD09C824AC917000DCC901 /* R_BrightnessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04DD099424AC917000DCC901 /* R_BrightnessView.swift */; };
-		04DD09C924AC917000DCC901 /* RXNetWorkAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04DD099524AC917000DCC901 /* RXNetWorkAlert.swift */; };
 		04DD09CA24AC917000DCC901 /* RXPublicConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04DD099624AC917000DCC901 /* RXPublicConfig.swift */; };
 		04DD09CB24AC917000DCC901 /* R_LoadedFailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04DD099724AC917000DCC901 /* R_LoadedFailedView.swift */; };
 		04DD09CD24AC917000DCC901 /* pause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD099A24AC917000DCC901 /* pause@2x.png */; };
@@ -138,7 +137,6 @@
 		04CC2BD2245863B4009CDB9D /* DownLoadedTSPlayerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownLoadedTSPlayerVC.swift; sourceTree = "<group>"; };
 		04DD099224AC917000DCC901 /* R_PlayerControlView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = R_PlayerControlView.swift; sourceTree = "<group>"; };
 		04DD099424AC917000DCC901 /* R_BrightnessView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = R_BrightnessView.swift; sourceTree = "<group>"; };
-		04DD099524AC917000DCC901 /* RXNetWorkAlert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RXNetWorkAlert.swift; sourceTree = "<group>"; };
 		04DD099624AC917000DCC901 /* RXPublicConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RXPublicConfig.swift; sourceTree = "<group>"; };
 		04DD099724AC917000DCC901 /* R_LoadedFailedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = R_LoadedFailedView.swift; sourceTree = "<group>"; };
 		04DD099A24AC917000DCC901 /* pause@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pause@2x.png"; sourceTree = "<group>"; };
@@ -284,7 +282,6 @@
 			children = (
 				045E77DD243DB19600EE2A69 /* RXM3u8ResourceLoader.swift */,
 				04DD099624AC917000DCC901 /* RXPublicConfig.swift */,
-				04DD099524AC917000DCC901 /* RXNetWorkAlert.swift */,
 			);
 			path = RXConfig;
 			sourceTree = "<group>";
@@ -563,7 +560,6 @@
 				04CC2BD1245712F2009CDB9D /* DownloadHelper.swift in Sources */,
 				04C9DA09246AF0C500B0BA35 /* ChannelRecommendCell.swift in Sources */,
 				04DD09C624AC917000DCC901 /* R_PlayerControlView.swift in Sources */,
-				04DD09C924AC917000DCC901 /* RXNetWorkAlert.swift in Sources */,
 				0422896222BC9C6D00EE9B93 /* SwiftAdView.swift in Sources */,
 				0493192322C20C1F000B805F /* RootViewController.swift in Sources */,
 				04CC2BCF24571287009CDB9D /* TSModel.swift in Sources */,
