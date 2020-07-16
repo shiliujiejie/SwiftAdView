@@ -39,33 +39,6 @@ public extension R_PlayerDelegate {
     func currentVideoPlayToEnd(url: URL??, isPlayingloaclFile: Bool) { }
 }
 
-/// 滑动手势的方向
-enum PanDirection: Int {
-    case PanDirectionHorizontal     //水平
-    case PanDirectionVertical       //上下
-}
 
-public enum R_PlayerOrietation: Int {
-    case orientationPortrait
-    case orientationLeftAndRight
-    case orientationAll
-    
-    public func getOrientSupports() -> UIInterfaceOrientationMask {
-        switch self {
-        case .orientationPortrait:
-            return [.portrait]
-        case .orientationLeftAndRight:
-            return [.landscapeLeft, .landscapeRight]
-        case .orientationAll:
-            return [.portrait, .landscapeLeft, .landscapeRight]
-        }
-    }
-}
-public var orientationSupport: R_PlayerOrietation = .orientationPortrait
 
-// log
-public func NLog(_ item: Any, _ file: String = #file,  _ line: Int = #line, _ function: String = #function) {
-    #if DEBUG
-    print(file + ":\(line):" + function, item)
-    #endif
-}
+

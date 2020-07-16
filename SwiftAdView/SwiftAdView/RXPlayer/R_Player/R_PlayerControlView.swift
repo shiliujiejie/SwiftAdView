@@ -30,13 +30,13 @@ class RXPlayerControlView: UIView {
     lazy var closeButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(nil, for: .normal)
-        button.setImage(RXImgManager.foundImage(imageName: "back"), for: .selected)
+        button.setImage(RXPublicConfig.foundImage(imageName: "back"), for: .selected)
         button.addTarget(self, action: #selector(closeButtonClick(_:)), for: .touchUpInside)
         return button
     }()
     lazy var munesButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(RXImgManager.foundImage(imageName: "share"), for: .normal)
+        button.setImage(RXPublicConfig.foundImage(imageName: "share"), for: .normal)
         button.addTarget(self, action: #selector(munesButtonClick(_:)), for: .touchUpInside)
         button.isHidden = true   // 默认隐藏
         return button
@@ -65,7 +65,7 @@ class RXPlayerControlView: UIView {
     }()
     lazy var replayButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(RXImgManager.foundImage(imageName: "replay"), for: .normal)
+        button.setImage(RXPublicConfig.foundImage(imageName: "replay"), for: .normal)
         button.addTarget(self, action: #selector(RXPlayerControlView.replayButtonClick(_:)), for: .touchUpInside)
         return button
     }()
@@ -110,8 +110,8 @@ class RXPlayerControlView: UIView {
         slider.contentMode = ContentMode.scaleAspectFit
         slider.minimumTrackTintColor = UIColor.white
         slider.maximumTrackTintColor = UIColor.clear
-        slider.setThumbImage(RXImgManager.foundImage(imageName: "sliderflash"), for: .normal)
-        slider.setThumbImage(RXImgManager.foundImage(imageName: "sliderHightLight"), for: .highlighted)
+        slider.setThumbImage(RXPublicConfig.foundImage(imageName: "sliderflash"), for: .normal)
+        slider.setThumbImage(RXPublicConfig.foundImage(imageName: "sliderHightLight"), for: .highlighted)
         slider.addTarget(self, action: #selector(RXPlayerControlView.sliderValueChange(_:)),for:.valueChanged)
         slider.addTarget(self, action: #selector(RXPlayerControlView.sliderAllTouchBegin(_:)), for: .touchDown)
         slider.addTarget(self, action: #selector(RXPlayerControlView.sliderAllTouchEnd(_:)), for: .touchCancel)
@@ -137,23 +137,23 @@ class RXPlayerControlView: UIView {
     }()
     lazy var playOrPauseBtn: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(RXImgManager.foundImage(imageName: "pause"), for: .normal)
-        button.setImage(RXImgManager.foundImage(imageName: "R_pause"), for: .selected)
+        button.setImage(RXPublicConfig.foundImage(imageName: "pause"), for: .normal)
+        button.setImage(RXPublicConfig.foundImage(imageName: "R_pause"), for: .selected)
         button.addTarget(self, action: #selector(RXPlayerControlView.playOrPauseBtnClick(_:)), for: .touchUpInside)
         return button
     }()
     lazy var screenLockButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(RXImgManager.foundImage(imageName: "unlock"), for: .normal)
-        button.setImage(RXImgManager.foundImage(imageName: "lockscreen"), for: .selected)
+        button.setImage(RXPublicConfig.foundImage(imageName: "unlock"), for: .normal)
+        button.setImage(RXPublicConfig.foundImage(imageName: "lockscreen"), for: .selected)
         button.addTarget(self, action: #selector(RXPlayerControlView.screenLockButtonClick(_:)), for: .touchUpInside)
         button.isHidden = true
         return button
     }()
     lazy var fullScreenBtn: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(RXImgManager.foundImage(imageName: "R_fullscreen"), for: .normal)
-        button.setImage(RXImgManager.foundImage(imageName: "shrinkScreen"), for: .selected)
+        button.setImage(RXPublicConfig.foundImage(imageName: "R_fullscreen"), for: .normal)
+        button.setImage(RXPublicConfig.foundImage(imageName: "shrinkScreen"), for: .selected)
         button.addTarget(self, action: #selector(RXPlayerControlView.fullScreenBtnClick(_:)), for: .touchUpInside)
         return button
     }()

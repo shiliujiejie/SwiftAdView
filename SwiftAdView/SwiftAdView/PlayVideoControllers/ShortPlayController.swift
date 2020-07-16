@@ -145,7 +145,7 @@ class ShortPlayController: UIViewController {
 extension ShortPlayController: X_PlayerViewDelegate {
 
     func playerProgress(progress: Float, currentPlayTime: Float) {
-        print("progress  --- \(progress) currentPlayTime = \(currentPlayTime) currentTimeString = \(X_PlayerView.formatTimPosition(position: Int(currentPlayTime), duration: Int(playerView.videoDuration))) videoTime_length = \(X_PlayerView.formatTimDuration(duration: Int(playerView.videoDuration)))")
+        print("progress  --- \(progress) currentPlayTime = \(currentPlayTime) currentTimeString = \(RXPublicConfig.formatTimPosition(position: Int(currentPlayTime), duration: Int(playerView.videoDuration))) videoTime_length = \(RXPublicConfig.formatTimDuration(duration: Int(playerView.videoDuration)))")
     }
     func customActionsBeforePlay() {
         print("customActionsBeforePlay ---- Exp: remove Failed Shower View")

@@ -17,17 +17,70 @@ public enum PlayerStatus {
     case Playing
     case Pause
 }
+/// 滑动手势的方向
+enum PanDirection: Int {
+    case PanDirectionHorizontal     //水平
+    case PanDirectionVertical       //上下
+}
 
-class RXImgManager: UIView {
-    class func foundImage(imageName:String) -> UIImage? {
+public var orientationSupport: R_PlayerOrietation = .orientationPortrait
+
+public enum R_PlayerOrietation: Int {
+    case orientationPortrait
+    case orientationLeftAndRight
+    case orientationAll
+    
+    public func getOrientSupports() -> UIInterfaceOrientationMask {
+        switch self {
+        case .orientationPortrait:
+            return [.portrait]
+        case .orientationLeftAndRight:
+            return [.landscapeLeft, .landscapeRight]
+        case .orientationAll:
+            return [.portrait, .landscapeLeft, .landscapeRight]
+        }
+    }
+}
+
+
+public class RXPublicConfig {
+    
+    class func foundImage(imageName: String) -> UIImage? {
 //        let bundleB  = Bundle(for: self.classForCoder()) //先找到最外层Bundle
 //        guard let resrouseURL = bundleB.url(forResource: "RXPlayer", withExtension: "bundle") else { return nil }
 //        let bundle = Bundle(url: resrouseURL) // 根据URL找到自己的Bundle
 //        return UIImage(named: imageName, in: bundle , compatibleWith: nil) //在自己的Bundle中找图片
         return UIImage(named: imageName)
     }
+    /// 当前时间转换为时间字符串
+    class func formatTimPosition(position: Int, duration:Int) -> String {
+        guard position != 0 && duration != 0 else{
+            return "00:00"
+        }
+        let positionHours = (position / 3600) % 60
+        let positionMinutes = (position / 60) % 60
+        let positionSeconds = position % 60
+        let durationHours = (Int(duration) / 3600) % 60
+        if (durationHours == 0) {
+            return String(format: "%02d:%02d",positionMinutes,positionSeconds)
+        }
+        return String(format: "%02d:%02d:%02d",positionHours,positionMinutes,positionSeconds)
+    }
+    /// 总时长转换为时间字符串
+    class func formatTimDuration(duration:Int) -> String {
+        guard  duration != 0 else{
+            return "00:00"
+        }
+        let durationHours = (duration / 3600) % 60
+        let durationMinutes = (duration / 60) % 60
+        let durationSeconds = duration % 60
+        if (durationHours == 0)  {
+            return String(format: "%02d:%02d",durationMinutes,durationSeconds)
+        }
+        return String(format: "%02d:%02d:%02d",durationHours,durationMinutes,durationSeconds)
+    }
 }
- 
+
 class RXDeviceModel {
     /// 判断是否为X系列
     ///
@@ -73,4 +126,11 @@ class RXDeviceModel {
         if platform == "x86_64" { return "Simulator"}
         return platform
     }
+}
+
+// log
+public func NLog(_ item: Any, _ file: String = #file,  _ line: Int = #line, _ function: String = #function) {
+    #if DEBUG
+    print("[\(file.components(separatedBy: "/").last ?? "")] ==>" + ":<\(line)>:" + function, item)
+    #endif
 }

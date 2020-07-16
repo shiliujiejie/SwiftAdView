@@ -5,7 +5,7 @@ import SnapKit
 class R_BrightnessView: UIView {
     
     lazy var brightnessImage: UIImageView = {
-        let imageV = UIImageView(image: RXImgManager.foundImage(imageName: "player_brightness"))
+        let imageV = UIImageView(image: RXPublicConfig.foundImage(imageName: "player_brightness"))
         return imageV
     }()
     lazy var titleLab: UILabel = {

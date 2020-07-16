@@ -162,6 +162,7 @@ class VideoTableController: UIViewController {
                 playerView.startPlay(url: URL(string: videoLocalUrl), in: view)
             }
         } else {
+            /// 可以根据网络是否为wift 确定是否 cache
             playerView.startPlay(url: url, in: view, uri: nil, cache: true)
         }
     }
@@ -208,8 +209,8 @@ extension VideoTableController: X_PlayerViewDelegate {
 
     func playerProgress(progress: Float, currentPlayTime: Float) {
         //print("progress  --- \(progress) currentPlayTime = \(currentPlayTime) currentTimeString = \(playerView.formatTimPosition(position: Int(currentPlayTime), duration: Int(playerView.videoDuration))) videoTime_length = \(playerView.formatTimDuration(duration: Int(playerView.videoDuration)))")
-        let currentTimestr = X_PlayerView.formatTimPosition(position: Int(currentPlayTime), duration: Int(playerView.videoDuration))
-        let durationStr = X_PlayerView.formatTimDuration(duration: Int(playerView.videoDuration))
+        let currentTimestr = RXPublicConfig.formatTimPosition(position: Int(currentPlayTime), duration: Int(playerView.videoDuration))
+        let durationStr = RXPublicConfig.formatTimDuration(duration: Int(playerView.videoDuration))
         timelabel.isHidden = false
         timelabel.text = "\(currentTimestr) | \(durationStr)"
     }

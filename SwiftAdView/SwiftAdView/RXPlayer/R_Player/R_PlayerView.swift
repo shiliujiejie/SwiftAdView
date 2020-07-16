@@ -153,7 +153,7 @@ open class R_PlayerView: UIView {
     /// 暂停按钮
     private lazy var pauseButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(RXImgManager.foundImage(imageName: "pause"), for: .normal)
+        button.setImage(RXPublicConfig.foundImage(imageName: "pause"), for: .normal)
         button.backgroundColor = UIColor(white: 0.1, alpha: 0.5)
         button.imageEdgeInsets.left = 5
         button.layer.cornerRadius = 27.5
@@ -239,6 +239,7 @@ open class R_PlayerView: UIView {
     
     deinit {
         print("播放器释放")
+        RXM3u8ResourceLoader.shared.interruptPlay()
         NotificationCenter.default.removeObserver(self)
         orientationSupport = .orientationPortrait
         destructPlayerResource()
@@ -409,7 +410,7 @@ private extension R_PlayerView {
         layoutAllPageSubviews()
         addNotificationAndObserver()
         addUserActionBlock()
-        playControlView.closeButton.setImage(RXImgManager.foundImage(imageName: "back"), for: .normal)
+        playControlView.closeButton.setImage(RXPublicConfig.foundImage(imageName: "back"), for: .normal)
         playControlView.closeButton.snp.updateConstraints({ (make) in
             make.width.equalTo(40)
         })
@@ -794,10 +795,10 @@ private extension R_PlayerView {
         }
         let dragValue = sumValue / totalMoveDuration
         // 拖动时间展示
-        let allTimeString =  formatTimDuration(position: Int(sumValue), duration: Int(totalMoveDuration))
-        let draggedTimeString = formatTimPosition(position: Int(sumValue), duration: Int(totalMoveDuration))
+        let allTimeString = RXPublicConfig.formatTimDuration(duration: Int(totalMoveDuration))
+        let draggedTimeString = RXPublicConfig.formatTimPosition(position: Int(sumValue), duration: Int(totalMoveDuration))
         draggedTimeLable.text = String(format: "%@ | %@", draggedTimeString, allTimeString)
-        playControlView.positionTimeLab.text = self.formatTimPosition(position: Int(sumValue), duration: Int(totalMoveDuration))
+        playControlView.positionTimeLab.text = RXPublicConfig.formatTimPosition(position: Int(sumValue), duration: Int(totalMoveDuration))
         if !isDragging {
             playControlView.timeSlider.value = Float(dragValue)
         }
@@ -958,8 +959,8 @@ extension R_PlayerView: RXPlayerControlViewDelegate {
         let duration = Float64 ((avItem.asset.duration.value)/Int64(avItem.asset.duration.timescale))
         let dragValue = Float64(duration) * Float64(sender.value)
         // 拖动时间展示
-        let allTimeString =  self.formatTimDuration(position: Int(dragValue), duration: Int(duration))
-        let draggedTimeString = self.formatTimPosition(position: Int(dragValue), duration: Int(duration))
+        let allTimeString = RXPublicConfig.formatTimDuration(duration: Int(duration))
+        let draggedTimeString = RXPublicConfig.formatTimPosition(position: Int(dragValue), duration: Int(duration))
         self.draggedTimeLable.text = String(format: "%@ | %@", draggedTimeString, allTimeString)
         self.playControlView.positionTimeLab.text = draggedTimeString
     }
@@ -1029,8 +1030,8 @@ extension R_PlayerView {
             let value = avItem.currentTime().value / timeScaleValue  /// 当前播放时间
             let duration = avItem.asset.duration.value / timeScaleDuration /// 视频总时长
             let playValue = Float(value)/Float(duration)
-            let stringDuration = formatTimDuration(position: Int(value), duration:Int(duration))
-            let stringValue = formatTimPosition(position: Int(value), duration: Int(duration))
+            let stringDuration = RXPublicConfig.formatTimDuration(duration:Int(duration))
+            let stringValue = RXPublicConfig.formatTimPosition(position: Int(value), duration: Int(duration))
             playControlView.positionTimeLab.text = stringValue
             playControlView.durationTimeLab.text = stringDuration
             delegate?.playerProgress(progress: playValue, currentPlayTime: Float(value))
@@ -1125,37 +1126,5 @@ extension R_PlayerView {
     override open func layoutSubviews() {
         super.layoutSubviews()
         playerLayer?.frame = self.bounds
-    }
-}
-
-// MARK: - 时间转换格式
-
-extension R_PlayerView {
-    
-    fileprivate func formatTimPosition(position: Int, duration:Int) -> String {
-        guard position != 0 && duration != 0 else{
-            return "00:00"
-        }
-        let positionHours = (position / 3600) % 60
-        let positionMinutes = (position / 60) % 60
-        let positionSeconds = position % 60
-        let durationHours = (Int(duration) / 3600) % 60
-        if (durationHours == 0) {
-            return String(format: "%02d:%02d",positionMinutes,positionSeconds)
-        }
-        return String(format: "%02d:%02d:%02d",positionHours,positionMinutes,positionSeconds)
-    }
-    
-    fileprivate func formatTimDuration(position: Int, duration:Int) -> String {
-        guard  duration != 0 else{
-            return "00:00"
-        }
-        let durationHours = (duration / 3600) % 60
-        let durationMinutes = (duration / 60) % 60
-        let durationSeconds = duration % 60
-        if (durationHours == 0)  {
-            return String(format: "%02d:%02d",durationMinutes,durationSeconds)
-        }
-        return String(format: "%02d:%02d:%02d",durationHours,durationMinutes,durationSeconds)
     }
 }

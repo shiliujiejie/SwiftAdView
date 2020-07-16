@@ -20,7 +20,7 @@ public class X_PlayerView: UIView {
     }
     /// 暂停按钮
     private let pauseImg: UIImageView = {
-        let image =  UIImageView(image: RXImgManager.foundImage(imageName: "pause"))
+        let image =  UIImageView(image: RXPublicConfig.foundImage(imageName: "pause"))
         image.isUserInteractionEnabled = true
         image.contentMode = .scaleAspectFit
         image.isHidden = true
@@ -347,8 +347,8 @@ extension X_PlayerView: PlayerCoverDelegate {
     
     func progressDraging(progress: Double) {
         let currenTime = Int(Double(videoDuration) * progress)
-        let allTimeString = X_PlayerView.formatTimDuration(duration: Int(videoDuration))
-        let draggedTimeString = X_PlayerView.formatTimPosition(position: currenTime, duration: Int(videoDuration))
+        let allTimeString = RXPublicConfig.formatTimDuration(duration: Int(videoDuration))
+        let draggedTimeString = RXPublicConfig.formatTimPosition(position: currenTime, duration: Int(videoDuration))
         coverView.draggedTimeLable.text = String(format: " %@ | %@ ", draggedTimeString, allTimeString)
         delegate?.dragingProgress(isDraging: true, to: Float(progress))
     }
@@ -399,36 +399,5 @@ private extension X_PlayerView {
             make.center.equalToSuperview()
             make.width.height.equalTo(55)
         }
-    }
-}
-
-extension X_PlayerView {
-    
-    /// 当前时间转换为时间字符串
-    public class func formatTimPosition(position: Int, duration:Int) -> String {
-        guard position != 0 && duration != 0 else{
-            return "00:00"
-        }
-        let positionHours = (position / 3600) % 60
-        let positionMinutes = (position / 60) % 60
-        let positionSeconds = position % 60
-        let durationHours = (Int(duration) / 3600) % 60
-        if (durationHours == 0) {
-            return String(format: "%02d:%02d",positionMinutes,positionSeconds)
-        }
-        return String(format: "%02d:%02d:%02d",positionHours,positionMinutes,positionSeconds)
-    }
-    /// 总时长转换为时间字符串
-    public class func formatTimDuration(duration:Int) -> String {
-        guard  duration != 0 else{
-            return "00:00"
-        }
-        let durationHours = (duration / 3600) % 60
-        let durationMinutes = (duration / 60) % 60
-        let durationSeconds = duration % 60
-        if (durationHours == 0)  {
-            return String(format: "%02d:%02d",durationMinutes,durationSeconds)
-        }
-        return String(format: "%02d:%02d:%02d",durationHours,durationMinutes,durationSeconds)
     }
 }
