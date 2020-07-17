@@ -352,7 +352,7 @@ private extension M3u8Parser {
         for tsModel in tsModels {
             allTSDurations += tsModel.duration
         }
-        //print("allTSDurations = \(allTSDurations)")
+        NLog("当前视频TS个数为 = \(tsListModel.tsModelArray.count)，总时长：\(allTSDurations)秒")
         tsListModel.duration = allTSDurations
         DispatchQueue.main.async {
             self.parseSuccessHandler?(self.tsListModel)

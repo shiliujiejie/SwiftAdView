@@ -40,7 +40,7 @@ class TSManager: NSObject {
     /// 下载
     open func download(_ uriKey: String? = nil) {
         m3u8Parser.parseM3u8(url: m3u8URL, key: uriKey, succeedHandler: { [weak self] (tsList) in
-            NLog("tsModelLs == \(tsList.tsModelArray)")
+            //NLog("tsModelLs == \(tsList.tsModelArray)")
             self?.delegate?.m3u8ParserSuccess()
             self?.downLoadTsModels(tsList)
         }) { [weak self] (errorMsg) in
