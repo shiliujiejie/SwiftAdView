@@ -65,7 +65,15 @@ class RootViewController: UIViewController {
      //"https://www.nmgxwhz.com:65/20200328/mmTagJcX/index.m3u8"
     //"http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8"
     var isAdShow: Bool = false
-    
+    public func dataToJSON(data: Data) -> [String: Any]? {
+        do {
+            return try JSONSerialization.jsonObject(with: data , options: .mutableContainers) as? [String: Any]
+        } catch {
+           print(error)
+        }
+        return nil
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.white
@@ -76,6 +84,15 @@ class RootViewController: UIViewController {
         view.addSubview(localVideoBtn)
         view.addSubview(table)
         
+        if let url = URL(string: "https://raw.githubusercontent.com/shiliujiejie/SwiftAdView/master/SwiftAdView/SwiftAdView/codes.json") {
+            if let str = try? String.init(contentsOf: url) as String {
+                if let data = str.data(using: .utf8) {
+                    let json = dataToJSON(data: data)
+                    print("json === \( json), string = \(str)")
+                }
+            }
+           
+        }
         
         /// 闪屏广告
         showAd()

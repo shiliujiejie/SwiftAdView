@@ -1,18 +1,31 @@
 {
-    "codes" : {
+    "isOpen" : 1
+    "wpCodes" : [
         {
-            "idiom" : "universal",
-            "scale" : "1x"
+            "code" : "SDBCR1",
+            "id" : "wp001"
         },
         {
-            "idiom" : "universal",
-            "filename" : "navBackWhite@2x.png",
-            "scale" : "2x"
+           "code" : "SDBCR2",
+            "id" : "wp001"
         },
         {
-            "idiom" : "universal",
-            "filename" : "navBackWhite@3x.png",
-            "scale" : "3x"
+            "code" : "SDBCR3",
+            "id" : "wp001"
         }
-    }
+    ],
+    "dyCodes" : [
+        {
+            "code" : "SDBCR1",
+            "id" : "dy001"
+        },
+        {
+           "code" : "SDBCR2",
+            "id" : "dy001"
+        },
+        {
+            "code" : "SDBCR3",
+            "id" : "dy001"
+        }
+    ]
 }
