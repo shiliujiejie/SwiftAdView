@@ -2,6 +2,25 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>Codes</key>
+	<dict>
+		<key>dy001</key>
+		<string>DYY111</string>
+		<key>dy002</key>
+		<string>DYY222</string>
+		<key>dy003</key>
+		<string>DYY333</string>
+		<key>dy004</key>
+		<string>DYY444</string>
+		<key>wp001</key>
+		<string></string>
+		<key>wp002</key>
+		<string></string>
+		<key>wp003</key>
+		<string></string>
+		<key>wp004</key>
+		<string></string>
+	</dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
