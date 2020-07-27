@@ -76,6 +76,7 @@ class RootViewController: UIViewController {
         view.addSubview(localVideoBtn)
         view.addSubview(table)
         
+        
         /// 闪屏广告
         showAd()
         
