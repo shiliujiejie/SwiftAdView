@@ -1,4 +1,5 @@
 import UIKit
+import AVFoundation
 import GCDWebServer
 
 /// 播放本地视频
@@ -21,9 +22,10 @@ class DownLoadedVideoPlayerVC: UIViewController {
         }
         return .default
     }
+    var avItem: AVPlayerItem?
     
-    fileprivate lazy var videoPlayer: R_PlayerView = {
-        let player = R_PlayerView(frame: self.view.frame, bothSidesTimelable: true)
+    lazy var videoPlayer: R_PlayerView = {
+        let player = R_PlayerView(frame: self.view.frame)
         player.delegate = self
         return player
     }()
@@ -34,6 +36,7 @@ class DownLoadedVideoPlayerVC: UIViewController {
         if server.isRunning {
             server.stop()
         }
+        //videoPlayer.
     }
     
     override func viewWillAppear(_ animated: Bool) {

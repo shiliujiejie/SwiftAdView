@@ -1,31 +1,40 @@
 {
     "isOpen" : 1,
+    "probability": 10,
     "wpCodes" : [
         {
-            "code" : "SDBCR1",
+            "code" : "BVJESF",
             "id" : "wp001"
         },
         {
-           "code" : "SDBCR2",
-            "id" : "wp001"
+           "code" : "LDJESF",
+            "id" : "wp002"
         },
         {
-            "code" : "SDBCR3",
-            "id" : "wp001"
+            "code" : "B9JESF",
+            "id" : "wp003"
+        },
+        {
+            "code" : "W7JESF",
+            "id" : "wp004"
         }
     ],
     "dyCodes" : [
         {
-            "code" : "SDBCR1",
+            "code" : "Z6D5F",
             "id" : "dy001"
         },
         {
-           "code" : "SDBCR2",
-            "id" : "dy001"
+           "code" : "CBD5F",
+            "id" : "dy002"
         },
         {
-            "code" : "SDBCR3",
-            "id" : "dy001"
+            "code" : "CGD5F",
+            "id" : "dy003"
+        },
+        {
+            "code" : "EQD5F",
+            "id" : "dy004"
         }
     ]
 }

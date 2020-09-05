@@ -22,6 +22,7 @@
 		0422897122BE276900EE9B93 /* foldingcell.gif in Resources */ = {isa = PBXBuildFile; fileRef = 0422897022BE276800EE9B93 /* foldingcell.gif */; };
 		042DA815241C0F3D0067FA38 /* VideoTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042DA814241C0F3D0067FA38 /* VideoTableController.swift */; };
 		045233DB24CEC4CF00EE4C14 /* codes.json in Resources */ = {isa = PBXBuildFile; fileRef = 045233DA24CEC4CF00EE4C14 /* codes.json */; };
+		045233DD24CECB0A00EE4C14 /* CheckJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045233DC24CECB0A00EE4C14 /* CheckJson.swift */; };
 		045E77D8243D906A00EE2A69 /* X_PlayerCoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045E77D3243D906A00EE2A69 /* X_PlayerCoverView.swift */; };
 		045E77DA243D906A00EE2A69 /* X_PlayerViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045E77D5243D906A00EE2A69 /* X_PlayerViewDelegate.swift */; };
 		045E77DB243D906A00EE2A69 /* X_PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045E77D6243D906A00EE2A69 /* X_PlayerView.swift */; };
@@ -104,6 +105,7 @@
 		0422897022BE276800EE9B93 /* foldingcell.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = foldingcell.gif; sourceTree = "<group>"; };
 		042DA814241C0F3D0067FA38 /* VideoTableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoTableController.swift; sourceTree = "<group>"; };
 		045233DA24CEC4CF00EE4C14 /* codes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = codes.json; sourceTree = "<group>"; };
+		045233DC24CECB0A00EE4C14 /* CheckJson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckJson.swift; sourceTree = "<group>"; };
 		045E77D3243D906A00EE2A69 /* X_PlayerCoverView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = X_PlayerCoverView.swift; sourceTree = "<group>"; };
 		045E77D5243D906A00EE2A69 /* X_PlayerViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = X_PlayerViewDelegate.swift; sourceTree = "<group>"; };
 		045E77D6243D906A00EE2A69 /* X_PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = X_PlayerView.swift; sourceTree = "<group>"; };
@@ -212,6 +214,7 @@
 				0422894A22BC9BAE00EE9B93 /* AppDelegate.swift */,
 				0422894C22BC9BAE00EE9B93 /* ViewController.swift */,
 				0493192222C20C1F000B805F /* RootViewController.swift */,
+				045233DC24CECB0A00EE4C14 /* CheckJson.swift */,
 				0493192022C204EC000B805F /* WebKitController.swift */,
 				0422894E22BC9BAE00EE9B93 /* Main.storyboard */,
 				0422895122BC9BAF00EE9B93 /* Assets.xcassets */,
@@ -574,6 +577,7 @@
 				04C9DA0B246AF12700B0BA35 /* CateModel.swift in Sources */,
 				04DD09F724AC945000DCC901 /* TablePlayNativeController.swift in Sources */,
 				045E77D8243D906A00EE2A69 /* X_PlayerCoverView.swift in Sources */,
+				045233DD24CECB0A00EE4C14 /* CheckJson.swift in Sources */,
 				04C9DA06246AF0C500B0BA35 /* ChannelRecommendReusableView.swift in Sources */,
 				045E77DE243DB19600EE2A69 /* RXM3u8ResourceLoader.swift in Sources */,
 				04DD09CB24AC917000DCC901 /* R_LoadedFailedView.swift in Sources */,

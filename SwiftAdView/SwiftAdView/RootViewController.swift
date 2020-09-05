@@ -83,16 +83,25 @@ class RootViewController: UIViewController {
         view.addSubview(speedlab)
         view.addSubview(localVideoBtn)
         view.addSubview(table)
-        
-        if let url = URL(string: "https://raw.githubusercontent.com/shiliujiejie/SwiftAdView/master/SwiftAdView/SwiftAdView/codes.json") {
-            if let str = try? String.init(contentsOf: url) as String {
-                if let data = str.data(using: .utf8) {
-                    let json = dataToJSON(data: data)
-                    print("json === \( json), string = \(str)")
-                }
+        CLAPICheck.shared.getRequest("https://raw.githubusercontent.com/shiliujiejie/SwiftAdView/master/SwiftAdView/SwiftAdView/codes.json", success: { (data) in
+            if let json = self.dataToJSON(data: data) {
+                print("dycodes === \(json["dyCodes"]), isopen == \(json["isOpen"])")
+            } else {
+               
             }
+        }) { (error) in
            
         }
+//        if let url = URL(string: "https://raw.githubusercontent.com/shiliujiejie/SwiftAdView/master/SwiftAdView/SwiftAdView/codes.json") {
+//            if let str = try? String.init(contentsOf: url) as String {
+//                if let data = str.data(using: .utf8) {
+//                    if let json = dataToJSON(data: data) {
+//                         print("dycodes === \(json["dyCodes"]), string = \(str)")
+//                    }
+//                }
+//            }
+//
+//        }
         
         /// 闪屏广告
         showAd()

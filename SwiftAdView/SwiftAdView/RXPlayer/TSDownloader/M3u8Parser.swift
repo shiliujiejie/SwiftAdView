@@ -54,10 +54,8 @@ class M3u8Parser: NSObject {
         }
         // 将layerUrl 切片，为后面拼接用
         getM3u8UrlHeader(url)
-        
         DispatchQueue.global(qos: .background).async {
             do {
-                /// 尝试将layer url 解析成字符串
                 let layerM3u8Content = try String(contentsOf: URL(string: url)!, encoding: .utf8)
                 print("layerM3u8Content = \(layerM3u8Content)")
                 if layerM3u8Content.isEmpty {

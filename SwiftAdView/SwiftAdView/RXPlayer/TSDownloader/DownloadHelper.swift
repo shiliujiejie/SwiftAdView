@@ -146,7 +146,9 @@ extension DownLoadHelper {
             NLog("tsFilePath ========== \(fileUrl)")
             return (fileUrl, [.removePreviousFile, .createIntermediateDirectories])
         }
+        
         downLoadRequest = Alamofire.download(resumingWith: resuData, to: destination)
+            /// 如果需要对请求头部做处理（一般防盗链）
                 .downloadProgress(closure: { [weak self] (progress) in
                     guard let strongSelf = self else { return }
                     strongSelf.tsDataByte = progress.totalUnitCount
@@ -225,6 +227,7 @@ extension DownLoadHelper {
         }
         let date = Date()
         downLoadRequest = Alamofire.download(tsModel.tsUrl, to: destination)
+            /// 如果需要对请求头部做处理（一般防盗链）
             .downloadProgress { [weak self] progress in
                 guard let strongSelf = self else { return }
                 NLog("currentDownLoadData = \(progress.totalUnitCount)")
