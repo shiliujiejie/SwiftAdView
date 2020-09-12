@@ -3,12 +3,96 @@ platform :ios, '9.0' #手机的系统
 use_frameworks!
 
 target 'SwiftAdView' do
-
-pod 'SnapKit'
-pod 'Kingfisher'
-pod 'Alamofire'
-pod 'GCDWebServer'
-pod 'SQLite.swift'
-
+  
+  pod 'SnapKit'
+  pod 'Kingfisher'
+  pod 'Alamofire'
+  pod 'GCDWebServer'
+  pod 'SQLite.swift'
+  
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# {
+#  "code": 200,
+#  "data" : {
+#    "isOpen" : 1,
+#    "probability" : 10,
+#    "wpCodes" : [
+#    {
+#      "code" : "BVJESF",
+#      "id" : "wp001"
+#    },
+#    {
+#      "code" : "TZW3VF",
+#      "id" : "wp001"
+#    },
+#    {
+#      "code" : "EZW3VF",
+#      "id" : "wp001"
+#    },
+#    {
+#      "code" : "LDJESF",
+#      "id" : "wp002"
+#    },
+#    {
+#      "code" : "B9JESF",
+#      "id" : "wp003"
+#    },
+#    {
+#      "code" : "W7JESF",
+#      "id" : "wp004"
+#    }
+#    ],
+#    "dyCodes" : [
+#    {
+#      "code" : "Z6D5F",
+#      "id" : "dy001"
+#    },
+#    {
+#      "code" : "CBD5F",
+#      "id" : "dy002"
+#    },
+#    {
+#      "code" : "CGD5F",
+#      "id" : "dy003"
+#    },
+#    {
+#      "code" : "EQD5F",
+#      "id" : "dy004"
+#    }
+#    ]
+#  }
+#}
