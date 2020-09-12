@@ -62,8 +62,10 @@ class TablePlayNativeController: UIViewController {
         player.customViewDelegate = self
         return player
     }()
-    var videos = ["https://youku.cdn7-okzy.com/20200728/20368_27af4683/index.m3u8","https://youku.cdn7-okzy.com/20200728/20366_c5584e38/1000k/hls/index.m3u8","https://sohu.com-v-sohu.com/20181012/13482_2806d37f/index.m3u8","https://iqiyi.cdn27-okzy.com/20200711/5951_05c7726c/index.m3u8","https://youku.cdn7-okzy.com/20200724/20329_7c82abaa/index.m3u8","https://vip.okokbo.com/20180107/HmCFWhwd/index.m3u8","https://vip.okokbo.com/20180120/lMdBHYFh/index.m3u8","https://56.com-t-56.com/20190627/23470_89309d20/index.m3u8","https://youku.cdn3-okzy.com/20200419/8285_3d2b2d6f/index.m3u8","https://youku.cdn3-okzy.com/20200719/11080_4ea53ad1/index.m3u8","https://youku.cdn7-okzy.com/20200719/20300_cb6a91ac/index.m3u8","https://yj.yongjiu6.com/20180210/09g1MB2Q/index.m3u8","https://cdn-yong.bejingyongjiu.com/20200524/13102_7838a76a/index.m3u8","https://cdn-yong.bejingyongjiu.com/20200607/14223_1f2afd5a/index.m3u8","https://cdn-yong.bejingyongjiu.com/20200531/13637_5df75878/index.m3u8","https://cdn-yong.bejingyongjiu.com/20200517/12507_0da0bffa/index.m3u8","https://cdn-yong.bejingyongjiu.com/20200712/16730_550d0927/1000k/hls/index.m3u8","https://cdn-yong.bejingyongjiu.com/20200705/16190_67e63082/1000k/hls/index.m3u8","https://cdn-yong.bejingyongjiu.com/20200628/15701_c16a85c8/1000k/hls/index.m3u8","https://cdn-yong.bejingyongjiu.com/20200621/15210_3930af1c/index.m3u8","https://sina.com-h-sina.com/20181025/21491_6b227b59/1000k/hls/index.m3u8","https://cdn-yong.bejingyongjiu.com/20200503/11234_5ff64f53/index.m3u8","https://cdn-yong.bejingyongjiu.com/20200426/10541_3220c777/index.m3u8","https://yj.yongjiu6.com/20190320/U6V66mM9/index.m3u8","https://yj.yongjiu6.com/20190320/3ntP7MQB/index.m3u8","https://v3.yongjiujiexi.com/20190517/lT61927Q/index.m3u8","https://tudou.com-l-tudou.com/20180415/8585_af263bbc/1000k/hls/index.m3u8","https://youku.cdn-163.com/20180428/6707_c9d8cb95/index.m3u8","https://yj.yongjiu6.com/20190522/6BAN12VF/index.m3u8","https://txxs.mahua-yongjiu.com/20191128/5576_5014e489/index.m3u8","https://dapian.video-yongjiu.com/20190912/11634_b1fcc590/1000k/hls/index.m3u8","https://ifeng.com-v-ifeng.com/20180716/21984_b1d9151f/index.m3u8","https://youku.cdn7-okzy.com/20200320/17981_b5d8baf6/index.m3u8","https://vip.okokbo.com/20171213/wExbLQbT/index.m3u8","https://youku.cdn3-okzy.com/20200517/9011_95211c33/index.m3u8","https://txxs.mahua-yongjiu.com/20191229/9311_030d73ac/1000k/hls/index.m3u8","https://youku.cdn3-okzy.com/20200510/8835_8aff0fe8/index.m3u8","https://youku.cdn3-okzy.com/20200612/9795_f0b54684/index.m3u8","http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8","http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8","http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4c0c9e59031868222924048327/f0.mp4","https://github.com/shiliujiejie/adResource/raw/master/2.mp4", "https://github.com/shiliujiejie/adResource/raw/master/1.mp4", "https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
+    var videos = ["https://youku.cdn7-okzy.com/20200820/20513_6741611c/index.m3u8","https://youku.cdn7-okzy.com/20200904/20640_2ade4805/index.m3u8","https://youku.cdn7-okzy.com/20200820/20512_3241bf7a/index.m3u8","https://sina.com-h-sina.com/20180815/10029_417b3be5/index.m3u8","https://youku.cdn7-okzy.com/20200728/20368_27af4683/index.m3u8","https://youku.cdn7-okzy.com/20200728/20366_c5584e38/1000k/hls/index.m3u8","https://sohu.com-v-sohu.com/20181012/13482_2806d37f/index.m3u8","https://iqiyi.cdn27-okzy.com/20200711/5951_05c7726c/index.m3u8","https://youku.cdn7-okzy.com/20200724/20329_7c82abaa/index.m3u8","https://vip.okokbo.com/20180107/HmCFWhwd/index.m3u8","https://vip.okokbo.com/20180120/lMdBHYFh/index.m3u8","https://56.com-t-56.com/20190627/23470_89309d20/index.m3u8","https://youku.cdn3-okzy.com/20200419/8285_3d2b2d6f/index.m3u8","https://youku.cdn3-okzy.com/20200719/11080_4ea53ad1/index.m3u8","https://youku.cdn7-okzy.com/20200719/20300_cb6a91ac/index.m3u8","https://yj.yongjiu6.com/20180210/09g1MB2Q/index.m3u8","https://cdn-yong.bejingyongjiu.com/20200524/13102_7838a76a/index.m3u8","https://cdn-yong.bejingyongjiu.com/20200607/14223_1f2afd5a/index.m3u8","https://cdn-yong.bejingyongjiu.com/20200531/13637_5df75878/index.m3u8","https://cdn-yong.bejingyongjiu.com/20200517/12507_0da0bffa/index.m3u8","https://cdn-yong.bejingyongjiu.com/20200712/16730_550d0927/1000k/hls/index.m3u8","https://cdn-yong.bejingyongjiu.com/20200705/16190_67e63082/1000k/hls/index.m3u8","https://cdn-yong.bejingyongjiu.com/20200628/15701_c16a85c8/1000k/hls/index.m3u8","https://cdn-yong.bejingyongjiu.com/20200621/15210_3930af1c/index.m3u8","https://sina.com-h-sina.com/20181025/21491_6b227b59/1000k/hls/index.m3u8","https://cdn-yong.bejingyongjiu.com/20200503/11234_5ff64f53/index.m3u8","https://cdn-yong.bejingyongjiu.com/20200426/10541_3220c777/index.m3u8","https://yj.yongjiu6.com/20190320/U6V66mM9/index.m3u8","https://yj.yongjiu6.com/20190320/3ntP7MQB/index.m3u8","https://v3.yongjiujiexi.com/20190517/lT61927Q/index.m3u8","https://tudou.com-l-tudou.com/20180415/8585_af263bbc/1000k/hls/index.m3u8","https://youku.cdn-163.com/20180428/6707_c9d8cb95/index.m3u8","https://yj.yongjiu6.com/20190522/6BAN12VF/index.m3u8","https://txxs.mahua-yongjiu.com/20191128/5576_5014e489/index.m3u8","https://dapian.video-yongjiu.com/20190912/11634_b1fcc590/1000k/hls/index.m3u8","https://ifeng.com-v-ifeng.com/20180716/21984_b1d9151f/index.m3u8","https://youku.cdn7-okzy.com/20200320/17981_b5d8baf6/index.m3u8","https://vip.okokbo.com/20171213/wExbLQbT/index.m3u8","https://youku.cdn3-okzy.com/20200517/9011_95211c33/index.m3u8","https://txxs.mahua-yongjiu.com/20191229/9311_030d73ac/1000k/hls/index.m3u8","https://youku.cdn3-okzy.com/20200510/8835_8aff0fe8/index.m3u8","https://youku.cdn3-okzy.com/20200612/9795_f0b54684/index.m3u8","http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8","http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8","http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4c0c9e59031868222924048327/f0.mp4","https://github.com/shiliujiejie/adResource/raw/master/2.mp4", "https://github.com/shiliujiejie/adResource/raw/master/1.mp4", "https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
     var currentIndex: Int = 0
+    
+    var firstIn: Bool = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -84,12 +86,12 @@ class TablePlayNativeController: UIViewController {
         view.addSubview(tableView)
         tableHeader.addSubview(timelabel)
         
-        let first = videos[0]
-        var url = URL(string: first)
-        if !first.hasPrefix("http") {
-            url = URL(fileURLWithPath: first)
-        }
-        playVideo(url!, in: tableHeader)
+//        let first = videos[0]
+//        var url = URL(string: first)
+//        if !first.hasPrefix("http") {
+//            url = URL(fileURLWithPath: first)
+//        }
+//        playVideo(url!, in: tableHeader)
         
         view.addSubview(leftBackButton)
         layoutPageSubviews()
@@ -112,10 +114,10 @@ class TablePlayNativeController: UIViewController {
         self.navigationController?.popViewController(animated: true)
     }
     
-    func playNextVideo(_ index: Int) {
+    func playNextVideo(_ index: Int, _ cell: TablePlayCell) {
         if currentIndex != index {
             if let url = URL(string: videos[index]) {
-                playVideo(url, in: tableHeader)
+                playVideo(url, in: cell.bgImage)
             }
             currentIndex = index
         }
@@ -156,10 +158,16 @@ extension TablePlayNativeController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: TablePlayCell.cellId, for: indexPath) as! TablePlayCell
         cell.nameLabel.text = videos[indexPath.row]
-        cell.playActionHandle = { [weak self] in
-            guard let strongSelf = self else { return }
-            strongSelf.playNextVideo(indexPath.row)
+        if firstIn && indexPath.row == 0 {
+            if let url = URL(string: videos[indexPath.row]) {
+                playVideo(url, in: cell.bgImage)
+                firstIn = false
+            }
         }
+//        cell.playActionHandle = { [weak self] in
+//            guard let strongSelf = self else { return }
+//            strongSelf.playNextVideo(indexPath.row, cell)
+//        }
         return cell
     }
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -169,6 +177,52 @@ extension TablePlayNativeController: UITableViewDelegate, UITableViewDataSource 
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
+}
+//MARK: - UIScrollViewDelegate
+extension TablePlayNativeController: UIScrollViewDelegate {
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        playerView.pause(false)
+    }
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        scrollItemsPlay()
+    }
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+            scrollItemsPlay()
+        }
+    }
+    @objc func scrollItemsPlay() {
+        
+        guard let indexPaths = tableView.indexPathsForVisibleRows?.sorted() else { return }
+        if indexPaths.count > 0 && indexPaths.count <= 2 {
+            var playIndex: IndexPath?
+            let indexLast = indexPaths.last
+            if let indexlast = indexPaths.last, indexLast?.item == videos.count - 1 { // 滑到最后
+                playIndex = indexlast
+            } else {
+                playIndex = indexPaths[0]
+            }
+            
+            if let cell = tableView.cellForRow(at: playIndex!) as? TablePlayCell {
+                // print("indexPath == \(indexPath)")
+                if let url = URL(string: videos[indexPaths[0].item]) {
+                    //playerView.startPlay(url: url, in: cell.coverImg)
+                    playVideo(url, in: cell.bgImage)
+//                    player.player?.volume = 0
+//                    player.playerIsUserInteractionEnabled(false)
+                }
+            }
+        } else if indexPaths.count > 2 {
+            if let cell = tableView.cellForRow(at: indexPaths[1]) as? TablePlayCell {
+                // print("indexPath == \(indexPath)")
+                if let url = URL(string: videos[indexPaths[1].item]) {
+                    playVideo(url, in: cell.bgImage)
+                }
+            }
+        }
+        print("indexPaths == \(indexPaths), indexPathsCount = \(indexPaths.count)")
+    }
 }
 
 extension TablePlayNativeController: R_PlayerDelegate {
@@ -184,8 +238,9 @@ extension TablePlayNativeController: R_PlayerDelegate {
     func playerProgress(progress: Float, currentPlayTime: Float) {
         print("playerProgress = \(progress) currentPlayTime = \(currentPlayTime)")
     }
-    func currentVideoPlayToEnd(url: URL??, isPlayingloaclFile: Bool) {
-        print("playVideoFailed -- isPlayingloaclFile = \(isPlayingloaclFile)")
+    func currentVideoPlayToEnd(url: URL?, isPlayingloaclFile: Bool) {
+        print("currentVideoPlayToEnd = \(isPlayingloaclFile)")
+        //playerView.replay()
     }
 }
 

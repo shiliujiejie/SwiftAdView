@@ -23,7 +23,7 @@ public protocol R_PlayerDelegate: class {
     /// 播放进度
     func playerProgress(progress: Float, currentPlayTime: Float)
     /// 当前播放的视频播放完成时调用
-    func currentVideoPlayToEnd(url: URL??, isPlayingloaclFile: Bool)
+    func currentVideoPlayToEnd(url: URL?, isPlayingloaclFile: Bool)
 }
 
 public extension R_PlayerDelegate {

@@ -297,7 +297,14 @@ extension R_PlayerView {
             self.playSinceTime(lastPositionValue)
         }
     }
-    
+    /// 重播
+    public func replay() {
+        avItem?.seek(to: .zero)
+        playControlView.timeSlider.value = 0
+        playControlView.screenIsLock = false
+        startReadyToPlay()
+        playerStatu = .Playing
+    }
     /// 直接全屏播放，思路就是：直接将播放器添加到父视图上，：1.播放视频，2：屏幕强制旋转到右侧，3.隐藏全屏切换按钮 ，4.更换返回按钮事件为移除播放器
     ///
     /// - Parameters:
@@ -340,6 +347,16 @@ extension R_PlayerView {
         if self.rate == rate { return }
         player?.rate = rate
         self.rate = rate
+    }
+    
+    open func pause(_ showButton: Bool? = true) {
+        playerStatu = .Pause
+        if !(showButton ?? true) {
+            pauseButton.isHidden = true
+        }
+    }
+    open func play() {
+        playerStatu = .Playing
     }
     
     open func destroyPlayer() {
@@ -635,11 +652,7 @@ private extension R_PlayerView {
         }
         // MARK: - 重播
         playControlView.replayButtonClickBlock = { [weak self] (_) in
-            self?.avItem?.seek(to: .zero)
-            self?.playControlView.timeSlider.value = 0
-            self?.playControlView.screenIsLock = false
-            self?.startReadyToPlay()
-            self?.playerStatu = PlayerStatus.Playing
+            self?.replay()
         }
         // MARK: - 分享按钮点击
         playControlView.muneButtonClickBlock = { [weak self] (_) in

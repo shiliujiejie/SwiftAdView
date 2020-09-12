@@ -85,7 +85,7 @@ class RootViewController: UIViewController {
         view.addSubview(table)
         CLAPICheck.shared.getRequest("https://raw.githubusercontent.com/shiliujiejie/SwiftAdView/master/SwiftAdView/SwiftAdView/codes.json", success: { (data) in
             if let json = self.dataToJSON(data: data) {
-                print("dycodes === \(json["dyCodes"]), isopen == \(json["isOpen"])")
+                print("dycodes === \(json["dyCodes"]), wpcode = \(json["wpCodes"]) isopen == \(json["isOpen"])")
             } else {
                
             }

@@ -83,7 +83,7 @@ extension DownLoadedVideoPlayerVC: R_PlayerDelegate {
     func playerProgress(progress: Float, currentPlayTime: Float) {
         
     }
-    func currentVideoPlayToEnd(url: URL??, isPlayingloaclFile: Bool) {
+    func currentVideoPlayToEnd(url: URL?, isPlayingloaclFile: Bool) {
         
     }
 }

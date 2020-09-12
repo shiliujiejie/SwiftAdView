@@ -138,7 +138,7 @@ class RXPlayerControlView: UIView {
     lazy var playOrPauseBtn: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(RXPublicConfig.foundImage(imageName: "pause"), for: .normal)
-        button.setImage(RXPublicConfig.foundImage(imageName: "R_pause"), for: .selected)
+        button.setImage(RXPublicConfig.foundImage(imageName: "play"), for: .selected)
         button.addTarget(self, action: #selector(RXPlayerControlView.playOrPauseBtnClick(_:)), for: .touchUpInside)
         return button
     }()
