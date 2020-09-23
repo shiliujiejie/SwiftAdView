@@ -34,7 +34,7 @@ class RXM3u8ResourceLoader: NSObject, AVAssetResourceLoaderDelegate {
     }
     
     /// 生成AVPlayerItem
-    public func playerItem(with url: URL, uriKey: String? = nil, cacheWhenPlaying: Bool? = false) -> AVPlayerItem {
+    public func playerItem(with url: URL, uriKey: String? = nil, httpHeaderFieldsKey: [String: Any]? = nil, cacheWhenPlaying: Bool? = false) -> AVPlayerItem {
         URIKey = uriKey
         m3u8_url = url.absoluteString
        
@@ -64,10 +64,11 @@ class RXM3u8ResourceLoader: NSObject, AVAssetResourceLoaderDelegate {
         var urlAsset: AVURLAsset
         if URIKey != nil {
             /// 用虚假的m3u8(m3u8_url_vir)进行初始化 原因是：外界传进来的url有可能不是以.m3u8结尾的，即不是m3u8格式的链接，如果直接用url进行初始化，那么代理方法拦截时，系统不会以m3u8文件格式去处理拦截的url，就是系统只会发起一次网络请求，之后的操作完全无效，而用虚假的m3u8链接，是为了混淆系统，让系统直接认为我们请求的链接就是m3u8格式的链接，那么代理里面的拦截就会执行下去，真正的请求链接通过赋值给变量m3u8_url进行保存，只需要在代理方法里面发起真正的链接请求就行了
-            urlAsset = AVURLAsset(url: URL(string: m3u8_url_vir)!, options: nil)
+            urlAsset = AVURLAsset(url: URL(string: m3u8_url_vir)!, options: httpHeaderFieldsKey)
+            
             urlAsset.resourceLoader.setDelegate(self, queue: .main)
         } else {
-            urlAsset = AVURLAsset(url: url, options: nil)
+            urlAsset = AVURLAsset(url: url, options: httpHeaderFieldsKey)
         }
         let item = AVPlayerItem(asset: urlAsset)
         if #available(iOS 9.0, *) {

@@ -80,13 +80,14 @@ open class R_PlayerView: UIView {
             }
         }
     }
+    public var httpHeaderFieldsKey: [String: Any]?
     /// 视频填充模式
     public var videoLayerGravity: AVLayerVideoGravity = .resizeAspect
     /// 是否只在全屏时显示视频名称
     public var videoNameShowOnlyFullScreen: Bool = false
     public weak var delegate: R_PlayerDelegate?
     public weak var customViewDelegate: R_CustomMenuDelegate?
-    
+  
     /// 本地视频播放时回调视频播放进度
     public var playLocalFileVideoCloseCallBack:((_ playValue: Float) -> Void)?
     
@@ -493,11 +494,11 @@ private extension R_PlayerView {
         
         if videoUrl.absoluteString.contains(".m3u8") {
             isM3U8 = true
-            avItem = RXM3u8ResourceLoader.shared.playerItem(with: videoUrl, uriKey: uriKey, cacheWhenPlaying: cacheWhenPlayinng) //AVPlayerItem(asset: AVURLAsset(url: videoUrl, options: nil))
+            avItem = RXM3u8ResourceLoader.shared.playerItem(with: videoUrl, uriKey: uriKey, httpHeaderFieldsKey: httpHeaderFieldsKey, cacheWhenPlaying: cacheWhenPlayinng)
         } else {
             isM3U8 = false
             RXM3u8ResourceLoader.shared.interruptPlay()
-            avItem = AVPlayerItem(asset: AVURLAsset(url: videoUrl, options: nil))
+            avItem = AVPlayerItem(asset: AVURLAsset(url: videoUrl, options: httpHeaderFieldsKey))
         }
         player = AVPlayer(playerItem: self.avItem!)
         playerLayer = AVPlayerLayer(player: self.player!)
