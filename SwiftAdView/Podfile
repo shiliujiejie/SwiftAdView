@@ -44,10 +44,7 @@ end
 
 # enptyKey: A7D90#83Bo6!d1F6
 
-
 # {
-#  "code": 200,
-#  "data" : {
 #    "isOpen" : 1,
 #    "probability" : 10,
 #    "wpCodes" : [
@@ -95,4 +92,4 @@ end
 #    }
 #    ]
 #  }
-#}
+
