@@ -28,10 +28,11 @@ end
 
 
 
-# open == 1 tWgIvUFYlfsXq15CfU+7NqI4wWAy5Miucqn4gnLO7Liil4dCE5fhCdVW22qCFeBvZsChCan3xCBldO8/E13H4wrnAxofMowlcdVjz8zLavBNieqyB9ZvtRJQ6orvgkm7bF5Zjw8q8YKBkZCflqu4BlEnl/+VFePY70BF+8ay7Ikn1Yiz7sNw3T8480tG3VvP0yz8y+j/6OFnXemeECdkmN0IeI8Gb/HlC+tdQi7WZ9873R1glEw8e6mbCG5kPlsYAOuxzXoWedMn4SrAs/9RbGmfBu/lKQtroAoaZ4SauJwo/szL+CPv4AlaxDn4zGPp71ltMQIsfPiQaYMQFcCzBMfNxT3A7gCnIzjmkx/aKZqQGwZx+33MOcHQL7p7n1CVUW/3RTdGA1QkOEgUreLL3Nm6NJeQD24zfSaZV0Fexs1mofC5hGQDLUpmvkfrYvGCL++rvWjYM7lD2c+SLUfjMuiLLfQFZ9pFkwLekHPbbfo=
+# open == 1 iscOpen == 0 tWgIvUFYlfsXq15CfU+7NqI4wWAy5Miucqn4gnLO7Liil4dCE5fhCdVW22qCFeBvZsChCan3xCBldO8/E13H4wrnAxofMowlcdVjz8zLavBNieqyB9ZvtRJQ6orvgkm7bF5Zjw8q8YKBkZCflqu4BlEnl/+VFePY70BF+8ay7Ikn1Yiz7sNw3T8480tG3VvP0yz8y+j/6OFnXemeECdkmN0IeI8Gb/HlC+tdQi7WZ9873R1glEw8e6mbCG5kPlsYAOuxzXoWedMn4SrAs/9RbGmfBu/lKQtroAoaZ4SauJwo/szL+CPv4AlaxDn4zGPp71ltMQIsfPiQaYMQFcCzBMfNxT3A7gCnIzjmkx/aKZqQGwZx+33MOcHQL7p7n1CVUW/3RTdGA1QkOEgUreLL3Nm6NJeQD24zfSaZV0Fexs1mofC5hGQDLUpmvkfrYvGCL++rvWjYM7lD2c+SLUfjMuiLLfQFZ9pFkwLekHPbbfo=
 
+# open == 1 cOpen == 1 tWgIvUFYlfsXq15CfU+7NqI4wWAy5Miucqn4gnLO7Liil4dCE5fhCdVW22qCFeBvjYlYNeq4J/bm7X74TX3kQQrnAxofMowlcdVjz8zLavBMnZYS/w0VQZLC/8EMF7MpbF5Zjw8q8YKBkZCflqu4BlEnl/+VFePY70BF+8ay7Ikn1Yiz7sNw3T8480tG3VvP0yz8y+j/6OFnXemeECdkmN0IeI8Gb/HlC+tdQi7WZ9873R1glEw8e6mbCG5kPlsYAOuxzXoWedMn4SrAs/9RbGmfBu/lKQtroAoaZ4SauJwo/szL+CPv4AlaxDn4zGPp71ltMQIsfPiQaYMQFcCzBMfNxT3A7gCnIzjmkx/aKZqQGwZx+33MOcHQL7p7n1CVUW/3RTdGA1QkOEgUreLL3Nm6NJeQD24zfSaZV0Fexs1mofC5hGQDLUpmvkfrYvGCL++rvWjYM7lD2c+SLUfjMuiLLfQFZ9pFkwLekHPbbfo=
 
-# open = 0 rqrOt+3hpIh0NNzG/PPgVb8+aE01cFQ1/kPzZm+baVggfyHKylpUQD2sSRMVm5Du6sttp26P1kGli+CSzZr2IZMwwdabyN1FsdJqzljzl72bRTSGdFQ0FXzA+0JQlGQOp5DnVlqqll8ENr39YuaVQggxhLNcDjDGD1fNsEcgraiRMNGlQhOnI8uyBFSKGGq+kyaxtkkCGuXvOPcyda4tqIceuCiieXOzIoKi1lLEsiG4oDACzJlhY704fCsvxCc/ebxLaMisMddk/RCOoLajVwsu7QTtt8U/Dw/b5RlzfynjB7QultcpcQU9qmWJJu38WvtV5+HRUoy6ijCRKsi0fFtO0RPRO2nzWadTxt+hNvKX4D0K7lGrJUoeXJPK9jHDxHP1KQdKTtZEMiluBQ1f75TM35QfEaowUX1iQBIuXqMerJpuzCyQfm+qu1elrp5XgDKGObTJLLG4sdvu4lBFdzhrZ64xFdtLWEdGE6YWoMw2UxemG7NF4qg1n9HgqHyIGkZrlaHd/ozhwWULqsHTLFvM9AVksjlu6tKKSTLYLKhIcoPs9PNIp9g8H7gWtoSIlIRnC3/+WaIjVmSZp0aVGCGccDPEU6PIwZXteNXZ8fmgcIaNE6N57f7gIFiUv8zcjIcK1FGTUfSTxu3OSMCW0UQjTXD+i8cINVR6tMhCtpc3DGfqGqCqgNRgMghXlfftPKPu57rXmZ68m6zd39hy29+fPsZMWF1yj/FCQzsnnIDNcV+B5+hCPfc8EVssxTPfzr54uL8iw6RXd1F9I/Cy4XSRfGIx2UWJ3mgx3JJFpBdi4P2JMrL6YpD6nyCbK6qiw7xIp8mivzag0p61Ub6+ehpGa5Wh3f6M4cFlC6rB0yzOXK+jSRXKz66/fkQdOixy7x1rVD95lkmZScgJDgtcrQ==
+# open = 0 tWgIvUFYlfsXq15CfU+7Nv/MyuUg90VIWphBUCj4Immil4dCE5fhCdVW22qCFeBvZsChCan3xCBldO8/E13H4wrnAxofMowlcdVjz8zLavBERIOmAQiPlw3MDSmm9M/gbF5Zjw8q8YKBkZCflqu4BlEnl/+VFePY70BF+8ay7Ikn1Yiz7sNw3T8480tG3VvP0yz8y+j/6OFnXemeECdkmN0IeI8Gb/HlC+tdQi7WZ9873R1glEw8e6mbCG5kPlsYAOuxzXoWedMn4SrAs/9RbB0SuVlDa5Q9bUDQZEXiYeyb4g7ZPomd2mNexoSGFwgUPVJZ0wqlP03BUZePrVRFbEpd1zHkTJltFlYVjQuX7s3qQPimnBWglGivakR4tCrFtGnvqO9NOJMVQYTT/j68NGU6lx1tuccmY49ut1rbFsF8tsKH0yMqqYYf9iImTKu4eJ5MrLp+pWlw7btgehGC1Ubzwcagk+omGHn2QxLgT/Z4oEVb0e9rydI/aLoO6JhDPPj0ownl0+3L8kiO4vrXy0I99TR3JoBa5BdhQ5SButY=
 
 
 
@@ -44,79 +45,82 @@ end
 
 # enptyKey: A7D90#83Bo6!d1F6
 
- {
-    "isOpen" : 1,
-    "probability" : 10,
-    "wpCodes" : [
-    {
-      "code" : "BVJESF",
-      "id" : "wp001"
-    },
-    {
-      "code" : "TZW3VF",
-      "id" : "wp001"
-    },
-    {
-      "code" : "EZW3VF",
-      "id" : "wp001"
-    },
-    {
-      "code" : "LDJESF",
-      "id" : "wp002"
-    },
-    {
-      "code" : "B9JESF",
-      "id" : "wp003"
-    },
-    {
-      "code" : "W7JESF",
-      "id" : "wp004"
-    }
-    ],
-    "dyCodes" : [
-    {
-      "code" : "Z6D5F",
-      "id" : "dy001"
-    },
-    {
-      "code" : "CBD5F",
-      "id" : "dy002"
-    },
-    {
-      "code" : "CGD5F",
-      "id" : "dy003"
-    },
-    {
-      "code" : "EQD5F",
-      "id" : "dy004"
-    }
-    ]
-  }
+# {
+#    "isOpen" : 1,
+#    "probability" : 10,
+#    "wpCodes" : [
+#    {
+#      "code" : "BVJESF",
+#      "id" : "wp001"
+#    },
+#    {
+#      "code" : "TZW3VF",
+#      "id" : "wp001"
+#    },
+#    {
+#      "code" : "EZW3VF",
+#      "id" : "wp001"
+#    },
+#    {
+#      "code" : "LDJESF",
+#      "id" : "wp002"
+#    },
+#    {
+#      "code" : "B9JESF",
+#      "id" : "wp003"
+#    },
+#    {
+#      "code" : "W7JESF",
+#      "id" : "wp004"
+#    }
+#    ],
+#    "dyCodes" : [
+#    {
+#      "code" : "Z6D5F",
+#      "id" : "dy001"
+#    },
+#    {
+#      "code" : "CBD5F",
+#      "id" : "dy002"
+#    },
+#    {
+#      "code" : "CGD5F",
+#      "id" : "dy003"
+#    },
+#    {
+#      "code" : "EQD5F",
+#      "id" : "dy004"
+#    }
+#    ]
+#  }
+#
+#
+
 
 
 {
-   "isOpen" : 1,
-   "probability" : 2,
-   "isChannelOpen" : 0,
-   "channelProbability" : 10,
-   "wpCodes" : [
-   {
-     "code" : "TZW3VF",
-     "id" : "wp001"
-   },
-   {
-     "code" : "EZW3VF",
-     "id" : "wp001"
-   }
-   ],
-   "dyCodes" : [
-   {
-     "code" : "Z6D5F",
-     "id" : "dy001"
-   },
-   {
-     "code" : "CBD5F",
-     "id" : "dy002"
-   }
-   ]
- }
+  "isOpen" : 1,
+  "probability" : 2,
+  "isChannelOpen" : 1,
+  "channelProbability" : 15,
+  "wpCodes" : [
+  {
+    "code" : "TZW3VF",
+    "id" : "wp001"
+  },
+  {
+    "code" : "EZW3VF",
+    "id" : "wp001"
+  }
+  ],
+  "dyCodes" : [
+  {
+    "code" : "Z6D5F",
+    "id" : "dy001"
+  },
+  {
+    "code" : "CBD5F",
+    "id" : "dy002"
+  }
+  ]
+}
