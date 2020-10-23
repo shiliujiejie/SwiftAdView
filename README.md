@@ -1,8 +1,6 @@
 # SwiftAdView
 
 
-  支持     图片   gif   视频   的启动广告     支持时间、样式、事件 自定义。
-
 ## | ScreenRecording  |
 
      图一 .  图片 广告
