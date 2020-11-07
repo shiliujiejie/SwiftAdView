@@ -3,7 +3,7 @@ import UIKit
 
 class RootViewController: UIViewController {
     
-    static let titles = ["show screen ad again","show short video play","list video show","TablePlayNative","add categary title","Bluetooth"]
+    static let titles = ["show screen ad again","show short video play","list video show","TablePlayNative","add categary title","Bluetooth","ActivityLinkLabel"]
     
     private lazy var table: UITableView = {
         let ta = UITableView(frame: CGRect(x: 0, y: 220, width: view.bounds.width  , height: view.bounds.height - 220), style: .plain)
@@ -208,7 +208,10 @@ extension RootViewController: UITableViewDelegate , UITableViewDataSource {
             let c = BluetoothController()
             navigationController?.pushViewController(c, animated: true)
             break
-            
+        case 6:
+            let c = ActivityLabelController()
+            navigationController?.pushViewController(c, animated: true)
+            break
         default:
             break
         }

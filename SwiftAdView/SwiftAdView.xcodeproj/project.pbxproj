@@ -21,6 +21,9 @@
 		0422896F22BD160D00EE9B93 /* timg.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 0422896E22BD160D00EE9B93 /* timg.jpeg */; };
 		0422897122BE276900EE9B93 /* foldingcell.gif in Resources */ = {isa = PBXBuildFile; fileRef = 0422897022BE276800EE9B93 /* foldingcell.gif */; };
 		042DA815241C0F3D0067FA38 /* VideoTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042DA814241C0F3D0067FA38 /* VideoTableController.swift */; };
+		0432E7D925569C710009E573 /* ActivityLabelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0432E7D725569C710009E573 /* ActivityLabelController.swift */; };
+		0432E7DA25569C710009E573 /* ActivityLabelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0432E7D825569C710009E573 /* ActivityLabelController.xib */; };
+		0432E7DD25569CB50009E573 /* ActiveLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0432E7DC25569CB50009E573 /* ActiveLabel.swift */; };
 		045233DB24CEC4CF00EE4C14 /* codes.json in Resources */ = {isa = PBXBuildFile; fileRef = 045233DA24CEC4CF00EE4C14 /* codes.json */; };
 		045233DD24CECB0A00EE4C14 /* CheckJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045233DC24CECB0A00EE4C14 /* CheckJson.swift */; };
 		045E77D8243D906A00EE2A69 /* X_PlayerCoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045E77D3243D906A00EE2A69 /* X_PlayerCoverView.swift */; };
@@ -104,6 +107,9 @@
 		0422896E22BD160D00EE9B93 /* timg.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = timg.jpeg; sourceTree = "<group>"; };
 		0422897022BE276800EE9B93 /* foldingcell.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = foldingcell.gif; sourceTree = "<group>"; };
 		042DA814241C0F3D0067FA38 /* VideoTableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoTableController.swift; sourceTree = "<group>"; };
+		0432E7D725569C710009E573 /* ActivityLabelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityLabelController.swift; sourceTree = "<group>"; };
+		0432E7D825569C710009E573 /* ActivityLabelController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ActivityLabelController.xib; sourceTree = "<group>"; };
+		0432E7DC25569CB50009E573 /* ActiveLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActiveLabel.swift; sourceTree = "<group>"; };
 		045233DA24CEC4CF00EE4C14 /* codes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = codes.json; sourceTree = "<group>"; };
 		045233DC24CECB0A00EE4C14 /* CheckJson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckJson.swift; sourceTree = "<group>"; };
 		045E77D3243D906A00EE2A69 /* X_PlayerCoverView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = X_PlayerCoverView.swift; sourceTree = "<group>"; };
@@ -205,6 +211,7 @@
 		0422894922BC9BAE00EE9B93 /* SwiftAdView */ = {
 			isa = PBXGroup;
 			children = (
+				0432E7DB25569C970009E573 /* ActiveLabel */,
 				0422895C22BC9BCC00EE9B93 /* SwiftAdView */,
 				04DD098D24AC917000DCC901 /* RXPlayer */,
 				04C9DA12246C080500B0BA35 /* BluetoothDemo */,
@@ -214,6 +221,8 @@
 				0422894A22BC9BAE00EE9B93 /* AppDelegate.swift */,
 				0422894C22BC9BAE00EE9B93 /* ViewController.swift */,
 				0493192222C20C1F000B805F /* RootViewController.swift */,
+				0432E7D725569C710009E573 /* ActivityLabelController.swift */,
+				0432E7D825569C710009E573 /* ActivityLabelController.xib */,
 				045233DC24CECB0A00EE4C14 /* CheckJson.swift */,
 				0493192022C204EC000B805F /* WebKitController.swift */,
 				0422894E22BC9BAE00EE9B93 /* Main.storyboard */,
@@ -258,6 +267,14 @@
 				047A6C0A24BEF7EA008CE41E /* CustomActionsView.swift */,
 			);
 			path = PlayVideoControllers;
+			sourceTree = "<group>";
+		};
+		0432E7DB25569C970009E573 /* ActiveLabel */ = {
+			isa = PBXGroup;
+			children = (
+				0432E7DC25569CB50009E573 /* ActiveLabel.swift */,
+			);
+			path = ActiveLabel;
 			sourceTree = "<group>";
 		};
 		045E77D2243D906A00EE2A69 /* X_Player */ = {
@@ -457,6 +474,7 @@
 				04DD09E324AC917000DCC901 /* replay@3x.png in Resources */,
 				047A6BFE24BC632F008CE41E /* back@3x.png in Resources */,
 				04DD09ED24AC917000DCC901 /* shrinkScreen@3x.png in Resources */,
+				0432E7DA25569C710009E573 /* ActivityLabelController.xib in Resources */,
 				0422895522BC9BAF00EE9B93 /* LaunchScreen.storyboard in Resources */,
 				047A6BFD24BC632F008CE41E /* back@2x.png in Resources */,
 				0422896F22BD160D00EE9B93 /* timg.jpeg in Resources */,
@@ -559,6 +577,7 @@
 				04DD09C824AC917000DCC901 /* R_BrightnessView.swift in Sources */,
 				04CC2BCB245711EF009CDB9D /* TSManager.swift in Sources */,
 				047A6BFA24BC1B8A008CE41E /* R_PlayerView.swift in Sources */,
+				0432E7DD25569CB50009E573 /* ActiveLabel.swift in Sources */,
 				04C9D9FC24693B6100B0BA35 /* CategrayController.swift in Sources */,
 				04DD09CA24AC917000DCC901 /* RXPublicConfig.swift in Sources */,
 				04CC2BD3245863B4009CDB9D /* DownLoadedTSPlayerVC.swift in Sources */,
@@ -579,6 +598,7 @@
 				045E77D8243D906A00EE2A69 /* X_PlayerCoverView.swift in Sources */,
 				045233DD24CECB0A00EE4C14 /* CheckJson.swift in Sources */,
 				04C9DA06246AF0C500B0BA35 /* ChannelRecommendReusableView.swift in Sources */,
+				0432E7D925569C710009E573 /* ActivityLabelController.swift in Sources */,
 				045E77DE243DB19600EE2A69 /* RXM3u8ResourceLoader.swift in Sources */,
 				04DD09CB24AC917000DCC901 /* R_LoadedFailedView.swift in Sources */,
 			);
