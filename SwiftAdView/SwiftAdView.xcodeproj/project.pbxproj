@@ -42,6 +42,7 @@
 		0493192322C20C1F000B805F /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0493192222C20C1F000B805F /* RootViewController.swift */; };
 		049BF6472417D19400F3611A /* ShortPlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049BF6462417D19400F3611A /* ShortPlayController.swift */; };
 		049BF6892418DF0100F3611A /* PresentPlayCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049BF6882418DF0100F3611A /* PresentPlayCell.swift */; };
+		049DACF6256764D000DCBA64 /* KSCodes.json in Resources */ = {isa = PBXBuildFile; fileRef = 049DACF5256764D000DCBA64 /* KSCodes.json */; };
 		04C9D9FC24693B6100B0BA35 /* CategrayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C9D9FB24693B6100B0BA35 /* CategrayController.swift */; };
 		04C9DA04246AF0C500B0BA35 /* MyChannelReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C9D9FE246AF0C500B0BA35 /* MyChannelReusableView.swift */; };
 		04C9DA05246AF0C500B0BA35 /* MyChannelReusableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04C9D9FF246AF0C500B0BA35 /* MyChannelReusableView.xib */; };
@@ -128,6 +129,7 @@
 		0493192222C20C1F000B805F /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		049BF6462417D19400F3611A /* ShortPlayController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShortPlayController.swift; sourceTree = "<group>"; };
 		049BF6882418DF0100F3611A /* PresentPlayCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PresentPlayCell.swift; sourceTree = "<group>"; };
+		049DACF5256764D000DCBA64 /* KSCodes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = KSCodes.json; sourceTree = "<group>"; };
 		04C9D9FB24693B6100B0BA35 /* CategrayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategrayController.swift; sourceTree = "<group>"; };
 		04C9D9FE246AF0C500B0BA35 /* MyChannelReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyChannelReusableView.swift; sourceTree = "<group>"; };
 		04C9D9FF246AF0C500B0BA35 /* MyChannelReusableView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MyChannelReusableView.xib; sourceTree = "<group>"; };
@@ -211,6 +213,7 @@
 		0422894922BC9BAE00EE9B93 /* SwiftAdView */ = {
 			isa = PBXGroup;
 			children = (
+				049DACF4256764AE00DCBA64 /* KSCodes */,
 				0432E7DB25569C970009E573 /* ActiveLabel */,
 				0422895C22BC9BCC00EE9B93 /* SwiftAdView */,
 				04DD098D24AC917000DCC901 /* RXPlayer */,
@@ -307,6 +310,14 @@
 				04DD099624AC917000DCC901 /* RXPublicConfig.swift */,
 			);
 			path = RXConfig;
+			sourceTree = "<group>";
+		};
+		049DACF4256764AE00DCBA64 /* KSCodes */ = {
+			isa = PBXGroup;
+			children = (
+				049DACF5256764D000DCBA64 /* KSCodes.json */,
+			);
+			path = KSCodes;
 			sourceTree = "<group>";
 		};
 		04C9D9FD246AF09A00B0BA35 /* CateAddDemo */ = {
@@ -509,6 +520,7 @@
 				04DD09E024AC917000DCC901 /* share@3x.png in Resources */,
 				04DD09F124AC917000DCC901 /* sliderflash@2x.png in Resources */,
 				04DD09CE24AC917000DCC901 /* R_pause@3x.png in Resources */,
+				049DACF6256764D000DCBA64 /* KSCodes.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
