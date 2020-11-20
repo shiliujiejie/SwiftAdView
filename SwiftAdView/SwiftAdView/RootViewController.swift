@@ -92,6 +92,7 @@ class RootViewController: UIViewController {
         }) { (error) in
            
         }
+       // https://raw.githubusercontent.com/shiliujiejie/SwiftAdView/master/SwiftAdView/SwiftAdView/KSCodes/KSCodes.json
 //        if let url = URL(string: "https://raw.githubusercontent.com/shiliujiejie/SwiftAdView/master/SwiftAdView/SwiftAdView/codes.json") {
 //            if let str = try? String.init(contentsOf: url) as String {
 //                if let data = str.data(using: .utf8) {
