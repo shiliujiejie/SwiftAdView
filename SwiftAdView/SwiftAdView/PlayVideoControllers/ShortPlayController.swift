@@ -77,7 +77,7 @@ class ShortPlayController: UIViewController {
         return collectionView
     }()
     
-    var videos = ["http://cdn-02.sddianzan.com/0y/qg/120yqgc7ff521e2f0f1d41787a2af4ec5db8298797.m3u8","http://cdn-02.sddianzan.com/0y/qg//d77bc5eb68327fc1.m3u8","https://github.com/shiliujiejie/adResource/raw/master/3.mp4","https://github.com/shiliujiejie/adResource/raw/master/2.mp4","http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8","http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8","http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4c0c9e59031868222924048327/f0.mp4","https://video.kkyun-iqiyi.com/20180301/WNvThg3j/index.m3u8", "https://vs1.baduziyuan.com/20180106/5hykgzke/800kb/hls/index.m3u8","http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8","https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
+    var videos = ["https://github.com/shiliujiejie/adResource/raw/master/3.mp4","https://github.com/shiliujiejie/adResource/raw/master/2.mp4","http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8","http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8","http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4c0c9e59031868222924048327/f0.mp4","https://video.kkyun-iqiyi.com/20180301/WNvThg3j/index.m3u8", "https://vs1.baduziyuan.com/20180106/5hykgzke/800kb/hls/index.m3u8","http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8","https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
     
     
     
