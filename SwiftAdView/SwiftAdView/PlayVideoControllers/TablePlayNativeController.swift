@@ -57,7 +57,7 @@ class TablePlayNativeController: UIViewController {
     }()
     lazy var playerView: R_PlayerView = {
         let player = R_PlayerView.init(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenWidth*9/16), bothSidesTimelable: true)
-        player.backgroundColor = UIColor(white: 0, alpha: 0.5)
+        player.backgroundColor = .black
         player.videoNameShowOnlyFullScreen = true
         player.delegate = self
         player.customViewDelegate = self
@@ -154,6 +154,7 @@ class TablePlayNativeController: UIViewController {
             
             /// 如果中途，要禁止用户操作播放器
             //playerView.setPlayerControlView(operable: false)
+            //playerView.backgroundColor = UIColor(white: 0, alpha: 0.3)
         }
     }
 }
@@ -193,7 +194,6 @@ extension TablePlayNativeController: UITableViewDelegate, UITableViewDataSource 
 
 extension TablePlayNativeController: R_PlayerDelegate {
     func customActionsBeforePlay() {
-        playerView.backgroundColor = UIColor(white: 0, alpha: 0.3)
         print("customActionsBeforePlay")
     }
     func startPlay() {
