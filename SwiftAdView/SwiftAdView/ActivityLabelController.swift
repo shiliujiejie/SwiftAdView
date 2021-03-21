@@ -15,7 +15,7 @@ class ActivityLabelController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let customType = ActiveType.custom(pattern: "\\sbaidu\\b") //Looks for "are"
+        let customType = ActiveType.custom(pattern: "\\sbaidu\\b") //Looks for "baidu"
         let customType2 = ActiveType.custom(pattern: "\\sit\\b") //Looks for "it"
         let customType3 = ActiveType.custom(pattern: "\\ssupports\\b") //Looks for "supports"
         
@@ -23,11 +23,22 @@ class ActivityLabelController: UIViewController {
         label.enabledTypes.append(customType2)
         label.enabledTypes.append(customType3)
         
-        label.urlMaximumLength = 31
+        label.urlMaximumLength = 400
+        let testText = "This is a post with $multiple #hashtags @and a @userhandle. Links #are also supported like" +
+            " this one: http://optonaut.co. Now it also supports custom $patterns https://github.com/shiliujiejie/adResource/raw/master/timg.jpeg -> please &link to baidu Website\n\n" +
+        "Let's trim a long link: \nhttps://twitter.com/twicket_app/status/649678392372121601 "
+        let attch = NSTextAttachment()
+        attch.image = UIImage(named: "channelAdd")
+        attch.bounds = CGRect(x: 0, y: 0, width: 18, height: 18)
+        let attstr = NSAttributedString(attachment: attch)
         
-        label.text = "This is a post with $multiple #hashtags @and a @userhandle. Links are also supported like" +
-            " this one: http://optonaut.co. Now it also supports custom patterns -> please link to baidu Website\n\n" +
-        "Let's trim a long link: \nhttps://twitter.com/twicket_app/status/649678392372121601"
+        let coinatt = NSMutableAttributedString.init(string: testText)
+        coinatt.append(attstr)
+
+    
+        print(" coinatt == \(coinatt)")
+        label.attributedText = NSAttributedString.init(attributedString: coinatt)//NSAttributedString(string: testText)
+        //label.text = testText
         label.customize { label in
             
             label.numberOfLines = 0
@@ -36,7 +47,7 @@ class ActivityLabelController: UIViewController {
             label.textColor = UIColor(red: 102.0/255, green: 117.0/255, blue: 127.0/255, alpha: 1)
             label.hashtagColor = UIColor(red: 85.0/255, green: 172.0/255, blue: 238.0/255, alpha: 1)
             label.mentionColor = UIColor(red: 238.0/255, green: 85.0/255, blue: 96.0/255, alpha: 1)
-            label.URLColor = UIColor(red: 85.0/255, green: 238.0/255, blue: 151.0/255, alpha: 1)
+            label.URLColor = UIColor(red: 85.0/255, green: 151.0/255, blue: 238.0/255, alpha: 1)
             label.URLSelectedColor = UIColor(red: 82.0/255, green: 190.0/255, blue: 41.0/255, alpha: 1)
             
             label.handleMentionTap { self.alert("Mention", message: $0) }

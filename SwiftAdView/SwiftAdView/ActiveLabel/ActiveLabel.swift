@@ -1,10 +1,3 @@
-//
-//  ActiveLabel.swift
-//  ActiveLabel
-//
-//  Created by Johannes Schickling on 9/4/15.
-//  Copyright © 2015 Optonaut. All rights reserved.
-//
 
 import Foundation
 import UIKit
@@ -596,7 +589,7 @@ public func ==(lhs: ActiveType, rhs: ActiveType) -> Bool {
 //MARK:- RegexParser
 struct RegexParser {
 
-    static let hashtagPattern = "(?:^|\\s|$)#[\\p{L}0-9_]*"
+    static let hashtagPattern = "(?:^|\\s|$)[#&][\\p{L}0-9_]*"
     static let mentionPattern = "(?:^|\\s|$|[.])@[\\p{L}0-9_]*"
     static let urlPattern = "(^|[\\s.:;?\\-\\]<\\(])" +
         "((https?://|www\\.|pic\\.)[-\\w;/?:@&=+$\\|\\_.!~*\\|'()\\[\\]%#,☺]+[\\w/#](\\(\\))?)" +

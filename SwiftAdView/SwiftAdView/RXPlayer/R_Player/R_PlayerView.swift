@@ -22,7 +22,7 @@ open class R_PlayerView: UIView {
                     pauseButton.isHidden = true
                     pauseButton.removeFromSuperview()
                 }
-            }else if playerStatu == PlayerStatus.Pause {
+            } else if playerStatu == PlayerStatus.Pause {
                 player?.pause()
                 player?.rate = 0
                 hideLoadingHud()
@@ -63,6 +63,7 @@ open class R_PlayerView: UIView {
                 }
                 playControlView.closeButton.isEnabled = false
             } else {
+                self.backgroundColor = .black
                 playControlView.closeButton.snp.updateConstraints { (make) in
                     make.width.equalTo(40)
                 }
@@ -85,6 +86,7 @@ open class R_PlayerView: UIView {
     public var videoLayerGravity: AVLayerVideoGravity = .resizeAspect
     /// 是否只在全屏时显示视频名称
     public var videoNameShowOnlyFullScreen: Bool = false
+    
     public weak var delegate: R_PlayerDelegate?
     public weak var customViewDelegate: R_CustomMenuDelegate?
   
@@ -93,9 +95,10 @@ open class R_PlayerView: UIView {
     
     
     // MARK: - ************** --> Private Var <-- **************
-    private var sliderTouchBeginValue: Float64? = 0  // 记录进度条拖动前的值
     /// 视频截图
-    private(set)  var imageGenerator: AVAssetImageGenerator?  // 用来做预览，目前没有预览的需求
+    private(set) var imageGenerator: AVAssetImageGenerator?  // 用来做预览，目前没有预览的需求
+    /// 播放器是否可操作
+    private(set) var playerOperable: Bool = true
     /// 当前屏幕状态
     private var currentOrientation: UIInterfaceOrientation?
     /// 保存传入的播放时间起点
@@ -319,6 +322,21 @@ extension R_PlayerView {
         playDownFileWith(url, title, in: view, sinceTime: sinceTime)
     }
     
+    /// 禁止/放开 对播放器的一切操作
+    ///
+    /// - Parameter operable: 是否可对播放器操作
+    open func setPlayerControlView(operable: Bool) {
+        playControlView.isHidden = !operable
+        playerOperable = operable
+        if operable {
+            orientationSupport = playControlView.playLocalFile ? .orientationLeftAndRight : .orientationAll
+            enableDeviceOrientationChange()
+        } else {
+            orientationSupport = .orientationPortrait
+            disableDeviceOrientationChange()
+        }
+    }
+    
     /// 改变播放器的父视图
     ///
     /// - Parameter containerView: New fatherView
@@ -393,6 +411,7 @@ extension R_PlayerView {
 private extension R_PlayerView {
     
     func playVideoWith(url: URL?, videoName: String?, containView: UIView?) {
+        delegate?.customActionsBeforePlay()
         // 👇三个属性的设置顺序很重要
         self.playUrl = url   // 判断视频链接是否更改，更改了就重置播放器
         self.videoName = videoName      // 视频名称
@@ -416,6 +435,8 @@ private extension R_PlayerView {
     ///   - sinceTime: 从某个时间开始播放
     
     func playDownFileWith(_ url: URL, _ title: String?, in view: UIView?, sinceTime: Float? = nil) {
+        delegate?.customActionsBeforePlay()
+        self.backgroundColor = .black
         playControlView.playLocalFile = true  // 声明直接就进入全屏播放               ------------------   1
         fileUrlString = url.absoluteString    //   存本地文件URL
         // 👇三个属性的设置顺序很重要X
@@ -513,10 +534,10 @@ private extension R_PlayerView {
         playControlView.panGesture.isEnabled = true //!isM3U8
         autoHideBar()
         if playControlView.playLocalFile {       // 播放本地视频时只支持左右
-            orientationSupport = R_PlayerOrietation.orientationLeftAndRight
+            orientationSupport = .orientationLeftAndRight
         } else {
             showLoadingHud()      /// 网络视频才显示菊花
-            orientationSupport = R_PlayerOrietation.orientationAll
+            orientationSupport = .orientationAll
         }
     }
     
@@ -605,7 +626,7 @@ private extension R_PlayerView {
                 if strongSelf.playControlView.playLocalFile {   // 直接全屏播放本地视频
                     strongSelf.removeFromSuperview()
                     strongSelf.cancleAutoHideBar()
-                    orientationSupport = R_PlayerOrietation.orientationPortrait
+                    orientationSupport = .orientationPortrait
                     strongSelf.playLocalFileVideoCloseCallBack?(self?.playedValue ?? 0.0)
                     strongSelf.interfaceOrientation(UIInterfaceOrientation.landscapeRight)
                     strongSelf.interfaceOrientation(UIInterfaceOrientation.portrait)
@@ -642,12 +663,12 @@ private extension R_PlayerView {
         playControlView.screenLockButtonClickBlock = { [weak self] (sender) in
             guard let strongSelf = self else { return }
             if sender.isSelected {
-                orientationSupport = R_PlayerOrietation.orientationLeftAndRight
+                orientationSupport = .orientationLeftAndRight
             }else {
                 if strongSelf.playControlView.playLocalFile {
-                    orientationSupport = R_PlayerOrietation.orientationLeftAndRight
+                    orientationSupport = .orientationLeftAndRight
                 } else {
-                    orientationSupport = R_PlayerOrietation.orientationAll
+                    orientationSupport = .orientationAll
                 }
             }
         }
@@ -698,7 +719,7 @@ private extension R_PlayerView {
                         strongSelf.startReadyToPlay()
                         strongSelf.playControlView.screenIsLock = false
                     }
-                    strongSelf.panDirection = PanDirection.PanDirectionHorizontal
+                    strongSelf.panDirection = .PanDirectionHorizontal
                     // strongSelf.beforeSliderChangePlayStatu = strongSelf.playerStatu  // 拖动开始时，记录下拖动前的状态
                     strongSelf.playerStatu = PlayerStatus.Pause
                     strongSelf.pauseButton.isHidden = true                     // 拖动时隐藏暂停按钮
@@ -709,7 +730,7 @@ private extension R_PlayerView {
                     }
                     
                 } else if x < y {
-                    strongSelf.panDirection = PanDirection.PanDirectionVertical
+                    strongSelf.panDirection = .PanDirectionVertical
                     
                     if locationPoint.x > strongSelf.playControlView.bounds.size.width/2 && locationPoint.y < strongSelf.playControlView.bounds.size.height - 40 {  // 触摸点在视图右边，控制音量
                         // 如果需要自定义 音量控制显示，在这里添加自定义VIEW
@@ -935,48 +956,38 @@ private extension R_PlayerView {
 // MARK: - RXPlayerControlViewDelegate
 extension R_PlayerView: RXPlayerControlViewDelegate {
     
-    func sliderTouchBegin(_ sender: UISlider) {
-        guard let avItem = self.avItem else { return }
-        //beforeSliderChangePlayStatu = playerStatu、
-        playerStatu = PlayerStatus.Pause
+    func progressWillDraging() {
+        playerStatu = .Pause
         isDragging = true
         playControlView.replayView.isHidden = true
         pauseButton.isHidden = true
-        let duration = Float64 ((avItem.asset.duration.value)/Int64(avItem.asset.duration.timescale))
-        sliderTouchBeginValue = Float64(duration) * Float64(sender.value)
-    }
-    
-    func sliderTouchEnd(_ sender: UISlider) {
-        guard let avItem = self.avItem else {
-            return
-        }
-        let position = Float64 ((avItem.asset.duration.value)/Int64(avItem.asset.duration.timescale))
-        let po = CMTimeMakeWithSeconds(Float64(position) * Float64(sender.value), preferredTimescale: (avItem.asset.duration.timescale))
-        avItem.seek(to: po, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero)
-        pauseButton.isHidden = false
-        playerStatu = PlayerStatus.Playing
-        sliderTouchBeginValue = 0
-        if subviews.contains(draggedProgressView) {
-            draggedProgressView.removeFromSuperview()
-        }
-        isDragging = false
-    }
-    
-    func sliderValueChange(_ sender: UISlider) {
-        guard let avItem = self.avItem else {
-            return
-        }
         if !self.subviews.contains(draggedProgressView) {
             addSubview(draggedProgressView)
             layoutDraggedContainers()
         }
-        let duration = Float64 ((avItem.asset.duration.value)/Int64(avItem.asset.duration.timescale))
-        let dragValue = Float64(duration) * Float64(sender.value)
-        // 拖动时间展示
-        let allTimeString = RXPublicConfig.formatTimDuration(duration: Int(duration))
-        let draggedTimeString = RXPublicConfig.formatTimPosition(position: Int(dragValue), duration: Int(duration))
-        self.draggedTimeLable.text = String(format: "%@ | %@", draggedTimeString, allTimeString)
-        self.playControlView.positionTimeLab.text = draggedTimeString
+    }
+    func progressDraging(progress: Double) {
+        let currenTime = Int(Double(videoDuration) * progress)
+        let allTimeString = RXPublicConfig.formatTimDuration(duration: Int(videoDuration))
+        let draggedTimeString = RXPublicConfig.formatTimPosition(position: currenTime, duration: Int(videoDuration))
+        draggedTimeLable.text = String(format: "%@ | %@", draggedTimeString, allTimeString)
+        playControlView.positionTimeLab.text = draggedTimeString
+        playerStatu = .Pause
+        isDragging = true
+        playControlView.replayView.isHidden = true
+        pauseButton.isHidden = true
+    }
+
+    func progressMoveTo(progress: Double) {
+        guard let item = avItem else { return }
+        let position = CGFloat(item.asset.duration.value)/CGFloat(item.asset.duration.timescale)
+        let po = CMTimeMakeWithSeconds(Float64(position) * Float64(progress), preferredTimescale: (item.asset.duration.timescale))
+        item.seek(to: po, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero)
+        playerStatu = .Playing
+        isDragging = false
+        if subviews.contains(draggedProgressView) {
+            draggedProgressView.removeFromSuperview()
+        }
     }
 }
 

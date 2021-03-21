@@ -2,5 +2,8 @@ ${PODS_ROOT}/Target Support Files/Pods-SwiftAdView/Pods-SwiftAdView-frameworks.s
 ${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework
 ${BUILT_PRODUCTS_DIR}/GCDWebServer/GCDWebServer.framework
 ${BUILT_PRODUCTS_DIR}/Kingfisher/Kingfisher.framework
+${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework
 ${BUILT_PRODUCTS_DIR}/SQLite.swift/SQLite.framework
+${BUILT_PRODUCTS_DIR}/SSZipArchive/SSZipArchive.framework
+${BUILT_PRODUCTS_DIR}/SVGAPlayer/SVGAPlayer.framework
 ${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework

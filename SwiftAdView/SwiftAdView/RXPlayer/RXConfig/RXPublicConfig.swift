@@ -23,11 +23,12 @@ enum PanDirection: Int {
     case PanDirectionVertical       //上下
 }
 
+/// 播放器所在页面 支持的屏幕方向
 public var orientationSupport: R_PlayerOrietation = .orientationPortrait
 
 public enum R_PlayerOrietation: Int {
     case orientationPortrait
-    case orientationLeftAndRight
+    case orientationLeftAndRight    //用于直接全屏播放
     case orientationAll
     
     public func getOrientSupports() -> UIInterfaceOrientationMask {
@@ -37,7 +38,7 @@ public enum R_PlayerOrietation: Int {
         case .orientationLeftAndRight:
             return [.landscapeLeft, .landscapeRight]
         case .orientationAll:
-            return [.portrait, .landscapeLeft, .landscapeRight]
+            return .allButUpsideDown
         }
     }
 }

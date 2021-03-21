@@ -163,7 +163,7 @@ class VideoTableController: UIViewController {
             }
         } else {
             /// 可以根据网络是否为wift 确定是否 cache
-            playerView.startPlay(url: url, in: view, uri: nil, cache: true)
+            playerView.startPlay(url: url, in: view, uri: nil, cache: false)
         }
     }
 

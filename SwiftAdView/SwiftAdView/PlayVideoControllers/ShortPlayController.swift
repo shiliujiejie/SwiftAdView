@@ -4,6 +4,8 @@ import AssetsLibrary
 import AVKit
 import Photos
 import GCDWebServer
+import SVGAPlayer
+
 
 /// 个人中心弹出播放页
 class ShortPlayController: UIViewController {
@@ -36,12 +38,22 @@ class ShortPlayController: UIViewController {
         button.addTarget(self, action: #selector(rightButtonClick), for: .touchUpInside)
         return button
     }()
+    lazy var gifButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setTitle("送礼", for: .normal)
+        button.backgroundColor = UIColor(white: 0.9, alpha: 0.1)
+        button.addTarget(self, action: #selector(gifButtonClick), for: .touchUpInside)
+        return button
+    }()
     lazy var playerView: X_PlayerView = {
         let player = X_PlayerView(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight))
         player.controlViewBottomInset = safeAreaBottomHeight + 49
         player.delegate = self
+        
         return player
     }()
+    
+    
     let flowLayout: UICollectionViewFlowLayout = {
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: screenWidth, height: screenHeight)
@@ -64,8 +76,28 @@ class ShortPlayController: UIViewController {
         collectionView.register(PresentPlayCell.classForCoder(), forCellWithReuseIdentifier: PresentPlayCell.cellId)
         return collectionView
     }()
-   
-    var videos = ["http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8","http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8","http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4c0c9e59031868222924048327/f0.mp4","https://github.com/shiliujiejie/adResource/raw/master/2.mp4","https://video.kkyun-iqiyi.com/20180301/WNvThg3j/index.m3u8", "https://vs1.baduziyuan.com/20180106/5hykgzke/800kb/hls/index.m3u8","http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8","https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
+    
+    var videos = ["http://cdn-02.sddianzan.com/0y/qg/120yqgc7ff521e2f0f1d41787a2af4ec5db8298797.m3u8","http://cdn-02.sddianzan.com/0y/qg//d77bc5eb68327fc1.m3u8","https://github.com/shiliujiejie/adResource/raw/master/3.mp4","https://github.com/shiliujiejie/adResource/raw/master/2.mp4","http://youku163.zuida-bofang.com/20180905/13609_155264ac/index.m3u8","http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8","http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4c0c9e59031868222924048327/f0.mp4","https://video.kkyun-iqiyi.com/20180301/WNvThg3j/index.m3u8", "https://vs1.baduziyuan.com/20180106/5hykgzke/800kb/hls/index.m3u8","http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8","https://github.com/shiliujiejie/adResource/raw/master/3.mp4"]
+    
+    
+    
+    var parseIndex: Int = 0
+    private var parse = SVGAParser()
+    lazy var svgaPlayer: SVGAPlayer = {
+        let player = SVGAPlayer.init(frame: self.view.bounds)
+        player.backgroundColor = .clear
+        player.delegate = self
+        player.isHidden = true
+        return player
+    }()
+    let svgaSourcce: [String] = ["guizu/awesome.svga","guizu/call.svga","guizu/dream_yacht.svga","guizu/ferris_wheel.svga","guizu/hot_kiss.svga","guizu/wishing_pool.svga",
+                                 
+                                 "drive/aircraft.svga","drive/bugatti.svga","drive/ferrari.svga","drive/love_rocket.svga","drive/mercedes_benz_big_g.svga","drive/rolls_royce.svga","drive/sailboat.svga","drive/yacht.svga",
+       "protect/666.svga", "protect/candlelight dinner.svga", "protect/for_your_heart.svga", "protect/holiday_hot_spring.svga", "protect/love_gas_station.svga", "protect/magic_wand.svga",
+       "normal/9rose.svga","normal/gold_sports_car.svga","normal/heart.svga","normal/honest_man.svga","normal/lollipop.svga","normal/love_u.svga","normal/muah.svga","normal/paper_crane.svga","normal/summer_cold drink.svga","normal/superyacht.svga","normal/tianma.svga"]
+    
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -99,14 +131,36 @@ class ShortPlayController: UIViewController {
         }
         
         self.view.addSubview(self.collection)
+        view.addSubview(svgaPlayer)
         self.view.addSubview(self.leftBackButton)
+        view.addSubview(gifButton)
         view.addSubview(rightBackButton)
         self.layoutPageSubviews()
+        
     }
     @objc func backButtonClick() {
         self.navigationController?.popViewController(animated: true)
     }
-    
+    @objc func gifButtonClick() {
+        if parseIndex >= svgaSourcce.count - 1 {
+            parseIndex = 0
+        } else {
+            parseIndex += 1
+        }
+        let pathIndex = "http://192.168.1.156:8887/GitProjects/SVGAVideo-master/Gift/"
+        guard let url = URL(string: pathIndex.appending(svgaSourcce[parseIndex])) else {
+            return
+        }
+        svgaPlayer.isHidden = false
+        parse.parse(with: url) { [weak self] (videoEntity) in
+            self?.svgaPlayer.videoItem = videoEntity
+            self?.svgaPlayer.loops = 1
+           self?.svgaPlayer.startAnimation()
+        } failureBlock: { (err) in
+            guard let err = err else { return }
+            print("parse sticker: \(err.localizedDescription)")
+        }
+    }
     @objc func rightButtonClick() {
       
 //        playerView.resetRate(rate: 1.5)
@@ -135,10 +189,23 @@ class ShortPlayController: UIViewController {
                 playerView.startPlay(url: URL(string: videoLocalUrl), in: view)
             }
         } else {
-            playerView.startPlay(url: url, in: view, uri: nil, cache: true)
+            playerView.startPlay(url: url, in: view, uri: nil, cache: false)
         }
     }
     
+}
+
+// MARK: - SVGAPlayerDelegate
+extension ShortPlayController: SVGAPlayerDelegate {
+    func svgaPlayerDidFinishedAnimation(_ player: SVGAPlayer!) {
+        player.isHidden = true
+    }
+    func svgaPlayerDidAnimated(toFrame frame: Int) {
+        
+    }
+    func svgaPlayerDidAnimated(toPercentage percentage: CGFloat) {
+        
+    }
 }
 
 // MARK: - X_PlayerViewDelegate
@@ -275,6 +342,12 @@ private extension ShortPlayController {
             make.trailing.equalTo(-16)
             make.top.equalTo(screenHeight >= 812 ? 40 : 20)
             make.width.height.equalTo(35)
+        }
+        gifButton.snp.makeConstraints { (make) in
+            make.top.equalTo(90)
+            make.trailing.equalTo(-20)
+            make.width.equalTo(50)
+            make.height.equalTo(30)
         }
     }
 }

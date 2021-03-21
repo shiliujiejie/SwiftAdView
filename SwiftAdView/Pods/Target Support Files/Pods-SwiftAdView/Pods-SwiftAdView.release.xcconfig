@@ -1,9 +1,9 @@
 ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES
-FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/Alamofire" "${PODS_CONFIGURATION_BUILD_DIR}/GCDWebServer" "${PODS_CONFIGURATION_BUILD_DIR}/Kingfisher" "${PODS_CONFIGURATION_BUILD_DIR}/SQLite.swift" "${PODS_CONFIGURATION_BUILD_DIR}/SnapKit"
-GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
-HEADER_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/Alamofire/Alamofire.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/GCDWebServer/GCDWebServer.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/Kingfisher/Kingfisher.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/SQLite.swift/SQLite.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/SnapKit/SnapKit.framework/Headers"
+FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/Alamofire" "${PODS_CONFIGURATION_BUILD_DIR}/GCDWebServer" "${PODS_CONFIGURATION_BUILD_DIR}/Kingfisher" "${PODS_CONFIGURATION_BUILD_DIR}/Protobuf" "${PODS_CONFIGURATION_BUILD_DIR}/SQLite.swift" "${PODS_CONFIGURATION_BUILD_DIR}/SSZipArchive" "${PODS_CONFIGURATION_BUILD_DIR}/SVGAPlayer" "${PODS_CONFIGURATION_BUILD_DIR}/SnapKit"
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1 $(inherited) GPB_USE_PROTOBUF_FRAMEWORK_IMPORTS=1
+HEADER_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/Alamofire/Alamofire.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/GCDWebServer/GCDWebServer.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/Kingfisher/Kingfisher.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/Protobuf/Protobuf.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/SQLite.swift/SQLite.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/SSZipArchive/SSZipArchive.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/SVGAPlayer/SVGAPlayer.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/SnapKit/SnapKit.framework/Headers"
 LD_RUNPATH_SEARCH_PATHS = $(inherited) '@executable_path/Frameworks' '@loader_path/Frameworks'
-OTHER_LDFLAGS = $(inherited) -l"sqlite3" -l"z" -framework "Alamofire" -framework "CFNetwork" -framework "GCDWebServer" -framework "Kingfisher" -framework "MobileCoreServices" -framework "SQLite" -framework "SnapKit"
+OTHER_LDFLAGS = $(inherited) -l"iconv" -l"sqlite3" -l"z" -framework "AVFoundation" -framework "Alamofire" -framework "CFNetwork" -framework "GCDWebServer" -framework "Kingfisher" -framework "MobileCoreServices" -framework "Protobuf" -framework "SQLite" -framework "SSZipArchive" -framework "SVGAPlayer" -framework "Security" -framework "SnapKit"
 OTHER_SWIFT_FLAGS = $(inherited) -D COCOAPODS
 PODS_BUILD_DIR = ${BUILD_DIR}
 PODS_CONFIGURATION_BUILD_DIR = ${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)

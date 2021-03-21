@@ -4,10 +4,20 @@ PODS:
     - GCDWebServer/Core (= 3.5.4)
   - GCDWebServer/Core (3.5.4)
   - Kingfisher (4.10.1)
+  - Protobuf (3.13.0)
   - SnapKit (4.2.0)
   - SQLite.swift (0.12.2):
     - SQLite.swift/standard (= 0.12.2)
   - SQLite.swift/standard (0.12.2)
+  - SSZipArchive (2.2.3)
+  - SVGAPlayer (2.5.6):
+    - SVGAPlayer/Core (= 2.5.6)
+    - SVGAPlayer/ProtoFiles (= 2.5.6)
+  - SVGAPlayer/Core (2.5.6):
+    - SSZipArchive (>= 1.8.1)
+    - SVGAPlayer/ProtoFiles
+  - SVGAPlayer/ProtoFiles (2.5.6):
+    - Protobuf (~> 3.4)
 
 DEPENDENCIES:
   - Alamofire
@@ -15,22 +25,29 @@ DEPENDENCIES:
   - Kingfisher
   - SnapKit
   - SQLite.swift
+  - SVGAPlayer
 
 SPEC REPOS:
   trunk:
     - Alamofire
     - GCDWebServer
     - Kingfisher
+    - Protobuf
     - SnapKit
     - SQLite.swift
+    - SSZipArchive
+    - SVGAPlayer
 
 SPEC CHECKSUMS:
   Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
   GCDWebServer: 2c156a56c8226e2d5c0c3f208a3621ccffbe3ce4
   Kingfisher: c148cd7b47ebde9989f6bc7c27dcaa79d81279a0
+  Protobuf: 3dac39b34a08151c6d949560efe3f86134a3f748
   SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
   SQLite.swift: d2b4642190917051ce6bd1d49aab565fe794eea3
+  SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
+  SVGAPlayer: f3b3792ae66f7cb3f944ae373a40864db9a04331
 
-PODFILE CHECKSUM: 069fec692eac78a280808f4a00b5a5faa02de833
+PODFILE CHECKSUM: 5c31b1b0c37c2823b99965fd1820093f7d604599
 
 COCOAPODS: 1.8.4

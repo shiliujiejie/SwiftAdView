@@ -47,6 +47,7 @@ public class X_PlayerView: UIView {
     
     public weak var delegate: X_PlayerViewDelegate?
     
+    public var httpHeaderFieldsKey: [String: Any]?
     /// 播放链接
     public var playUrl: URL?
     /// 操作栏底部 相对父视图的 距离
@@ -179,7 +180,7 @@ public class X_PlayerView: UIView {
             coverView.removeFromSuperview()
         }
         if trueUrl.absoluteString.contains(".m3u8") {
-            avItem = RXM3u8ResourceLoader.shared.playerItem(with: trueUrl, uriKey: uri, cacheWhenPlaying: cache)
+            avItem = RXM3u8ResourceLoader.shared.playerItem(with: trueUrl, uriKey: uri, httpHeaderFieldsKey: httpHeaderFieldsKey, cacheWhenPlaying: cache)
         } else {
             /// 其他文件格式，这里处理
             let urlAsset = AVURLAsset(url: trueUrl, options: nil)

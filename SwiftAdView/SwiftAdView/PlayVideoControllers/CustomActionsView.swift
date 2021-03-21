@@ -35,16 +35,16 @@ class CustomActionsView: UIView {
                 make.trailing.equalToSuperview()
             }
             make.centerY.equalToSuperview()
-            make.width.equalTo(120)
-            make.height.equalTo(190)
+            make.width.equalTo(140)
+            make.height.equalTo(UIScreen.main.bounds.height)
         }
         
-        for index in 0...2 {
+        for index in 0...3 {
             let button = UIButton(type: .custom)
-            button.setTitle(["X1.0", "X1.2", "X1.5"][index], for: .normal)
+            button.setTitle(["X1.0", "X1.2", "X1.5","开启操作"][index], for: .normal)
             button.setTitleColor(UIColor.darkGray, for: .normal)
             button.tag = index + 100
-            button.titleLabel?.font = UIFont.systemFont(ofSize: 17)
+            button.titleLabel?.font = UIFont.systemFont(ofSize: 15)
             button.titleEdgeInsets.left = 20
             button.addTarget(self, action: #selector(muneButtonClick(_:)), for: .touchUpInside)
             sideView.addSubview(button)

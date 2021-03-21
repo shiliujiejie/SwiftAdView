@@ -9,7 +9,9 @@ target 'SwiftAdView' do
   pod 'Alamofire'
   pod 'GCDWebServer'
   pod 'SQLite.swift'
-  
+  pod 'SVGAPlayer'
+  pod 'CryptoSwift'
+  #pod 'SCRecorder'
 end
 
 

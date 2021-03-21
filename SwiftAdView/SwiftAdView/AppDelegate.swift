@@ -7,9 +7,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     
+    var isLandscape = false
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
+       
         return true
     }
     
@@ -21,6 +22,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
             return num.getOrientSupports()           // 这里的支持方向，做了组件化的朋友，实际项目中可以考虑用路由去播放器内拿，
     }
+//    //  整个项目支持竖屏，播放页面需要横屏
+//    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?)
+//        -> UIInterfaceOrientationMask {
+//        if isLandscape {
+//            return .allButUpsideDown
+//        }
+//        return .portrait
+//    }
+
 }
 
 let screenWidth = UIScreen.main.bounds.size.width

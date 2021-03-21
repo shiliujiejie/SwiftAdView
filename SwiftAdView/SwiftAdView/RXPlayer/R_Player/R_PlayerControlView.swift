@@ -3,11 +3,11 @@ import UIKit
 import SnapKit
 
 protocol RXPlayerControlViewDelegate: class {
-    
-    func sliderTouchBegin(_ sender: UISlider)
-    func sliderTouchEnd(_ sender: UISlider)
-    func sliderValueChange(_ sender: UISlider)
+    func progressWillDraging()
+    func progressMoveTo(progress: Double)
+    func progressDraging(progress: Double)
 }
+
 
 class RXPlayerControlView: UIView {
     
@@ -23,7 +23,7 @@ class RXPlayerControlView: UIView {
     lazy var topBarBgLayer: CAGradientLayer = {
         let gradientLayer = CAGradientLayer()
         gradientLayer.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.height, height: 60)
-        gradientLayer.colors =  [UIColor(white: 0.0, alpha: 0.4).cgColor,UIColor(white: 0.0, alpha: 0.2).cgColor,UIColor.clear.cgColor]
+        gradientLayer.colors = [UIColor(white: 0.0, alpha: 0.4).cgColor,UIColor(white: 0.0, alpha: 0.2).cgColor,UIColor.clear.cgColor]
         gradientLayer.locations = [0.3, 0.6, 1.0]
         return gradientLayer
     }()
@@ -87,6 +87,7 @@ class RXPlayerControlView: UIView {
     
     lazy var bottomBarBgLayer: CAGradientLayer = {
         let gradientLayer = CAGradientLayer()
+        gradientLayer.bounds = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width , height: 90)
         gradientLayer.colors = [UIColor.clear.cgColor,  UIColor(white: 0.0, alpha: 0.2).cgColor,UIColor(white: 0.0, alpha: 0.5).cgColor]
         gradientLayer.locations = [0.3, 0.6, 1.0]
         return gradientLayer
@@ -110,14 +111,15 @@ class RXPlayerControlView: UIView {
         slider.contentMode = ContentMode.scaleAspectFit
         slider.minimumTrackTintColor = UIColor.white
         slider.maximumTrackTintColor = UIColor.clear
-        slider.setThumbImage(RXPublicConfig.foundImage(imageName: "sliderflash"), for: .normal)
-        slider.setThumbImage(RXPublicConfig.foundImage(imageName: "sliderHightLight"), for: .highlighted)
-        slider.addTarget(self, action: #selector(RXPlayerControlView.sliderValueChange(_:)),for:.valueChanged)
-        slider.addTarget(self, action: #selector(RXPlayerControlView.sliderAllTouchBegin(_:)), for: .touchDown)
-        slider.addTarget(self, action: #selector(RXPlayerControlView.sliderAllTouchEnd(_:)), for: .touchCancel)
-        slider.addTarget(self, action: #selector(RXPlayerControlView.sliderAllTouchEnd(_:)), for: .touchUpInside)
-        slider.addTarget(self, action: #selector(RXPlayerControlView.sliderAllTouchEnd(_:)), for: .touchUpOutside)
+        slider.setThumbImage(RXPublicConfig.foundImage(imageName: "sliderNormal"), for: .normal)
+        slider.setThumbImage(RXPublicConfig.foundImage(imageName: "sliderflash"), for: .highlighted)
         return slider
+    }()
+    /// 底部进度控制栏
+    lazy var dragControllView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        return view
     }()
     lazy var positionTimeLab: UILabel = {
         let lable = UILabel()
@@ -181,6 +183,21 @@ class RXPlayerControlView: UIView {
         return gesture
     }()
     
+    /// 手势
+   lazy var controlpanGesture: UIPanGestureRecognizer = {
+       let gesture = UIPanGestureRecognizer()
+       gesture.addTarget(self, action: #selector(panGestureRecognizers(_:)))
+       gesture.maximumNumberOfTouches = 1
+       return gesture
+   }()
+   lazy var progressTapGesture: UITapGestureRecognizer = {
+       let gesture = UITapGestureRecognizer()
+       gesture.addTarget(self, action: #selector(singleTapGestureRecognizers(_:)))
+       gesture.numberOfTapsRequired = 1
+       gesture.numberOfTouchesRequired = 1
+       return gesture
+   }()
+    
     var barIsHidden: Bool? = false {
         didSet {
             if let barIsHiden = barIsHidden {
@@ -221,13 +238,13 @@ class RXPlayerControlView: UIView {
                 screenLockButton.isSelected = true
                 doubleTapGesture.isEnabled = false
                 panGesture.isEnabled = false
-                orientationSupport = R_PlayerOrietation.orientationLeftAndRight
+                orientationSupport = .orientationLeftAndRight
             } else {
                 screenLockButton.isSelected = false
                 doubleTapGesture.isEnabled = true
                 panGesture.isEnabled = true
                 /// 全屏播放本地时，只支持左右，非直接全屏播放支持上左右
-                orientationSupport = playLocalFile ? R_PlayerOrietation.orientationLeftAndRight : R_PlayerOrietation.orientationAll
+                orientationSupport = playLocalFile ? .orientationLeftAndRight : .orientationAll
             }
         }
     }
@@ -236,6 +253,7 @@ class RXPlayerControlView: UIView {
     
     // MARK: - Delegate
     weak var delegate: RXPlayerControlViewDelegate?
+
     
     // MARK: - CallBackBlock
     var fullScreenButtonClickBlock: ((_ sender: UIButton) -> ())?
@@ -263,6 +281,7 @@ class RXPlayerControlView: UIView {
         bottomControlBarView.addSubview(timeSlider)
         bottomControlBarView.addSubview(durationTimeLab)
         bottomControlBarView.addSubview(fullScreenBtn)
+        bottomControlBarView.addSubview(dragControllView)
         replayView.addSubview(replayButton)
         replayView.addSubview(replayLable)
        
@@ -295,18 +314,35 @@ extension RXPlayerControlView {
     
    // MARK: - GestureRecognizers - Action
     @objc func singleTapGestureRecognizers(_ sender: UITapGestureRecognizer) {
-        if screenIsLock! {                                                    // 锁屏状态下，单击手势只显示锁屏按钮
-            screenLockButton.isHidden = !screenLockButton.isHidden
-            if !screenLockButton.isHidden {
-                NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(autoHideScreenLockButton), object: nil)
-                self.perform(#selector(autoHideScreenLockButton), with: nil, afterDelay: 5)
+        if sender == singleTapGesture {
+            if screenIsLock! {                                                    // 锁屏状态下，单击手势只显示锁屏按钮
+                screenLockButton.isHidden = !screenLockButton.isHidden
+                if !screenLockButton.isHidden {
+                    NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(autoHideScreenLockButton), object: nil)
+                    self.perform(#selector(autoHideScreenLockButton), with: nil, afterDelay: 5)
+                }
+            }else {
+                barIsHidden = !barIsHidden! // 单击改变操作栏的显示隐藏
+                if !barIsHidden! {
+                    NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(autoHideTopBottomBar), object: nil)
+                    self.perform(#selector(autoHideTopBottomBar), with: nil, afterDelay: 5)
+                }
             }
-        }else {
-            barIsHidden = !barIsHidden! // 单击改变操作栏的显示隐藏
-            if !barIsHidden! {
-                NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(autoHideTopBottomBar), object: nil)
-                self.perform(#selector(autoHideTopBottomBar), with: nil, afterDelay: 5)
+        } else if sender == progressTapGesture {
+            let touchPoint = sender.location(in: self)
+            var progress: Double = 0.0
+            if fullScreen! {
+                if (RXDeviceModel.isiPhoneXSeries() || RXDeviceModel.isSimulator()) {
+                    progress = Double((touchPoint.x - 50.0)/(UIScreen.main.bounds.width - 100.0))
+                } else {
+                    progress = Double((touchPoint.x - 10.0)/(UIScreen.main.bounds.width - 20.0))
+                }
+            } else {
+                progress = Double((touchPoint.x - 10.0)/(UIScreen.main.bounds.width - 20.0))
             }
+            print(" tappppp touchpoint.x = \(touchPoint.x) touchPoint.y = \(touchPoint.y) progress = \(progress)")
+            timeSlider.setValue(Float(progress), animated: false)
+            delegate?.progressMoveTo(progress: progress)
         }
     }
     
@@ -315,28 +351,45 @@ extension RXPlayerControlView {
     }
     
     @objc func panGestureRecognizers(_ sender: UIPanGestureRecognizer) {
-        if let panGestureAction = self.pangeustureAction {
-            panGestureAction(sender)
-        }
-    }
-    
-    // MARK: - Slider - Action
-    @objc func sliderValueChange (_ sender: UISlider) {
-        barIsHidden = false
-        delegate?.sliderValueChange(sender)
-    }
-    
-    @objc func sliderAllTouchBegin(_ sender: UISlider) {
-        barIsHidden = false  // 防止拖动进度时，操作栏5秒后自动隐藏
-        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(autoHideTopBottomBar), object: nil)
-        delegate?.sliderTouchBegin(sender)
-        
-    }
-    
-    @objc func sliderAllTouchEnd(_ sender: UISlider) {
-        delegate?.sliderTouchEnd(sender)
-        if !barIsHidden! {   // 拖动完成后，操作栏5秒后自动隐藏
-            self.perform(#selector(autoHideTopBottomBar), with: nil, afterDelay: 5)
+
+        if sender == controlpanGesture {
+            let touchPoint = sender.location(in: self)
+            var progress: Double = 0.0
+            if fullScreen! {
+                if (RXDeviceModel.isiPhoneXSeries() || RXDeviceModel.isSimulator()) {
+                    progress = Double((touchPoint.x - 50.0)/(UIScreen.main.bounds.width - 100.0))
+                } else {
+                    progress = Double((touchPoint.x - 10.0)/(UIScreen.main.bounds.width - 20.0))
+                }
+            } else {
+                progress = Double((touchPoint.x - 10.0)/(UIScreen.main.bounds.width - 20.0))
+            }
+            print("panpanopan --- touchpoint.x = \(touchPoint.x) touchPoint.y = \(touchPoint.y) progress = \(progress)")
+            switch sender.state {
+            case .began:
+                timeSlider.isHighlighted = true
+                barIsHidden = false  // 防止拖动进度时，操作栏5秒后自动隐藏
+                NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(autoHideTopBottomBar), object: nil)
+                delegate?.progressWillDraging()
+                break
+            case .changed:
+                delegate?.progressDraging(progress: progress)
+                timeSlider.setValue(Float(progress), animated: false)
+                break
+            case .ended:
+                timeSlider.isHighlighted = false
+                if !barIsHidden! {   // 拖动完成后，操作栏5秒后自动隐藏
+                    self.perform(#selector(autoHideTopBottomBar), with: nil, afterDelay: 5)
+                }
+                delegate?.progressMoveTo(progress: progress)
+                break
+            default:
+                break
+            }
+        } else if sender == panGesture {
+            if let panGestureAction = self.pangeustureAction {
+                panGestureAction(sender)
+            }
         }
     }
     
@@ -406,6 +459,10 @@ extension RXPlayerControlView {
         self.addGestureRecognizer(singleTapGesture)
         self.addGestureRecognizer(doubleTapGesture)
         self.addGestureRecognizer(panGesture)
+        
+        dragControllView.addGestureRecognizer(progressTapGesture)
+        dragControllView.addGestureRecognizer(controlpanGesture)
+        
         // 解决点击当前view时候响应其他控件事件
         singleTapGesture.delaysTouchesBegan = true
         doubleTapGesture.delaysTouchesBegan = true
@@ -564,17 +621,20 @@ extension RXPlayerControlView {
     private func layoutLoadedProgressView() {
         loadedProgressView.snp.makeConstraints { (make) in
             make.centerY.equalTo(positionTimeLab.snp.bottom).offset(15)
-            make.height.equalTo(1.5)
+            make.height.equalTo(2.0)
             make.leading.equalTo(positionTimeLab)
             make.trailing.equalTo(durationTimeLab)
         }
     }
     private func layoutTimeSlider() {
         timeSlider.snp.makeConstraints { (make) in
-            make.centerY.equalTo(loadedProgressView.snp.centerY).offset(-0.5)  // 调整一下进度条和 加载进度条的位置
+            make.centerY.equalTo(loadedProgressView.snp.centerY).offset(-1.0)  // 调整一下进度条和 加载进度条的位置
             make.leading.equalTo(loadedProgressView.snp.leading)
             make.trailing.equalTo(loadedProgressView.snp.trailing)
             make.height.equalTo(30)
+        }
+        dragControllView.snp.makeConstraints { (make) in
+            make.edges.equalTo(timeSlider)
         }
     }
     private func layoutPlayOrPauseBtn() {

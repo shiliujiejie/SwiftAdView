@@ -14,6 +14,7 @@ public extension R_CustomMenuDelegate {
 }
 
 public protocol R_PlayerDelegate: class {
+    func customActionsBeforePlay()
     /// 开始播放
     func startPlay()
     /// 重试
@@ -27,6 +28,7 @@ public protocol R_PlayerDelegate: class {
 }
 
 public extension R_PlayerDelegate {
+    func customActionsBeforePlay() {}
     /// 开始播放
     func startPlay() {}
     /// 重试播放
