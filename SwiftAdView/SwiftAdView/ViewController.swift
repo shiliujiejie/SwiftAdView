@@ -16,6 +16,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         view.addSubview(lauchScreen)
         lauchScreen.frame = view.bounds
+        lauchScreen.setImage(urlString: "https://github.com/shiliujiejie/adResource/raw/master/folding-cell.gifg", placeHolder: nil)
     }
     
     override func viewDidAppear(_ animated: Bool) {

@@ -18,6 +18,14 @@ public class DownLoadHelper: NSObject {
     var downloadIndex: Int = 0
     /// 已下载时长
     var downLoadedDuration: Float = 0.0
+    
+    /// 用于解析和下载的网络请求头
+    var htttpHeader: [String : String]?
+    /// 请求方式
+    var httpMethod: HTTPMethod = .get
+    /// 自定义的密钥
+    var URIKey: String?
+    
     /// 某个ts下载失败后重试1次， 为1时，不再下载，0时重试一次
     private var retryTimes: Int = 0
     /// 当前正在下载的ts文件的总大小（byte）
@@ -146,7 +154,6 @@ extension DownLoadHelper {
             NLog("tsFilePath ========== \(fileUrl)")
             return (fileUrl, [.removePreviousFile, .createIntermediateDirectories])
         }
-        
         downLoadRequest = Alamofire.download(resumingWith: resuData, to: destination)
             /// 如果需要对请求头部做处理（一般防盗链）
                 .downloadProgress(closure: { [weak self] (progress) in
@@ -226,7 +233,8 @@ extension DownLoadHelper {
             return (fileUrl, [.removePreviousFile, .createIntermediateDirectories])
         }
         let date = Date()
-        downLoadRequest = Alamofire.download(tsModel.tsUrl, to: destination)
+       
+        downLoadRequest =  Alamofire.download(tsModel.tsUrl, method: httpMethod, parameters: nil, encoding: URLEncoding.default, headers: htttpHeader, to: destination)
             /// 如果需要对请求头部做处理（一般防盗链）
             .downloadProgress { [weak self] progress in
                 guard let strongSelf = self else { return }

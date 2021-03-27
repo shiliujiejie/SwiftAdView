@@ -34,7 +34,7 @@ class CLAPICheck: NSObject {
     }
     
     //公共的私有方法
-    private func request(
+    func request(
         _ urlString: String,
         params: Parameters? = nil,
         method: HTTPMethod,
@@ -43,6 +43,7 @@ class CLAPICheck: NSObject {
     {
         let manager = Alamofire.SessionManager.default
         manager.session.configuration.timeoutIntervalForRequest = 4
+    
 
         manager.request(urlString, method: method, parameters:params).responseData { response in
             if let alamoError = response.result.error {

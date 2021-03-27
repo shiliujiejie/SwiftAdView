@@ -87,7 +87,7 @@ class RXPlayerControlView: UIView {
     
     lazy var bottomBarBgLayer: CAGradientLayer = {
         let gradientLayer = CAGradientLayer()
-        gradientLayer.bounds = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width , height: 90)
+        gradientLayer.bounds = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width , height: 40)
         gradientLayer.colors = [UIColor.clear.cgColor,  UIColor(white: 0.0, alpha: 0.2).cgColor,UIColor(white: 0.0, alpha: 0.5).cgColor]
         gradientLayer.locations = [0.3, 0.6, 1.0]
         return gradientLayer
@@ -127,6 +127,7 @@ class RXPlayerControlView: UIView {
         lable.text = "00:00"
         lable.font = UIFont.systemFont(ofSize: 13)
         lable.textColor = .white
+        lable.tag = 2
         return lable
     }()
     lazy var durationTimeLab: UILabel = {
@@ -135,12 +136,13 @@ class RXPlayerControlView: UIView {
         durationLab.text = "00:00"
         durationLab.font = UIFont.systemFont(ofSize: 13)
         durationLab.textColor = .white
+        durationLab.tag = 1
         return durationLab
     }()
     lazy var playOrPauseBtn: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(RXPublicConfig.foundImage(imageName: "pause"), for: .normal)
-        button.setImage(RXPublicConfig.foundImage(imageName: "play"), for: .selected)
+        button.setImage(RXPublicConfig.foundImage(imageName: "R_pause"), for: .selected)
         button.addTarget(self, action: #selector(RXPlayerControlView.playOrPauseBtnClick(_:)), for: .touchUpInside)
         return button
     }()
@@ -209,11 +211,6 @@ class RXPlayerControlView: UIView {
                 if self.fullScreen! && !self.screenIsLock! {
                     screenLockButton.isHidden = barIsHiden
                 }
-//                if let view = UIApplication.shared.value(forKey: "statusBar") as? UIView {  //根据 barIsHiden 改变状态栏的透明度
-//                    if fullScreen! {
-//                        view.alpha = barIsHiden ? 0 : 1.0
-//                    }
-//                }
             }
         }
     }
@@ -338,7 +335,11 @@ extension RXPlayerControlView {
                     progress = Double((touchPoint.x - 10.0)/(UIScreen.main.bounds.width - 20.0))
                 }
             } else {
-                progress = Double((touchPoint.x - 10.0)/(UIScreen.main.bounds.width - 20.0))
+                if durationTimeLab.tag > 0 {
+                    progress = Double((touchPoint.x - 80.0)/(UIScreen.main.bounds.width - 160.0))
+                } else {
+                    progress = Double((touchPoint.x - 95.0)/(UIScreen.main.bounds.width - 190.0))
+                }
             }
             print(" tappppp touchpoint.x = \(touchPoint.x) touchPoint.y = \(touchPoint.y) progress = \(progress)")
             timeSlider.setValue(Float(progress), animated: false)
@@ -362,7 +363,11 @@ extension RXPlayerControlView {
                     progress = Double((touchPoint.x - 10.0)/(UIScreen.main.bounds.width - 20.0))
                 }
             } else {
-                progress = Double((touchPoint.x - 10.0)/(UIScreen.main.bounds.width - 20.0))
+                if durationTimeLab.tag > 0  {
+                    progress = Double((touchPoint.x - 80.0)/(UIScreen.main.bounds.width - 160.0))
+                } else {
+                    progress = Double((touchPoint.x - 95.0)/(UIScreen.main.bounds.width - 190.0))
+                }
             }
             print("panpanopan --- touchpoint.x = \(touchPoint.x) touchPoint.y = \(touchPoint.y) progress = \(progress)")
             switch sender.state {
@@ -481,9 +486,8 @@ extension RXPlayerControlView {
             make.height.equalTo(0)
         }
         bottomControlBarView.snp.updateConstraints { (make) in
-            make.height.equalTo(fullScreen! ? 10 : 90)
+            make.height.equalTo(0)
         }
-        
         UIView.animate(withDuration: 0.1, animations: {
             self.layoutIfNeeded()
         }) { (finish) in
@@ -501,7 +505,7 @@ extension RXPlayerControlView {
         }
         
         bottomControlBarView.snp.updateConstraints { (make) in
-            make.height.equalTo(90)
+            make.height.equalTo(fullScreen! ? 90 : 40)
         }
         UIView.animate(withDuration: 0.2, animations: {
             self.layoutIfNeeded()
@@ -537,7 +541,7 @@ extension RXPlayerControlView {
     private func layoutBottomControlBarView() {
         bottomControlBarView.snp.makeConstraints { (make) in
             make.leading.bottom.trailing.equalTo(0)
-            make.height.equalTo(90)
+            make.height.equalTo(40)
         }
     }
     private func layoutCloseButton() {
@@ -605,49 +609,52 @@ extension RXPlayerControlView {
         }
     }
     private func layoutPositionTimeLab() {
-        positionTimeLab.snp.makeConstraints { (make) in
-            make.top.equalTo(0)
-            make.leading.equalTo(10)
+        positionTimeLab.snp.remakeConstraints { (make) in
+            make.centerY.equalToSuperview()
+            make.leading.equalTo(playOrPauseBtn.snp.trailing).offset(10)
+            make.width.equalTo(45)
             make.height.equalTo(20)
         }
     }
     private func layoutDurationTimeLab() {
-        durationTimeLab.snp.makeConstraints { (make) in
-            make.top.equalTo(0)
-            make.trailing.equalTo(-10)
+        durationTimeLab.snp.remakeConstraints { (make) in
+            make.centerY.equalToSuperview()
+            make.trailing.equalTo(fullScreenBtn.snp.leading).offset(-10)
+            make.width.equalTo(45)
             make.height.equalTo(20)
         }
     }
     private func layoutLoadedProgressView() {
-        loadedProgressView.snp.makeConstraints { (make) in
-            make.centerY.equalTo(positionTimeLab.snp.bottom).offset(15)
+        loadedProgressView.snp.remakeConstraints { (make) in
+            make.centerY.equalToSuperview()
             make.height.equalTo(2.0)
-            make.leading.equalTo(positionTimeLab)
-            make.trailing.equalTo(durationTimeLab)
+            make.leading.equalTo(positionTimeLab.snp.trailing).offset(8)
+            make.trailing.equalTo(durationTimeLab.snp.leading).offset(-8)
         }
     }
     private func layoutTimeSlider() {
-        timeSlider.snp.makeConstraints { (make) in
+        timeSlider.snp.remakeConstraints { (make) in
             make.centerY.equalTo(loadedProgressView.snp.centerY).offset(-1.0)  // 调整一下进度条和 加载进度条的位置
             make.leading.equalTo(loadedProgressView.snp.leading)
             make.trailing.equalTo(loadedProgressView.snp.trailing)
             make.height.equalTo(30)
         }
-        dragControllView.snp.makeConstraints { (make) in
+        dragControllView.snp.remakeConstraints { (make) in
             make.edges.equalTo(timeSlider)
         }
     }
     private func layoutPlayOrPauseBtn() {
-        playOrPauseBtn.snp.makeConstraints { (make) in
-            make.top.equalTo(timeSlider.snp.bottom)
-            make.leading.equalTo(timeSlider)
-            make.width.height.equalTo(30)
+        playOrPauseBtn.snp.remakeConstraints { (make) in
+            make.centerY.equalToSuperview()
+            make.leading.equalTo(10)
+            make.width.equalTo(25)
+            make.height.equalTo(30)
         }
     }
     private func layoutFullScreenBtn() {
-        fullScreenBtn.snp.makeConstraints { (make) in
-            make.top.equalTo(timeSlider.snp.bottom)
-            make.trailing.equalTo(timeSlider)
+        fullScreenBtn.snp.remakeConstraints { (make) in
+            make.centerY.equalToSuperview()
+            make.trailing.equalTo(-10)
             make.height.width.equalTo(30)
         }
     }
@@ -677,18 +684,88 @@ extension RXPlayerControlView {
         }
     }
     private func updateBottomBarWith(fullScreen: Bool) {
-        positionTimeLab.snp.updateConstraints { (make) in
-            if fullScreen {
-                make.leading.equalTo((RXDeviceModel.isiPhoneXSeries() || RXDeviceModel.isSimulator()) ? 50 : 10)
-            } else {
-                make.leading.equalTo(10)
+        if fullScreen {
+            bottomControlBarView.snp.remakeConstraints { (make) in
+                make.leading.bottom.trailing.equalTo(0)
+                make.height.equalTo(90)
             }
-        }
-        durationTimeLab.snp.updateConstraints { (make) in
-            if fullScreen {
-                 make.trailing.equalTo((RXDeviceModel.isiPhoneXSeries() || RXDeviceModel.isSimulator()) ? -50 : -10)
-            } else {
-                 make.trailing.equalTo(-10)
+            positionTimeLab.snp.remakeConstraints { (make) in
+                make.top.equalTo(0)
+                make.leading.equalTo((RXDeviceModel.isiPhoneXSeries() || RXDeviceModel.isSimulator()) ? 50 : 10)
+                make.height.equalTo(20)
+            }
+            durationTimeLab.snp.remakeConstraints { (make) in
+                make.top.equalTo(0)
+                make.trailing.equalTo((RXDeviceModel.isiPhoneXSeries() || RXDeviceModel.isSimulator()) ? -50 : -10)
+                make.height.equalTo(20)
+            }
+            loadedProgressView.snp.remakeConstraints { (make) in
+                make.centerY.equalTo(positionTimeLab.snp.bottom).offset(15)
+                make.height.equalTo(2.0)
+                make.leading.equalTo(positionTimeLab)
+                make.trailing.equalTo(durationTimeLab)
+            }
+            timeSlider.snp.remakeConstraints { (make) in
+                make.centerY.equalTo(loadedProgressView.snp.centerY).offset(-1.0)  // 调整一下进度条和 加载进度条的位置
+                make.leading.equalTo(loadedProgressView.snp.leading)
+                make.trailing.equalTo(loadedProgressView.snp.trailing)
+                make.height.equalTo(30)
+            }
+            dragControllView.snp.remakeConstraints { (make) in
+                make.edges.equalTo(timeSlider)
+            }
+            playOrPauseBtn.snp.remakeConstraints { (make) in
+                make.top.equalTo(timeSlider.snp.bottom)
+                make.leading.equalTo(timeSlider)
+                make.width.height.equalTo(30)
+            }
+            fullScreenBtn.snp.remakeConstraints { (make) in
+                make.top.equalTo(timeSlider.snp.bottom)
+                make.trailing.equalTo(timeSlider)
+                make.height.width.equalTo(30)
+            }
+        } else {
+            bottomControlBarView.snp.remakeConstraints { (make) in
+                make.leading.bottom.trailing.equalTo(0)
+                make.height.equalTo(40)
+            }
+            playOrPauseBtn.snp.remakeConstraints { (make) in
+                make.centerY.equalToSuperview()
+                make.leading.equalTo(10)
+                make.width.equalTo(20)
+                make.height.equalTo(18)
+            }
+            fullScreenBtn.snp.remakeConstraints { (make) in
+                make.centerY.equalToSuperview()
+                make.trailing.equalTo(-10)
+                make.height.width.equalTo(20)
+            }
+            positionTimeLab.snp.remakeConstraints { (make) in
+                make.centerY.equalToSuperview()
+                make.leading.equalTo(playOrPauseBtn.snp.trailing).offset(10)
+                make.width.equalTo(45)
+                make.height.equalTo(20)
+            }
+            durationTimeLab.snp.remakeConstraints { (make) in
+                make.centerY.equalToSuperview()
+                make.trailing.equalTo(fullScreenBtn.snp.leading).offset(-10)
+                make.width.equalTo(45)
+                make.height.equalTo(20)
+            }
+            loadedProgressView.snp.remakeConstraints { (make) in
+                make.centerY.equalToSuperview()
+                make.height.equalTo(2.0)
+                make.leading.equalTo(positionTimeLab.snp.trailing).offset(5)
+                make.trailing.equalTo(durationTimeLab.snp.leading).offset(-5)
+            }
+            timeSlider.snp.remakeConstraints { (make) in
+                make.centerY.equalTo(loadedProgressView.snp.centerY).offset(-1.0)  // 调整一下进度条和 加载进度条的位置
+                make.leading.equalTo(loadedProgressView.snp.leading)
+                make.trailing.equalTo(loadedProgressView.snp.trailing)
+                make.height.equalTo(30)
+            }
+            dragControllView.snp.remakeConstraints { (make) in
+                make.edges.equalTo(timeSlider)
             }
         }
     }
@@ -702,7 +779,7 @@ extension RXPlayerControlView {
             bottomBarBgLayer.frame = CGRect(x: 0, y: 0, width: bottomControlBarView.frame.size.width , height: 90)
         } else {
             topBarBgLayer.frame = CGRect(x: 0, y: 0, width: topControlBarView.frame.size.width, height: topControlBarView.frame.size.height)
-            bottomBarBgLayer.frame = CGRect(x: 0, y: 0, width: bottomControlBarView.frame.size.width, height: 90)
+            bottomBarBgLayer.frame = CGRect(x: 0, y: 0, width: bottomControlBarView.frame.size.width, height: 40)
         }
     }
 }

@@ -35,8 +35,6 @@
 		047A6BFD24BC632F008CE41E /* back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 047A6BFB24BC632E008CE41E /* back@2x.png */; };
 		047A6BFE24BC632F008CE41E /* back@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 047A6BFC24BC632F008CE41E /* back@3x.png */; };
 		047A6C0224BDC13D008CE41E /* R_PlayerViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047A6C0124BDC13D008CE41E /* R_PlayerViewDelegate.swift */; };
-		047A6C0824BDDF30008CE41E /* sliderHightLight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 047A6C0624BDDF30008CE41E /* sliderHightLight@2x.png */; };
-		047A6C0924BDDF30008CE41E /* sliderHightLight@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 047A6C0724BDDF30008CE41E /* sliderHightLight@3x.png */; };
 		047A6C0B24BEF7EA008CE41E /* CustomActionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047A6C0A24BEF7EA008CE41E /* CustomActionsView.swift */; };
 		0493192122C204EC000B805F /* WebKitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0493192022C204EC000B805F /* WebKitController.swift */; };
 		0493192322C20C1F000B805F /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0493192222C20C1F000B805F /* RootViewController.swift */; };
@@ -89,6 +87,9 @@
 		04DD09F524AC917000DCC901 /* player_brightness.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DD09C224AC917000DCC901 /* player_brightness.png */; };
 		04DD09F724AC945000DCC901 /* TablePlayNativeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04DD09F624AC945000DCC901 /* TablePlayNativeController.swift */; };
 		19E6992F279053C4A5F2A89E /* Pods_SwiftAdView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 325DA2BE3B0AC373EF94A5B8 /* Pods_SwiftAdView.framework */; };
+		FFE6052F260EC9B100D0DF31 /* DownloadImageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFE6052C260EC9B100D0DF31 /* DownloadImageManager.swift */; };
+		FFE60530260EC9B100D0DF31 /* DownloadImageOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFE6052D260EC9B100D0DF31 /* DownloadImageOperation.swift */; };
+		FFE60531260EC9B100D0DF31 /* DownloadImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFE6052E260EC9B100D0DF31 /* DownloadImageExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -122,8 +123,6 @@
 		047A6BFB24BC632E008CE41E /* back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back@2x.png"; sourceTree = "<group>"; };
 		047A6BFC24BC632F008CE41E /* back@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back@3x.png"; sourceTree = "<group>"; };
 		047A6C0124BDC13D008CE41E /* R_PlayerViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = R_PlayerViewDelegate.swift; sourceTree = "<group>"; };
-		047A6C0624BDDF30008CE41E /* sliderHightLight@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sliderHightLight@2x.png"; sourceTree = "<group>"; };
-		047A6C0724BDDF30008CE41E /* sliderHightLight@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sliderHightLight@3x.png"; sourceTree = "<group>"; };
 		047A6C0A24BEF7EA008CE41E /* CustomActionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomActionsView.swift; sourceTree = "<group>"; };
 		0493192022C204EC000B805F /* WebKitController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebKitController.swift; sourceTree = "<group>"; };
 		0493192222C20C1F000B805F /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
@@ -178,6 +177,9 @@
 		325DA2BE3B0AC373EF94A5B8 /* Pods_SwiftAdView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SwiftAdView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		413D21ABC1A5F4E5780750E8 /* Pods-SwiftAdView.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwiftAdView.release.xcconfig"; path = "Target Support Files/Pods-SwiftAdView/Pods-SwiftAdView.release.xcconfig"; sourceTree = "<group>"; };
 		CD7B4C664A7DD87E72904414 /* Pods-SwiftAdView.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwiftAdView.debug.xcconfig"; path = "Target Support Files/Pods-SwiftAdView/Pods-SwiftAdView.debug.xcconfig"; sourceTree = "<group>"; };
+		FFE6052C260EC9B100D0DF31 /* DownloadImageManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadImageManager.swift; sourceTree = "<group>"; };
+		FFE6052D260EC9B100D0DF31 /* DownloadImageOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadImageOperation.swift; sourceTree = "<group>"; };
+		FFE6052E260EC9B100D0DF31 /* DownloadImageExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadImageExtensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -213,6 +215,7 @@
 		0422894922BC9BAE00EE9B93 /* SwiftAdView */ = {
 			isa = PBXGroup;
 			children = (
+				FFE6052B260EC99D00D0DF31 /* ImageWapper */,
 				049DACF4256764AE00DCBA64 /* KSCodes */,
 				0432E7DB25569C970009E573 /* ActiveLabel */,
 				0422895C22BC9BCC00EE9B93 /* SwiftAdView */,
@@ -372,8 +375,6 @@
 		04DD099824AC917000DCC901 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
-				047A6C0624BDDF30008CE41E /* sliderHightLight@2x.png */,
-				047A6C0724BDDF30008CE41E /* sliderHightLight@3x.png */,
 				047A6BFB24BC632E008CE41E /* back@2x.png */,
 				047A6BFC24BC632F008CE41E /* back@3x.png */,
 				04DD099D24AC917000DCC901 /* sliderNormal@2x.png */,
@@ -418,6 +419,16 @@
 				413D21ABC1A5F4E5780750E8 /* Pods-SwiftAdView.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		FFE6052B260EC99D00D0DF31 /* ImageWapper */ = {
+			isa = PBXGroup;
+			children = (
+				FFE6052E260EC9B100D0DF31 /* DownloadImageExtensions.swift */,
+				FFE6052C260EC9B100D0DF31 /* DownloadImageManager.swift */,
+				FFE6052D260EC9B100D0DF31 /* DownloadImageOperation.swift */,
+			);
+			path = ImageWapper;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -498,7 +509,6 @@
 				04DD09DA24AC917000DCC901 /* share@2x.png in Resources */,
 				04C9DA07246AF0C500B0BA35 /* ChannelRecommendCell.xib in Resources */,
 				04DD09EA24AC917000DCC901 /* sliderflash@3x.png in Resources */,
-				047A6C0924BDDF30008CE41E /* sliderHightLight@3x.png in Resources */,
 				04DD09EE24AC917000DCC901 /* shrinkScreen@2x.png in Resources */,
 				04DD09CD24AC917000DCC901 /* pause@2x.png in Resources */,
 				04DD09CF24AC917000DCC901 /* play@3x.png in Resources */,
@@ -513,7 +523,6 @@
 				04DD09D124AC917000DCC901 /* lockscreen@3x.png in Resources */,
 				0422895022BC9BAE00EE9B93 /* Main.storyboard in Resources */,
 				04DD09E224AC917000DCC901 /* unlock@3x.png in Resources */,
-				047A6C0824BDDF30008CE41E /* sliderHightLight@2x.png in Resources */,
 				04DD09D024AC917000DCC901 /* sliderNormal@2x.png in Resources */,
 				04DD09D924AC917000DCC901 /* pause@3x.png in Resources */,
 				04C9DA05246AF0C500B0BA35 /* MyChannelReusableView.xib in Resources */,
@@ -582,14 +591,17 @@
 				0422896822BCD22600EE9B93 /* SwiftAdFileConfig.swift in Sources */,
 				04CC2BCD24571221009CDB9D /* M3u8Parser.swift in Sources */,
 				04C9DA04246AF0C500B0BA35 /* MyChannelReusableView.swift in Sources */,
+				FFE6052F260EC9B100D0DF31 /* DownloadImageManager.swift in Sources */,
 				045E77DC243D906A00EE2A69 /* X_FullScreenPlayController.swift in Sources */,
 				0422894B22BC9BAE00EE9B93 /* AppDelegate.swift in Sources */,
 				0422896022BC9C1800EE9B93 /* SwiftyTimer.swift in Sources */,
 				045E77DA243D906A00EE2A69 /* X_PlayerViewDelegate.swift in Sources */,
 				04DD09C824AC917000DCC901 /* R_BrightnessView.swift in Sources */,
+				FFE60530260EC9B100D0DF31 /* DownloadImageOperation.swift in Sources */,
 				04CC2BCB245711EF009CDB9D /* TSManager.swift in Sources */,
 				047A6BFA24BC1B8A008CE41E /* R_PlayerView.swift in Sources */,
 				0432E7DD25569CB50009E573 /* ActiveLabel.swift in Sources */,
+				FFE60531260EC9B100D0DF31 /* DownloadImageExtensions.swift in Sources */,
 				04C9D9FC24693B6100B0BA35 /* CategrayController.swift in Sources */,
 				04DD09CA24AC917000DCC901 /* RXPublicConfig.swift in Sources */,
 				04CC2BD3245863B4009CDB9D /* DownLoadedTSPlayerVC.swift in Sources */,

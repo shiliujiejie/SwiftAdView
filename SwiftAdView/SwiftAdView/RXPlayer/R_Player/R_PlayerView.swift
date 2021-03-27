@@ -12,46 +12,12 @@ open class R_PlayerView: UIView {
     
     // MARK: - ************** --> Public Var <-- **************
     /// 播放状态
-    public var playerStatu: PlayerStatus? {
-        didSet {
-            if playerStatu == PlayerStatus.Playing {
-                playControlView.playOrPauseBtn.isSelected = true
-                player?.play()
-                player?.rate = rate
-                if self.subviews.contains(pauseButton) {
-                    pauseButton.isHidden = true
-                    pauseButton.removeFromSuperview()
-                }
-            } else if playerStatu == PlayerStatus.Pause {
-                player?.pause()
-                player?.rate = 0
-                hideLoadingHud()
-                playControlView.playOrPauseBtn.isSelected = false
-                if !self.subviews.contains(pauseButton) {
-                    self.insertSubview(pauseButton, aboveSubview: playControlView)
-                    pauseButton.isHidden = false
-                    layoutPauseButton()
-                }
-            }
-        }
-    }
+    public var playerStatu: PlayerStatus?
     /// 是否是全屏
     public var isFullScreen: Bool? = false {
         didSet {  // 监听全屏切换， 改变返回按钮，全屏按钮的状态和图片
             playControlView.closeButton.isSelected = isFullScreen!
             playControlView.fullScreen = isFullScreen!
-            
-            //            if let view = UIApplication.shared.value(forKey: "statusBar") as? UIView {  // 状态栏变化
-            //                if !isFullScreen! {
-            //                    view.alpha = 1.0
-            //                } else {  // 全频
-            //                    if playControlView.barIsHidden! { // 状态栏
-            //                        view.alpha = 0
-            //                    } else {
-            //                        view.alpha = 1.0
-            //                    }
-            //                }
-            //            }
             if !isFullScreen! {
                 /// 非全屏状态下，移除自定义视图
                 if let customView = self.viewWithTag(R_PlayerView.kCustomViewTag) {
@@ -109,10 +75,10 @@ open class R_PlayerView: UIView {
     private var playedValue: Float = 0 {  // 播放进度
         didSet {
             if oldValue < playedValue {  // 表示在播放中
+                hideLoadingHud()
                 if !playControlView.panGesture.isEnabled && !playControlView.screenIsLock! {
                     playControlView.panGesture.isEnabled = true
                 }
-                hideLoadingHud()
                 if subviews.contains(loadedFailedView) {
                     loadedFailedView.removeFromSuperview()
                 }
@@ -173,13 +139,7 @@ open class R_PlayerView: UIView {
     }()
     
     /// 网络视频链接(每次对链接赋值，都会重置播放器)
-    private var playUrl: URL? {
-        didSet {
-            if let videoUrl = playUrl {
-                resetPlayerResource(videoUrl)
-            }
-        }
-    }
+    private var playUrl: URL?
     /// 本地视频链接
     private var fileUrlString: String?
     /// 视频名称
@@ -246,7 +206,7 @@ open class R_PlayerView: UIView {
         RXM3u8ResourceLoader.shared.interruptPlay()
         NotificationCenter.default.removeObserver(self)
         orientationSupport = .orientationPortrait
-        destructPlayerResource()
+        releasePlayer()
     }
     
     /// 构造方法
@@ -267,6 +227,132 @@ open class R_PlayerView: UIView {
     }
     
 }
+
+// MARK: - Listen To the Player (监听播放状态)
+extension R_PlayerView {
+    
+    /// 监听PlayerItem对象
+    fileprivate func listenTothePlayer() {
+        guard let avItem = self.avItem else {return}
+        playerTimerObserver = player?.addPeriodicTimeObserver(forInterval: CMTimeMake(value: Int64(1.0), timescale: Int32(1.0)), queue: nil, using: { [weak self] (time) in
+            guard let strongSelf = self else { return }
+            // 刷新时间UI
+            strongSelf.updateTimeSliderValue(avItem: avItem)
+        }) as? NSObject
+        
+    }
+    
+    /// KVO 监听播放状态
+    override open func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        guard let avItem = object as? AVPlayerItem else {
+            return
+        }
+        if keyPath == "status" {
+            if avItem.status == AVPlayerItem.Status.readyToPlay {
+                NLog("Player_ReadyToPlay")
+                playerStatu = .ReadyToPlay // 初始状态为播放
+                hideLoadingHud()
+                playControlView.playOrPauseBtn.isSelected = true
+            } else if avItem.status == .unknown || avItem.status == .failed {
+                NLog("Player_Failed")
+                playerStatu = .Failed
+                hideLoadingHud()
+               
+                if delegate?.playVideoFailed(url: playUrl, player: self) ?? false {
+                    
+                } else {
+                    if !playControlView.playLocalFile {  /// 非本地文件播放才显示网络失败
+                        showLoadedFailedView()
+                    }
+                }
+            }
+        } else if keyPath == "loadedTimeRanges" {
+            updateLoadingProgress(avItem: avItem)
+        } else if keyPath == "playbackBufferEmpty" {
+            NLog("Player_Buffering")
+            playerStatu = .Buffering
+            showLoadingHud() // 监听播放器正在缓冲数据
+        } else if keyPath == "playbackLikelyToKeepUp" {    //监听视频缓冲达到可以播放的状态
+            NLog("Player_Playing")
+            playerStatu = .Playing
+            delegate?.startPlay()
+            updateTimeLableLayout(avItem: avItem)
+        }
+    }
+    
+    /// 更新时间进度条
+    ///
+    /// - Parameter avItem: AVPlayerItem
+    
+    private func updateTimeSliderValue(avItem: AVPlayerItem) {
+        let timeScaleValue = Int64(avItem.currentTime().timescale) /// 当前时间
+        let timeScaleDuration = Int64(avItem.asset.duration.timescale)   /// 总时间
+        if avItem.asset.duration.value > 0 && avItem.currentTime().value > 0 {
+            let value = avItem.currentTime().value / timeScaleValue  /// 当前播放时间
+            let duration = avItem.asset.duration.value / timeScaleDuration /// 视频总时长
+            let playValue = Float(value)/Float(duration)
+            let stringDuration = RXPublicConfig.formatTimDuration(duration:Int(duration))
+            let stringValue = RXPublicConfig.formatTimPosition(position: Int(value), duration: Int(duration))
+            playControlView.positionTimeLab.text = stringValue
+            playControlView.durationTimeLab.text = stringDuration
+            if duration >= Int64(3600) {
+                if !isFullScreen! {
+                    playControlView.durationTimeLab.tag = -1
+                    playControlView.durationTimeLab.snp.updateConstraints { (make) in
+                        make.width.equalTo(60)
+                    }
+                    playControlView.positionTimeLab.snp.updateConstraints { (make) in
+                        make.width.equalTo(60)
+                    }
+                }
+            } else {
+                if !isFullScreen! {
+                    playControlView.durationTimeLab.tag = 1
+                    playControlView.durationTimeLab.snp.updateConstraints { (make) in
+                        make.width.equalTo(45)
+                    }
+                    playControlView.positionTimeLab.snp.updateConstraints { (make) in
+                        make.width.equalTo(45)
+                    }
+                }
+            }
+            delegate?.playerProgress(progress: playValue, currentPlayTime: Float(value))
+            if !isDragging {
+                playControlView.timeSlider.value = playValue
+                playedValue = Float(value)                                      // 保存播放进度
+            }
+        }
+    }
+    
+    /// 更新时间显示布局
+    ///
+    /// - Parameter avItem: AVPlayerItem
+    private func updateTimeLableLayout(avItem: AVPlayerItem) {
+        let duration = Float(avItem.asset.duration.value)/Float(avItem.asset.duration.timescale)
+        let currentTime =  avItem.currentTime().value/Int64(avItem.currentTime().timescale)
+        self.videoDuration = Float(duration)
+        print("video time length = \(duration) s, current time = \(currentTime) s")
+    }
+    
+    /// 监听缓存进度
+    ///
+    /// - Parameter avItem: AVPlayerItem
+    private func updateLoadingProgress(avItem: AVPlayerItem) {
+        //监听缓存进度，根据时间来监听
+        let timeRange = avItem.loadedTimeRanges
+        if timeRange.count > 0 {
+            let cmTimeRange = timeRange[0] as! CMTimeRange
+            let startSeconds = CMTimeGetSeconds(cmTimeRange.start)
+            let durationSeconds = CMTimeGetSeconds(cmTimeRange.duration)
+            let timeInterval = startSeconds + durationSeconds                    // 计算总进度
+            let totalDuration = CMTimeGetSeconds(avItem.asset.duration)
+            self.loadedValue = Float(timeInterval)                               // 保存缓存进度
+            self.playControlView.loadedProgressView.setProgress(Float(timeInterval/totalDuration), animated: true)
+        }
+    }
+    
+}
+
 
 // MARK: - Open Func (api)
 extension R_PlayerView {
@@ -295,7 +381,6 @@ extension R_PlayerView {
         startPlay(url: url, in: view, title: title, uri: uri, cache: cache)
         guard let avItem = self.avItem else { return }
         self.playTimeSince = lastPlayTime              // 保存播放起点，在网络断开时，点击重试，可以找到起点
-        hideLoadingHud()
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             let lastPositionValue = CMTimeMakeWithSeconds(Float64(lastPlayTime), preferredTimescale: (avItem.asset.duration.timescale))
             self.playSinceTime(lastPositionValue)
@@ -306,8 +391,8 @@ extension R_PlayerView {
         avItem?.seek(to: .zero)
         playControlView.timeSlider.value = 0
         playControlView.screenIsLock = false
-        startReadyToPlay()
-        playerStatu = .Playing
+        resetControlView()
+        player?.play()
     }
     /// 直接全屏播放，思路就是：直接将播放器添加到父视图上，：1.播放视频，2：屏幕强制旋转到右侧，3.隐藏全屏切换按钮 ，4.更换返回按钮事件为移除播放器
     ///
@@ -368,14 +453,31 @@ extension R_PlayerView {
         self.rate = rate
     }
     
+    /// 暂停
     open func pause(_ showButton: Bool? = true) {
-        playerStatu = .Pause
+        player?.rate = 0
+        player?.pause()
+        hideLoadingHud()
+        playControlView.playOrPauseBtn.isSelected = false
+        if !self.subviews.contains(pauseButton) {
+            self.insertSubview(pauseButton, aboveSubview: playControlView)
+            pauseButton.isHidden = false
+            layoutPauseButton()
+        }
         if !(showButton ?? true) {
             pauseButton.isHidden = true
         }
+        playerStatu = .Pause
     }
+    /// 播放
     open func play() {
-        playerStatu = .Playing
+        playControlView.playOrPauseBtn.isSelected = true
+        player?.rate = rate
+        player?.play()
+        if self.subviews.contains(pauseButton) {
+            pauseButton.isHidden = true
+            pauseButton.removeFromSuperview()
+        }
     }
     
     open func destroyPlayer() {
@@ -412,18 +514,27 @@ private extension R_PlayerView {
     
     func playVideoWith(url: URL?, videoName: String?, containView: UIView?) {
         delegate?.customActionsBeforePlay()
-        // 👇三个属性的设置顺序很重要
-        self.playUrl = url   // 判断视频链接是否更改，更改了就重置播放器
-        self.videoName = videoName      // 视频名称
-        self.playControlView.videoNameLable.isHidden = videoNameShowOnlyFullScreen
-        
+        /// 释放已存在播放器
+        releasePlayer()
+        /// 重置控制层
+        resetControlView()
         if !isFullScreen! {
             fatherView = containView // 更换父视图时
         }
+        if url != nil {
+            playUrl = url
+            setUpPlayerResource(url!)
+        }
+        self.videoName = videoName      // 视频名称
+        self.playControlView.videoNameLable.isHidden = videoNameShowOnlyFullScreen
+        
+       
         layoutAllPageSubviews()
         
         addNotificationAndObserver()
         addUserActionBlock()
+        player?.play()
+        listenTothePlayer()
     }
     
     /// 播放本地视频文件 : 1.标注为播放本地文件。 2.初始化播放器，播放视频）。 3.根据标记改变屏幕支持方向。4.隐藏全屏按钮 5.强制横屏
@@ -439,16 +550,20 @@ private extension R_PlayerView {
         self.backgroundColor = .black
         playControlView.playLocalFile = true  // 声明直接就进入全屏播放               ------------------   1
         fileUrlString = url.absoluteString    //   存本地文件URL
-        // 👇三个属性的设置顺序很重要X
-        self.playUrl = url                // 判断视频链接是否更改，更改了就重置播放器        // ------------------------- 2  + 3
-        self.videoName = title      // 视频名称
+        releasePlayer()
         if !isFullScreen! {
             fatherView = view // 更换父视图时
         }
+        resetControlView()
+        setUpPlayerResource(url)
+        self.videoName = title      // 视频名称
+        
         playControlView.fullScreenBtn.isHidden = true                      // --------------------------- 4
         layoutAllPageSubviews()
         addNotificationAndObserver()
         addUserActionBlock()
+        player?.play()
+        listenTothePlayer()
         playControlView.closeButton.setImage(RXPublicConfig.foundImage(imageName: "back"), for: .normal)
         playControlView.closeButton.snp.updateConstraints({ (make) in
             make.width.equalTo(40)
@@ -479,7 +594,6 @@ private extension R_PlayerView {
     }
     // MARK: - 网络提示显示
     func showLoadedFailedView() {
-        delegate?.playVideoFailed(url: playUrl, player: self)
         addSubview(loadedFailedView)
         loadedFailedView.retryButtonClickBlock = { [weak self] (sender) in
             guard let strongSelf = self else { return }
@@ -501,11 +615,17 @@ private extension R_PlayerView {
             player?.removeTimeObserver(playerTimerObserver!)
             playerTimerObserver = nil
         }
+        playControlView.timeSlider.setValue(0, animated: false)
+        playControlView.loadedProgressView.setProgress(0, animated: false)
+        player?.cancelPendingPrerolls()
+        player?.replaceCurrentItem(with: nil)
+        avItem = nil
+        player = nil
         playerLayer?.removeFromSuperlayer()
         self.layer.removeAllAnimations()
         playedValue = 0.0
         rate = 1.0
-        avItem = nil
+        removeFromSuperview()
     }
     
     /// 初始化播放源
@@ -540,44 +660,13 @@ private extension R_PlayerView {
             orientationSupport = .orientationAll
         }
     }
-    
-    /// 重置播放器
-    ///
-    /// - Parameter videoUrl: 视频链接
-    func resetPlayerResource(_ videoUrl: URL) {
-        releasePlayer()  // 先释放播放源
-        startReadyToPlay()
-        setUpPlayerResource(videoUrl)
-    }
-    
-    /// 销毁播放器源
-    func destructPlayerResource() {
-        avItem?.removeObserver(self, forKeyPath: "status")
-        avItem?.removeObserver(self, forKeyPath: "loadedTimeRanges")
-        avItem?.removeObserver(self, forKeyPath: "playbackBufferEmpty")
-        avItem?.removeObserver(self, forKeyPath: "playbackLikelyToKeepUp")
-        playedValue = 0.0
-        rate = 1.0
-        avItem = nil
-        player?.replaceCurrentItem(with: nil)
-        player = nil
-        playerLayer?.removeFromSuperlayer()
-        layer.removeAllAnimations()
-    }
-    
-    /// 从某个点开始播放
+    /// 从某个点开始播放 (拖动进度)
     ///
     /// - Parameter time: 要从开始的播放起点
     func playSinceTime(_ time: CMTime) {
-        if CMTIME_IS_VALID(time) {
-            avItem?.seek(to: time, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero, completionHandler: { [weak self] (finish) in
-                if finish {
-                    self?.hideLoadingHud()
-                }
-            })
-            return
-        }else {
-            self.hideLoadingHud()
+        avItem?.seek(to: time)
+        if playerStatu != .Playing {
+            play()
         }
     }
     
@@ -614,7 +703,7 @@ private extension R_PlayerView {
     
     // MARK: - 返回，关闭，全屏，播放，暂停,重播,音量，亮度，进度拖动 - UserAction
     @objc func pauseButtonClick() {
-        self.playerStatu = PlayerStatus.Playing
+        play()
     }
     
     // MARK: - User Action - Block
@@ -651,12 +740,12 @@ private extension R_PlayerView {
         }
         // MARK: - 播放暂停
         playControlView.playOrPauseButtonClickBlock = { [weak self] (sender) in
-            if self?.playerStatu == PlayerStatus.Playing || self?.playerStatu == PlayerStatus.Buffering || self?.playerStatu == PlayerStatus.ReadyToPlay {
+            if self?.playerStatu == .Playing || self?.playerStatu == .Buffering || self?.playerStatu == .ReadyToPlay {
                 NLog("playerStatu = \(String(describing: self?.playerStatu))")
                 self?.hideLoadingHud()
-                self?.playerStatu = PlayerStatus.Pause
-            } else if self?.playerStatu == PlayerStatus.Pause {
-                self?.playerStatu = PlayerStatus.Playing
+                self?.pause()
+            } else if self?.playerStatu == .Pause {
+                self?.play()
             }
         }
         // MARK: - 锁屏
@@ -714,14 +803,11 @@ private extension R_PlayerView {
                 let y = abs(veloctyPoint.y)
                 
                 if x > y {                       //水平滑动
-                    
                     if !strongSelf.playControlView.replayView.isHidden {  // 锁屏状态下播放完成,解锁后，滑动
-                        strongSelf.startReadyToPlay()
+                        strongSelf.resetControlView()
                         strongSelf.playControlView.screenIsLock = false
                     }
                     strongSelf.panDirection = .PanDirectionHorizontal
-                    // strongSelf.beforeSliderChangePlayStatu = strongSelf.playerStatu  // 拖动开始时，记录下拖动前的状态
-                    strongSelf.playerStatu = PlayerStatus.Pause
                     strongSelf.pauseButton.isHidden = true                     // 拖动时隐藏暂停按钮
                     strongSelf.sumTime = CGFloat(avItem.currentTime().value)/CGFloat(avItem.currentTime().timescale)
                     if !strongSelf.subviews.contains(strongSelf.draggedProgressView) {
@@ -777,12 +863,10 @@ private extension R_PlayerView {
                     let position = CGFloat(avItem.asset.duration.value)/CGFloat(avItem.asset.duration.timescale)
                     let sliderValue = strongSelf.sumTime!/position
                     let po = CMTimeMakeWithSeconds(Float64(position) * Float64(sliderValue), preferredTimescale: (avItem.asset.duration.timescale))
-                    avItem.seek(to: po, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero)
+                    strongSelf.playSinceTime(po)
                     /// 拖动完成，sumTime置为0 回到之前的播放状态，如果播放状态为
                     strongSelf.sumTime = 0
                     strongSelf.pauseButton.isHidden = false
-                    
-                    strongSelf.playerStatu = PlayerStatus.Playing
                     //进度拖拽完成，5庙后自动隐藏操作栏
                     strongSelf.autoHideBar()
                     
@@ -858,7 +942,7 @@ private extension R_PlayerView {
     ///
     /// - Parameter sender: 监听播放结束
     @objc func playToEnd(_ sender: Notification) {
-        self.playerStatu = PlayerStatus.Pause //同时为暂停状态
+        self.pause()
         self.pauseButton.isHidden = true
         cancleAutoHideBar()               // 取消自动隐藏操作栏
         playControlView.screenIsLock = false
@@ -878,8 +962,8 @@ private extension R_PlayerView {
         }
     }
     
-    // MARK: - 开始播放准备
-    private func startReadyToPlay() {
+    // MARK: - 重置控制层数据
+    private func resetControlView() {
         playControlView.barIsHidden = false
         playControlView.replayView.isHidden = true
         playControlView.singleTapGesture.isEnabled = true
@@ -939,25 +1023,36 @@ private extension R_PlayerView {
     /// - Parameter sender: 记录被挂起前的播放状态，进入前台时恢复状态
     @objc func applicationResignActivity(_ sender: NSNotification) {
         self.beforeSliderChangePlayStatu = self.playerStatu  // 记录下进入后台前的播放状态
-        if playerStatu == PlayerStatus.Playing {
-            playerStatu = PlayerStatus.Pause
+        if playerStatu != .Pause {
+            pause()
         }
     }
     
     // MARK: - APP进入前台，恢复播放状态
     @objc func applicationBecomeActivity(_ sender: NSNotification) {
-        if let oldStatu = self.beforeSliderChangePlayStatu {
-            self.playerStatu = oldStatu                      // 恢复进入后台前的播放状态
+        if let vc = self.getNextVC() {
+            if vc.isViewLoaded && vc.view.window != nil {
+                play()
+            }
         }
     }
-    
+    func getNextVC() -> UIViewController? {
+        var next = self.superview
+        while (next != nil) {
+            let nextResponder = next?.next
+            if nextResponder?.isKind(of: UIViewController.self) ?? false {
+                return nextResponder as? UIViewController
+            }
+            next = next?.superview
+        }
+        return nil
+    }
 }
 
 // MARK: - RXPlayerControlViewDelegate
 extension R_PlayerView: RXPlayerControlViewDelegate {
     
     func progressWillDraging() {
-        playerStatu = .Pause
         isDragging = true
         playControlView.replayView.isHidden = true
         pauseButton.isHidden = true
@@ -972,7 +1067,6 @@ extension R_PlayerView: RXPlayerControlViewDelegate {
         let draggedTimeString = RXPublicConfig.formatTimPosition(position: currenTime, duration: Int(videoDuration))
         draggedTimeLable.text = String(format: "%@ | %@", draggedTimeString, allTimeString)
         playControlView.positionTimeLab.text = draggedTimeString
-        playerStatu = .Pause
         isDragging = true
         playControlView.replayView.isHidden = true
         pauseButton.isHidden = true
@@ -982,8 +1076,7 @@ extension R_PlayerView: RXPlayerControlViewDelegate {
         guard let item = avItem else { return }
         let position = CGFloat(item.asset.duration.value)/CGFloat(item.asset.duration.timescale)
         let po = CMTimeMakeWithSeconds(Float64(position) * Float64(progress), preferredTimescale: (item.asset.duration.timescale))
-        item.seek(to: po, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero)
-        playerStatu = .Playing
+        playSinceTime(po)
         isDragging = false
         if subviews.contains(draggedProgressView) {
             draggedProgressView.removeFromSuperview()
@@ -991,112 +1084,6 @@ extension R_PlayerView: RXPlayerControlViewDelegate {
     }
 }
 
-// MARK: - Listen To the Player (监听播放状态)
-extension R_PlayerView {
-    
-    /// 监听PlayerItem对象
-    fileprivate func listenTothePlayer() {
-        guard let avItem = self.avItem else {return}
-        playerTimerObserver = player?.addPeriodicTimeObserver(forInterval: CMTimeMake(value: Int64(1.0), timescale: Int32(1.0)), queue: nil, using: { [weak self] (time) in
-            guard let strongSelf = self else { return }
-            // 刷新时间UI
-            strongSelf.updateTimeSliderValue(avItem: avItem)
-        }) as? NSObject
-        
-    }
-    
-    /// KVO 监听播放状态
-    override open func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        guard let avItem = object as? AVPlayerItem else {
-            return
-        }
-        if keyPath == "status" {
-            if avItem.status == AVPlayerItem.Status.readyToPlay {
-                NLog("Status.readyToPlay")
-                playerStatu = .ReadyToPlay // 初始状态为播放
-                playControlView.playOrPauseBtn.isSelected = true
-                updateTimeLableLayout(avItem: avItem)
-                
-            } else if avItem.status == AVPlayerItem.Status.unknown {
-                //视频加载失败，或者未知原因
-                playerStatu = .Unknown
-                hideLoadingHud()
-            } else if avItem.status == AVPlayerItem.Status.failed {
-                NLog("Status.failed")
-                playerStatu = .Failed
-                hideLoadingHud()
-                if !playControlView.playLocalFile {  /// 非本地文件播放才显示网络失败
-                    showLoadedFailedView()
-                }
-            }
-        } else if keyPath == "loadedTimeRanges" {
-            updateLoadingProgress(avItem: avItem)
-        } else if keyPath == "playbackBufferEmpty" {
-            playerStatu = .Buffering                // 监听播放器正在缓冲数据
-            NLog("Status.Buffering")
-        } else if keyPath == "playbackLikelyToKeepUp" {    //监听视频缓冲达到可以播放的状态
-            NLog("Status.Playing")
-            delegate?.startPlay()
-            if !isDragging && playerStatu != .Pause {
-                showLoadingHud()
-            }
-            playerStatu = .Playing
-        }
-    }
-    
-    /// 更新时间进度条
-    ///
-    /// - Parameter avItem: AVPlayerItem
-    
-    private func updateTimeSliderValue(avItem: AVPlayerItem) {
-        let timeScaleValue = Int64(avItem.currentTime().timescale) /// 当前时间
-        let timeScaleDuration = Int64(avItem.asset.duration.timescale)   /// 总时间
-        if avItem.asset.duration.value > 0 && avItem.currentTime().value > 0 {
-            let value = avItem.currentTime().value / timeScaleValue  /// 当前播放时间
-            let duration = avItem.asset.duration.value / timeScaleDuration /// 视频总时长
-            let playValue = Float(value)/Float(duration)
-            let stringDuration = RXPublicConfig.formatTimDuration(duration:Int(duration))
-            let stringValue = RXPublicConfig.formatTimPosition(position: Int(value), duration: Int(duration))
-            playControlView.positionTimeLab.text = stringValue
-            playControlView.durationTimeLab.text = stringDuration
-            delegate?.playerProgress(progress: playValue, currentPlayTime: Float(value))
-            if !isDragging {
-                playControlView.timeSlider.value = playValue
-                playedValue = Float(value)                                      // 保存播放进度
-            }
-        }
-    }
-    
-    /// 更新时间显示布局
-    ///
-    /// - Parameter avItem: AVPlayerItem
-    private func updateTimeLableLayout(avItem: AVPlayerItem) {
-        let duration = Float(avItem.asset.duration.value)/Float(avItem.asset.duration.timescale)
-        let currentTime =  avItem.currentTime().value/Int64(avItem.currentTime().timescale)
-        self.videoDuration = Float(duration)
-        print("video time length = \(duration) s, current time = \(currentTime) s")
-        
-        listenTothePlayer()
-    }
-    
-    /// 监听缓存进度
-    ///
-    /// - Parameter avItem: AVPlayerItem
-    private func updateLoadingProgress(avItem: AVPlayerItem) {
-        //监听缓存进度，根据时间来监听
-        let timeRange = avItem.loadedTimeRanges
-        if timeRange.count > 0 {
-            let cmTimeRange = timeRange[0] as! CMTimeRange
-            let startSeconds = CMTimeGetSeconds(cmTimeRange.start)
-            let durationSeconds = CMTimeGetSeconds(cmTimeRange.duration)
-            let timeInterval = startSeconds + durationSeconds                    // 计算总进度
-            let totalDuration = CMTimeGetSeconds(avItem.asset.duration)
-            self.loadedValue = Float(timeInterval)                               // 保存缓存进度
-            self.playControlView.loadedProgressView.setProgress(Float(timeInterval/totalDuration), animated: true)
-        }
-    }
-    
-}
 
 // MARK: - LayoutPageSubviews (UI布局)
 

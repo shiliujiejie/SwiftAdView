@@ -1,12 +1,13 @@
 
 import UIKit
+import Alamofire
 
 protocol TSDownloadDelegate: class {
     func tsDownloadSucceeded()
     func tsDownloadFailed()
     func update(progress: Float)
     func downloadSpeedUpdate(speed: String)
-    func m3u8ParserSuccess()
+    func m3u8ParserSuccess(tsModels: [TSModel])
     func m3u8ParserFailed()
 }
 
@@ -28,20 +29,26 @@ class TSManager: NSObject {
     private let downLoader = DownLoadHelper()
     
     /// 解析url
-    open func parse(_ uriKey: String? = nil) {
+    open func parse(_ uriKey: String? = nil, _ httpHeader:[String : String]? = nil, _ method: HTTPMethod? = .get) {
+        m3u8Parser.httpMethod = method ?? .get
+        m3u8Parser.parseHtttpHeader = httpHeader
         m3u8Parser.parseM3u8(url: m3u8URL, key: uriKey, succeedHandler: { [weak self] (tsList) in
             NLog("tsList == \(tsList.tsModelArray)")
-            self?.delegate?.m3u8ParserSuccess()
+            self?.delegate?.m3u8ParserSuccess(tsModels: tsList.tsModelArray)
         }) { [weak self] (errorMsg) in
             NLog(" 解析失败描述 = \(errorMsg)")
             self?.delegate?.m3u8ParserFailed()
         }
     }
     /// 下载
-    open func download(_ uriKey: String? = nil) {
+    open func download(_ uriKey: String? = nil, _ httpHeader:[String : String]? = nil, _ method: HTTPMethod? = .get) {
+        m3u8Parser.httpMethod = method ?? .get
+        m3u8Parser.parseHtttpHeader = httpHeader
+        downLoader.httpMethod = method ?? .get
+        downLoader.htttpHeader = httpHeader
         m3u8Parser.parseM3u8(url: m3u8URL, key: uriKey, succeedHandler: { [weak self] (tsList) in
             //NLog("tsModelLs == \(tsList.tsModelArray)")
-            self?.delegate?.m3u8ParserSuccess()
+            self?.delegate?.m3u8ParserSuccess(tsModels: tsList.tsModelArray)
             self?.downLoadTsModels(tsList)
         }) { [weak self] (errorMsg) in
             NLog(" 解析失败描述 = \(errorMsg)")
@@ -55,7 +62,7 @@ class TSManager: NSObject {
         }
         m3u8Parser.parseM3u8(url: m3u8URL, succeedHandler: { [weak self] (tsList) in
             guard let strongSelf = self else { return }
-            self?.delegate?.m3u8ParserSuccess()
+            self?.delegate?.m3u8ParserSuccess(tsModels: tsList.tsModelArray)
             self?.downLoader.m3u8Data = strongSelf.m3u8Parser.m3u8Data
             self?.downLoader.downLoadedDuration = paramInterrupt[TSManager.kLocalTimes] as! Float
             self?.downLoadFromLastInterrupt(index: paramInterrupt[TSManager.kInterruptIndex] as! Int , tsListModel: tsList)

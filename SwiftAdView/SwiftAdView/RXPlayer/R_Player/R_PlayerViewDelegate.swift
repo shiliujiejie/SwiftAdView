@@ -20,7 +20,7 @@ public protocol R_PlayerDelegate: class {
     /// 重试
     func retryToPlayVideo(url: URL?)
     /// 播放失败
-    func playVideoFailed(url: URL?, player: R_PlayerView)
+    func playVideoFailed(url: URL?, player: R_PlayerView) -> Bool
     /// 播放进度
     func playerProgress(progress: Float, currentPlayTime: Float)
     /// 当前播放的视频播放完成时调用
@@ -34,7 +34,7 @@ public extension R_PlayerDelegate {
     /// 重试播放
     func retryToPlayVideo(url: URL?) { }
     /// 播放失败
-    func playVideoFailed(url: URL?, player: R_PlayerView) {}
+    func playVideoFailed(url: URL?, player: R_PlayerView) -> Bool { return false }
     /// 播放进度
     func playerProgress(progress: Float, currentPlayTime: Float) {}
     /// 播放完成

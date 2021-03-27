@@ -1,5 +1,6 @@
 
 import UIKit
+import  Alamofire
 
 class RootViewController: UIViewController {
     
@@ -60,7 +61,7 @@ class RootViewController: UIViewController {
     //非加密 2层 "http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8"
     //"https://video.kkyun-iqiyi.com/20180301/WNvThg3j/index.m3u8"
     
-    let videoUrl = "https://vs1.baduziyuan.com/20180106/5hykgzke/800kb/hls/index.m3u8"
+    let videoUrl = "http://cdn-02.sddianzan.com/94/i9/1294i9d83b6a2896b1efc6866ff24c10cc620c8359.m3u8"
         //"https://video.kkyun-iqiyi.com/20180301/WNvThg3j/index.m3u8" //"https://video.kkyun-iqiyi.com/20180301/WNvThg3j/index.m3u8"
       //"https://vs1.baduziyuan.com/20180106/5hykgzke/800kb/hls/index.m3u8"
      //"https://www.nmgxwhz.com:65/20200328/mmTagJcX/index.m3u8"
@@ -84,26 +85,7 @@ class RootViewController: UIViewController {
         view.addSubview(speedlab)
         view.addSubview(localVideoBtn)
         view.addSubview(table)
-        CLAPICheck.shared.getRequest("https://raw.githubusercontent.com/shiliujiejie/SwiftAdView/master/SwiftAdView/SwiftAdView/codes.json", success: { (data) in
-            if let json = self.dataToJSON(data: data) {
-                print("dycodes === \(json["dyCodes"]), wpcode = \(json["wpCodes"]) isopen == \(json["isOpen"])")
-            } else {
-               
-            }
-        }) { (error) in
-           
-        }
-       // https://raw.githubusercontent.com/shiliujiejie/SwiftAdView/master/SwiftAdView/SwiftAdView/KSCodes/KSCodes.json
-//        if let url = URL(string: "https://raw.githubusercontent.com/shiliujiejie/SwiftAdView/master/SwiftAdView/SwiftAdView/codes.json") {
-//            if let str = try? String.init(contentsOf: url) as String {
-//                if let data = str.data(using: .utf8) {
-//                    if let json = dataToJSON(data: data) {
-//                         print("dycodes === \(json["dyCodes"]), string = \(str)")
-//                    }
-//                }
-//            }
-//
-//        }
+
         
         /// 闪屏广告
         showAd()
@@ -146,7 +128,7 @@ class RootViewController: UIViewController {
                 tsManager.resume()
                 sender.isSelected = false
             } else {
-                tsManager.pause()
+                tsManager.parse(nil, ["referer":"http://www.qq.com"])
                 sender.isSelected = true
             }
         }
@@ -166,7 +148,7 @@ class RootViewController: UIViewController {
             sender.setTitle("解析中...", for: .normal)
             tsManager.directoryName = videoUrl.md5()
             tsManager.m3u8URL = videoUrl
-            tsManager.download()
+            tsManager.download(nil, ["referer":"http://www.qq.com"])
             pauseBtn.isHidden = false
         }
     }
@@ -304,6 +286,10 @@ extension RootViewController {
 
 // MARK: - TSDownloadDelegate
 extension RootViewController: TSDownloadDelegate {
+    func m3u8ParserSuccess(tsModels: [TSModel]) {
+        
+    }
+    
     
     func downloadSpeedUpdate(speed: String) {
         speedlab.text = speed
@@ -317,11 +303,6 @@ extension RootViewController: TSDownloadDelegate {
     }
     func tsDownloadFailed() {
         
-    }
-    func m3u8ParserSuccess() {
-        print("m3u8ParserSuccess() ")
-        
-        parserBtn.setTitle("准备下载", for: .normal)
     }
     func m3u8ParserFailed() {
         print("m3u8ParserFailed() ")

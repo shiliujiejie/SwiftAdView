@@ -1,5 +1,6 @@
 
 import UIKit
+import Alamofire
 
 class M3u8Parser: NSObject {
     
@@ -24,11 +25,20 @@ class M3u8Parser: NSObject {
     /// 第一次解析出来的.m3u8后缀
     var lastM3u8File: String = ""
     
+   
+    
+    /// 用于解析和下载的网络请求头
+    var parseHtttpHeader: [String : String]?
+    /// 请求方式
+    var httpMethod: HTTPMethod = .get
     /// 自定义的密钥
     var URIKey: String?
+    /// 第二层url地址的 当前解析 index
+    var depthM3u8UrlIndex: Int = 0
+    /// 当前TS index
+    var currentTSIndex: Int = 0
     
-    var currentIndex: Int = 0
-    
+    let manager = Alamofire.SessionManager.default
     
     var parseSuccessHandler:((_ tsList : TSListModel) -> Void)?
     var parseFailHandler:((_ failMsg: String) -> Void)?
@@ -54,55 +64,61 @@ class M3u8Parser: NSObject {
         }
         // 将layerUrl 切片，为后面拼接用
         getM3u8UrlHeader(url)
-        DispatchQueue.global(qos: .background).async {
-            do {
-                let layerM3u8Content = try String(contentsOf: URL(string: url)!, encoding: .utf8)
-                print("layerM3u8Content = \(layerM3u8Content)")
-                if layerM3u8Content.isEmpty {
-                    DispatchQueue.main.async {
-                        self.parseFailHandler?("m3u8链接无法转换为 字符串")
-                    }
-                    return
-                } else {
-                    /// 第一层就解析到了ts流
-                    if layerM3u8Content.range(of: "#EXTINF:") != nil {
-                        print("<Layer> m3u8 can be parse, start parsing.(m3u8解析 - 修成正果)")
-                        self.getTsDownloadUrlHeader(url)
-                        self.sepalateRealM3u8List(layerM3u8Content, url)
-                    }
-                    /// 第一层解析出来没有ts流，说明有2层，解析第二层
-                    if layerM3u8Content.range(of: "#EXT-X-STREAM-INF:") != nil {
-                        print("<Layer> m3u8 can not be parse, parse again.")
-                        var m3u8String = ""
-                        let lastM3u8pes = layerM3u8Content.components(separatedBy: "\n")
-                        /// 获取带.m3u8后缀的切片
-                        for stringPs in lastM3u8pes {
-                            if stringPs.contains(".m3u8") {
-                                m3u8String = stringPs
-                                self.lastM3u8File = stringPs
-                            }
-                        }
-                        /// 拼接批量二次解析需要的第二层m3u8Url
-                        if !m3u8String.isEmpty {
-                            for header in self.urlM3u8Headers {
-                                var realM3u8Url = ""
-                                if m3u8String.hasPrefix("/") {
-                                    realM3u8Url = String(format: "%@%@", header, m3u8String)
-                                } else {
-                                    realM3u8Url = String(format: "%@/%@", header, m3u8String)
-                                }
-                                print("secondParseUrl m3u8：\(realM3u8Url)")
-                                self.secondParseUrls.append(realM3u8Url)
-                            }
-                            /// 第二次解析
-                            self.parseDepthM3u8()
-                        }
-                    }
-                }
-            } catch let error {
-                print(error.localizedDescription)
+        manager.session.configuration.timeoutIntervalForRequest = 10
+        manager.request(url, method: .get, parameters: nil, encoding: URLEncoding.default, headers: parseHtttpHeader).responseData { (response) in
+            if let alamoError = response.result.error {
+                NLog("error -- \(alamoError)")
                 DispatchQueue.main.async {
                      self.parseFailHandler?("<Layer> m3u8 file content first read error.")
+                }
+                return
+            } else {
+                let statusCode = (response.response?.statusCode)! //example : 200
+                if statusCode == 200 {
+                    if let data = response.data, let layerM3u8Content = String(data: data, encoding: .utf8) {
+                        print("layerM3u8Content = \(layerM3u8Content)")
+                        if layerM3u8Content.isEmpty {
+                            DispatchQueue.main.async {
+                                self.parseFailHandler?("m3u8链接无法转换为 字符串")
+                            }
+                            return
+                        } else {
+                            /// 第一层就解析到了ts流
+                            if layerM3u8Content.range(of: "#EXTINF:") != nil {
+                                print("<Layer> m3u8 can be parse, start parsing.(m3u8解析 - 修成正果)")
+                                self.getTsDownloadUrlHeader(url)
+                                self.sepalateRealM3u8List(layerM3u8Content, url)
+                            }
+                            /// 第一层解析出来没有ts流，说明有2层，解析第二层
+                            if layerM3u8Content.range(of: "#EXT-X-STREAM-INF:") != nil {
+                                print("<Layer> m3u8 can not be parse, parse again.")
+                                var m3u8String = ""
+                                let lastM3u8pes = layerM3u8Content.components(separatedBy: "\n")
+                                /// 获取带.m3u8后缀的切片
+                                for stringPs in lastM3u8pes {
+                                    if stringPs.contains(".m3u8") {
+                                        m3u8String = stringPs
+                                        self.lastM3u8File = stringPs
+                                    }
+                                }
+                                /// 拼接批量二次解析需要的第二层m3u8Url
+                                if !m3u8String.isEmpty {
+                                    for header in self.urlM3u8Headers {
+                                        var realM3u8Url = ""
+                                        if m3u8String.hasPrefix("/") {
+                                            realM3u8Url = String(format: "%@%@", header, m3u8String)
+                                        } else {
+                                            realM3u8Url = String(format: "%@/%@", header, m3u8String)
+                                        }
+                                        print("secondParseUrl m3u8：\(realM3u8Url)")
+                                        self.secondParseUrls.append(realM3u8Url)
+                                    }
+                                    /// 第二次解析
+                                    self.parseDepthM3u8()
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -110,33 +126,60 @@ class M3u8Parser: NSObject {
     
     /// 第二次解析, 尝试去解析每一个可能的Url,只要解析到，并且包含ts流,取出ts
     func parseDepthM3u8() {
-        DispatchQueue.global().async {
-            do {
-                var depthContent = ""
-                for depthParseUrl in self.secondParseUrls {
-                    if let depthM3u8Content = try? String(contentsOf: URL(string: depthParseUrl)!, encoding: .utf8) {
+        if secondParseUrls.count <= depthM3u8UrlIndex { return }
+        let depthUrl = secondParseUrls[depthM3u8UrlIndex]
+        manager.request(depthUrl, method: httpMethod, parameters: nil, encoding: URLEncoding.default, headers: parseHtttpHeader).responseData { (response) in
+            if let _ = response.result.error {
+                NLog("<Depth> m3u8 parse failed!,Invalid m3u8 URL :\(depthUrl) ")
+                if self.depthM3u8UrlIndex == self.secondParseUrls.count - 1 {
+                    DispatchQueue.main.async {
+                        self.parseFailHandler?("<Depth> m3u8 parse failed!")
+                    }
+                    self.depthM3u8UrlIndex = 0
+                } else {
+                    /// index + 1 继续解析
+                    self.depthM3u8UrlIndex += 1
+                    self.parseDepthM3u8()
+                }
+                return
+            } else {
+                let statusCode = (response.response?.statusCode)! //example : 200
+                if statusCode == 200 {
+                    if let data = response.data, let depthM3u8Content = String(data: data, encoding: .utf8) {
                         // 解析到
                         if !depthM3u8Content.isEmpty {
-                            print("depthM3u8Content == \(depthM3u8Content)")
+                            NLog("depthM3u8Content == \(depthM3u8Content)")
                             /// 解析到了ts流
                             if depthM3u8Content.range(of: "#EXTINF:") != nil {
-                                print("<Depth> m3u8 url: \n \(depthParseUrl) \n can be parse, start parsing.(m3u8解析 - 修成正果)")
-                                depthContent = depthM3u8Content
-                                self.getTsDownloadUrlHeader(depthParseUrl)
-                                self.sepalateRealM3u8List(depthM3u8Content, depthParseUrl)
+                                NLog("<Depth> m3u8 url: \n \(depthUrl) \n can be parse, start parsing.(m3u8解析 - 修成正果)")
+                                self.getTsDownloadUrlHeader(depthUrl)
+                                self.sepalateRealM3u8List(depthM3u8Content, depthUrl)
                             } else {
-                                DispatchQueue.main.async {
-                                     self.parseFailHandler?("<Depth> m3u8 parse failed!")
+                                NLog("<Depth> m3u8 parse failed!,Invalid m3u8 URL :\(depthUrl) ")
+                                if self.depthM3u8UrlIndex == self.secondParseUrls.count - 1 {
+                                    DispatchQueue.main.async {
+                                        self.parseFailHandler?("<Depth> m3u8 parse failed!")
+                                    }
+                                    self.depthM3u8UrlIndex = 0
+                                } else {
+                                    /// index + 1 继续解析
+                                    self.depthM3u8UrlIndex += 1
+                                    self.parseDepthM3u8()
                                 }
                             }
                         }
                     } else {
-                        print("<Depth> m3u8 parse failed!,Invalid m3u8 URL :\(depthParseUrl) ")
-                    }
-                }
-                if depthContent.isEmpty {
-                    DispatchQueue.main.async {
-                        self.parseFailHandler?("解析失败: <Depth> m3u8 parse failed!")
+                        NLog("<Depth> m3u8 parse failed!,Invalid m3u8 URL :\(depthUrl) ")
+                        if self.depthM3u8UrlIndex == self.secondParseUrls.count - 1 {
+                            DispatchQueue.main.async {
+                                self.parseFailHandler?("<Depth> m3u8 parse failed!")
+                            }
+                            self.depthM3u8UrlIndex = 0
+                        } else {
+                            /// index + 1 继续解析
+                            self.depthM3u8UrlIndex += 1
+                            self.parseDepthM3u8()
+                        }
                     }
                 }
             }
@@ -229,30 +272,41 @@ private extension M3u8Parser {
             }
         }
         print("DownLoad KEY file by URI = \(keySttr) ")
-        
     }
     /// 下载密钥文件，存入沙盒
     func downloadURIkey(_ keyUrlStr: String) {
-        guard let keyUrl = URL(string: keyUrlStr) else { return }
-        if let dataKey = try? Data(contentsOf: keyUrl), !dataKey.isEmpty {
-            DownLoadHelper.checkOrCreatedM3u8Directory(self.identifier)
-            let filePath = DownLoadHelper.getDocumentsDirectory().appendingPathComponent(DownLoadHelper.downloadFile).appendingPathComponent(self.identifier).appendingPathComponent("key")
-            print("KEY Data download < Succeed >")
-            if !FileManager.default.fileExists(atPath: filePath.path) {
-                print("KEY Data is not exist, download and save to: \(filePath) ")
-                let success = FileManager.default.createFile(atPath: filePath.path, contents: dataKey, attributes: nil)
-                if success {
-                    print("KEY Data write to file Succeed")
+        manager.request(keyUrlStr, method: httpMethod, parameters: nil, encoding: URLEncoding.default, headers: parseHtttpHeader).responseData { (response) in
+            if let _ = response.result.error {
+                print("KEY Data download < failed > - url =\(keyUrlStr)")
+                return
+            } else {
+                let statusCode = (response.response?.statusCode)! //example : 200
+                if statusCode == 200 {
+                    if let dataKey = response.data, !dataKey.isEmpty {
+                        DownLoadHelper.checkOrCreatedM3u8Directory(self.identifier)
+                        let filePath = DownLoadHelper.getDocumentsDirectory().appendingPathComponent(DownLoadHelper.downloadFile).appendingPathComponent(self.identifier).appendingPathComponent("key")
+                        NLog("KEY Data download < Succeed >")
+                        if !FileManager.default.fileExists(atPath: filePath.path) {
+                            NLog("KEY Data is not exist, download and save to: \(filePath) ")
+                            let success = FileManager.default.createFile(atPath: filePath.path, contents: dataKey, attributes: nil)
+                            if success {
+                                NLog("KEY Data write to file Succeed")
+                            } else {
+                                NLog("KEY Data write to file Failed! =\(dataKey.count)")
+                            }
+                        }
+                    } else {
+                        NLog("KEY Data download < failed > - < KEY Data isEmpty >")
+                    }
                 } else {
-                    print("KEY Data write to file Failed! =\(dataKey.count)")
+                    NLog("KEY Data download < failed > - url =\(keyUrlStr)")
                 }
             }
-        } else {
-            print("KEY Data download < failed > Reason: < KEY Data isEmpty >")
         }
     }
     /// 写入自定义URI
     func writeCustomURIKeyToFile() {
+        /// 这里会根据 实际情况改动，1: URIKey为一个字符串， 2: URIKey是一个http地址
         if let dataKey = URIKey!.data(using: .utf8) {
             DownLoadHelper.checkOrCreatedM3u8Directory(self.identifier)
             let filePath = DownLoadHelper.getDocumentsDirectory().appendingPathComponent(DownLoadHelper.downloadFile).appendingPathComponent(self.identifier).appendingPathComponent("key")
@@ -292,12 +346,12 @@ private extension M3u8Parser {
     /// 拆分m3u8文件，取出ts 和秘钥等
     func sepalateRealM3u8List(_ m3u8Content: String, _ url: String) {
         self.m3u8Data = m3u8Content
-        currentIndex = 0
+        currentTSIndex = 0
         if tsModels.count > 0 { tsModels.removeAll() }
         downLoadKeyWith(m3u8Content)
         
         let segmentRange = m3u8Content.range(of: "#EXTINF:")!
-        let segmentsString = String(m3u8Content.characters.suffix(from: segmentRange.lowerBound)).components(separatedBy: "#EXT-X-ENDLIST")
+        let segmentsString = String(m3u8Content.suffix(from: segmentRange.lowerBound)).components(separatedBy: "#EXT-X-ENDLIST")
         var segmentArray = segmentsString[0].components(separatedBy: "\n")
         segmentArray = segmentArray.filter { !$0.contains("#EXT-X-DISCONTINUITY") }
         var rightTsUrl = ""
@@ -338,11 +392,11 @@ private extension M3u8Parser {
             }
             tsModel.tsUrl = segmentURL
             //print("tsModel.tsUrl ==== \(segmentURL)")
-            tsModel.index = currentIndex
+            tsModel.index = currentTSIndex
             tsModels.append(tsModel)
             segmentArray.remove(at: 0)
             segmentArray.remove(at: 0)
-            currentIndex += 1
+            currentTSIndex += 1
         }
         tsListModel.initTsList(with: tsModels)
         tsListModel.identifier = identifier
