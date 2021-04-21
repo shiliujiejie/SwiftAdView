@@ -378,14 +378,15 @@ extension RXPlayerControlView {
                 delegate?.progressWillDraging()
                 break
             case .changed:
-                delegate?.progressDraging(progress: progress)
                 timeSlider.setValue(Float(progress), animated: false)
+                delegate?.progressDraging(progress: progress)
                 break
             case .ended:
                 timeSlider.isHighlighted = false
                 if !barIsHidden! {   // 拖动完成后，操作栏5秒后自动隐藏
                     self.perform(#selector(autoHideTopBottomBar), with: nil, afterDelay: 5)
                 }
+                timeSlider.setValue(Float(progress), animated: false)
                 delegate?.progressMoveTo(progress: progress)
                 break
             default:

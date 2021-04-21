@@ -2,6 +2,7 @@
 
 import UIKit
 import AVKit
+import Alamofire
 
 class RXM3u8ResourceLoader: NSObject, AVAssetResourceLoaderDelegate {
     

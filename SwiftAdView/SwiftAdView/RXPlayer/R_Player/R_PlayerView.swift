@@ -283,7 +283,6 @@ extension R_PlayerView {
     /// 更新时间进度条
     ///
     /// - Parameter avItem: AVPlayerItem
-    
     private func updateTimeSliderValue(avItem: AVPlayerItem) {
         let timeScaleValue = Int64(avItem.currentTime().timescale) /// 当前时间
         let timeScaleDuration = Int64(avItem.asset.duration.timescale)   /// 总时间
