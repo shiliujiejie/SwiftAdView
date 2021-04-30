@@ -61,7 +61,7 @@ class RootViewController: UIViewController {
     //非加密 2层 "http://yun.kubo-zy-youku.com/20181112/BULbB7PC/index.m3u8"
     //"https://video.kkyun-iqiyi.com/20180301/WNvThg3j/index.m3u8"
     
-    let videoUrl = "http://cdn-02.sddianzan.com/94/i9/1294i9d83b6a2896b1efc6866ff24c10cc620c8359.m3u8"
+    let videoUrl = ""
         //"https://video.kkyun-iqiyi.com/20180301/WNvThg3j/index.m3u8" //"https://video.kkyun-iqiyi.com/20180301/WNvThg3j/index.m3u8"
       //"https://vs1.baduziyuan.com/20180106/5hykgzke/800kb/hls/index.m3u8"
      //"https://www.nmgxwhz.com:65/20200328/mmTagJcX/index.m3u8"
@@ -117,7 +117,7 @@ class RootViewController: UIViewController {
     
     @objc func showVideoVC(_ sender: UIButton) {
         if sender == localVideoBtn {
-            let identifer = videoUrl.md5()
+            let identifer = "1231234"
             if tsManager.downloadSucceeded(identifer) {
                 let localPlayVC = DownLoadedVideoPlayerVC()
                 localPlayVC.identifer = identifer
@@ -138,7 +138,7 @@ class RootViewController: UIViewController {
         
         if sender.tag == 99 {
             sender.setTitle("解析中...", for: .normal)
-            tsManager.directoryName = videoUrl.md5()
+            tsManager.directoryName =  "1231234"
             tsManager.m3u8URL = videoUrl
             tsManager.downloadFromLastInterruptedIndex()
             pauseBtn.isHidden = false
@@ -146,9 +146,9 @@ class RootViewController: UIViewController {
             print("当前视频已经下载了")
         } else if sender.tag == 0 {
             sender.setTitle("解析中...", for: .normal)
-            tsManager.directoryName = videoUrl.md5()
+            tsManager.directoryName =  "1231234"
             tsManager.m3u8URL = videoUrl
-            tsManager.download(nil, ["referer":"http://www.qq.com"])
+            tsManager.download(nil, ["referer":"http://www.com"])
             pauseBtn.isHidden = false
         }
     }

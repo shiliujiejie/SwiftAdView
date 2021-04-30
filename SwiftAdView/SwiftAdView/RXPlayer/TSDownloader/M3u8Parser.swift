@@ -43,6 +43,16 @@ class M3u8Parser: NSObject {
     var parseSuccessHandler:((_ tsList : TSListModel) -> Void)?
     var parseFailHandler:((_ failMsg: String) -> Void)?
     
+    func parseM3u8(content: String,
+                   key: String? = nil,
+                   succeedHandler: @escaping (TSListModel) -> (),
+                   failHandler: @escaping (_ failMessage: String) -> ()){
+        URIKey = key
+        parseSuccessHandler = succeedHandler
+        parseFailHandler = failHandler
+        sepalateRealM3u8List(content)
+    }
+    
     func parseM3u8(url: String,
                    key: String? = nil,
                    succeedHandler: @escaping (TSListModel) -> (),
@@ -87,7 +97,7 @@ class M3u8Parser: NSObject {
                             if layerM3u8Content.range(of: "#EXTINF:") != nil {
                                 print("<Layer> m3u8 can be parse, start parsing.(m3u8解析 - 修成正果)")
                                 self.getTsDownloadUrlHeader(url)
-                                self.sepalateRealM3u8List(layerM3u8Content, url)
+                                self.sepalateRealM3u8List(layerM3u8Content)
                             }
                             /// 第一层解析出来没有ts流，说明有2层，解析第二层
                             if layerM3u8Content.range(of: "#EXT-X-STREAM-INF:") != nil {
@@ -153,7 +163,7 @@ class M3u8Parser: NSObject {
                             if depthM3u8Content.range(of: "#EXTINF:") != nil {
                                 NLog("<Depth> m3u8 url: \n \(depthUrl) \n can be parse, start parsing.(m3u8解析 - 修成正果)")
                                 self.getTsDownloadUrlHeader(depthUrl)
-                                self.sepalateRealM3u8List(depthM3u8Content, depthUrl)
+                                self.sepalateRealM3u8List(depthM3u8Content)
                             } else {
                                 NLog("<Depth> m3u8 parse failed!,Invalid m3u8 URL :\(depthUrl) ")
                                 if self.depthM3u8UrlIndex == self.secondParseUrls.count - 1 {
@@ -275,7 +285,7 @@ private extension M3u8Parser {
     }
     /// 下载密钥文件，存入沙盒
     func downloadURIkey(_ keyUrlStr: String) {
-        manager.request(keyUrlStr, method: httpMethod, parameters: nil, encoding: URLEncoding.default, headers: parseHtttpHeader).responseData { (response) in
+        manager.request(keyUrlStr, method: .get, parameters: nil, encoding: URLEncoding.default, headers: parseHtttpHeader).responseData { (response) in
             if let _ = response.result.error {
                 print("KEY Data download < failed > - url =\(keyUrlStr)")
                 return
@@ -344,7 +354,7 @@ private extension M3u8Parser {
     }
     
     /// 拆分m3u8文件，取出ts 和秘钥等
-    func sepalateRealM3u8List(_ m3u8Content: String, _ url: String) {
+    func sepalateRealM3u8List(_ m3u8Content: String) {
         self.m3u8Data = m3u8Content
         currentTSIndex = 0
         if tsModels.count > 0 { tsModels.removeAll() }
@@ -358,7 +368,7 @@ private extension M3u8Parser {
         if segmentArray.count > 2 {
             let segmentURL = segmentArray[1]
             /// ts 路径非全路径
-            if !(segmentURL.hasPrefix("http://") || segmentURL.hasPrefix("https://")) {
+            if !segmentURL.hasPrefix("http://") && !segmentURL.hasPrefix("https://") {
                 // 拼接url 全路劲
                 rightTsUrl = tryToGetRightTsPath(segmentURL) ?? ""
                 if rightTsUrl.isEmpty {
@@ -382,7 +392,7 @@ private extension M3u8Parser {
             tsModel.duration = segmentDuration
             var segmentURL = segmentArray[1]
             /// ts 路径非全路径
-            if !(segmentURL.hasPrefix("http://") && !segmentURL.hasPrefix("https://")) {
+            if !segmentURL.hasPrefix("http://") && !segmentURL.hasPrefix("https://") {
                 // 拼接url 全路劲
                 if segmentURL.hasPrefix("/") {
                     segmentURL = String(format: "%@%@", rightTsUrl,segmentURL)
@@ -391,7 +401,7 @@ private extension M3u8Parser {
                 }
             }
             tsModel.tsUrl = segmentURL
-            //print("tsModel.tsUrl ==== \(segmentURL)")
+            NLog("tsModel.tsUrl ==== \(segmentURL)")
             tsModel.index = currentTSIndex
             tsModels.append(tsModel)
             segmentArray.remove(at: 0)

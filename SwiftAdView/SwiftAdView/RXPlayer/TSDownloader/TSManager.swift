@@ -46,7 +46,7 @@ class TSManager: NSObject {
         m3u8Parser.parseHtttpHeader = httpHeader
         downLoader.httpMethod = method ?? .get
         downLoader.htttpHeader = httpHeader
-        m3u8Parser.parseM3u8(url: m3u8URL, key: uriKey, succeedHandler: { [weak self] (tsList) in
+        m3u8Parser.parseM3u8(content: m3u8URL, key: uriKey, succeedHandler: { [weak self] (tsList) in
             //NLog("tsModelLs == \(tsList.tsModelArray)")
             self?.delegate?.m3u8ParserSuccess(tsModels: tsList.tsModelArray)
             self?.downLoadTsModels(tsList)
@@ -55,6 +55,7 @@ class TSManager: NSObject {
             self?.delegate?.m3u8ParserFailed()
         }
     }
+   
     /// app意外杀进程后，再次启动，从上次中断的位置断点续传
     open func downloadFromLastInterruptedIndex() {
         guard let paramInterrupt = getLastInterruptIndex() else {

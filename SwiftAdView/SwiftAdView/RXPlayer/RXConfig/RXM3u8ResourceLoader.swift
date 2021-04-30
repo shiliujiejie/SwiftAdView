@@ -22,6 +22,7 @@ class RXM3u8ResourceLoader: NSObject, AVAssetResourceLoaderDelegate {
     private var URIKey: String?
     /// 是否播放时缓存
     private var cacheWhenPlaying: Bool = false
+    var httpHeaderFields: [String: Any]?
     var tsManager: TSManager?
     
     /// 播放中断
@@ -38,7 +39,7 @@ class RXM3u8ResourceLoader: NSObject, AVAssetResourceLoaderDelegate {
     public func playerItem(with url: URL, uriKey: String? = nil, httpHeaderFieldsKey: [String: Any]? = nil, cacheWhenPlaying: Bool? = false) -> AVPlayerItem {
         URIKey = uriKey
         m3u8_url = url.absoluteString
-       
+        httpHeaderFields = httpHeaderFieldsKey
         self.cacheWhenPlaying = cacheWhenPlaying ?? false
         /// 这里先保存或者结束上一个视频的缓存进程 ，还没下完，被中断 记录中断位置
         if tsManager != nil && !tsManager!.downloadSucceeded(tsManager!.directoryName) {
@@ -99,10 +100,24 @@ class RXM3u8ResourceLoader: NSObject, AVAssetResourceLoaderDelegate {
                 
                 if let url = URL(string: newUrl) {
                     NLog("real--Ts--Url === \(newUrl)")
+                    let header = self.httpHeaderFields?["AVURLAssetHTTPHeaderFieldsKey"] as! [String: String]
+                    let request = Alamofire.SessionManager.default.request(newUrl, method: .get, parameters: nil, encoding: URLEncoding.default, headers: header ).responseData { (response) in
+                        if let _ = response.result.error {
+                            NLog("当前--- \(newUrl) \n 缓存失败")
+                            return
+                        } else {
+                            let statusCode = (response.response?.statusCode)! //example : 200
+                            if statusCode == 200 {
+                                if let data = response.data {
+                                    
+                                }
+                            }
+                        }
+                    }
                     /// redirect: 更改(不懂？，百度翻译)，url就是新的url链接
                     loadingRequest.redirect = URLRequest(url: url)
                     /// 302: 重定向(不懂？上百度)
-                    loadingRequest.response = HTTPURLResponse(url: url, statusCode: 302, httpVersion: nil, headerFields: nil)
+                    loadingRequest.response = request.response //HTTPURLResponse(url: url, statusCode: 302, httpVersion: nil, headerFields: self.httpHeaderFields)
                 /// 通知系统请求结束
                     loadingRequest.finishLoading()
                 } else {

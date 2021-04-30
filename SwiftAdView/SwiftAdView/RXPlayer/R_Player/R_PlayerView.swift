@@ -477,6 +477,7 @@ extension R_PlayerView {
             pauseButton.isHidden = true
             pauseButton.removeFromSuperview()
         }
+        playerStatu = .Playing
     }
     
     open func destroyPlayer() {
